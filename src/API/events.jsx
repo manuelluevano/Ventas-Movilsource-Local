@@ -406,7 +406,7 @@ export async function updateAccesorio(id, nombre, precio, stock, imagen) {
 
   try {
     var requestOptions = {
-      method: "PUT",
+      method: "PATCH",
       redirect: "follow",
       body: JSON.stringify({
         nombre,
