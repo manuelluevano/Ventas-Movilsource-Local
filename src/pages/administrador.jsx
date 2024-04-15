@@ -156,6 +156,7 @@ const Administrador = () => {
                       Fecha de venta
                     </th>
                   </tr>
+                
                 </thead>
                 <tbody>
                   {listReport?.map((item) => {
@@ -180,7 +181,8 @@ const Administrador = () => {
                         {item.user?.email}
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {item.created_at}
+                        {item.created_at}a
+                        {/* {item.accesorio.stock} */}
                       </td>
                     </tr>
                     );

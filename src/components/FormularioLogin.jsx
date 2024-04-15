@@ -43,7 +43,7 @@ const FormularioLogin = () => {
        setBtn(true);
        Swal.fire({
         title: "Login Correcto!",
-        text:`${response.mensaje} ${response.userSearch.name} 🥳`,
+        text:`${response.mensaje} ${response.userSearch?.name} 🥳`,
         icon: "success"
       })
      }
