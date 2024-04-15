@@ -317,8 +317,8 @@ export async function addAccesorio(nombre, precio, stock, imagen) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/service/servicio`;
-    const url = "http://localhost:3000/api/accesorio/accesorio";
+    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio`;
+    // const url = "http://localhost:3000/api/accesorio/accesorio";
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
