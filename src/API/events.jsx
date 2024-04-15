@@ -14,8 +14,8 @@ export async function loginApi(email, password) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/user/login`;
-    const url = `http://localhost:3000/api/user/login`;
+    const url = `https://gray-different-panda.cyclic.app/api/user/login`;
+    // const url = `http://localhost:3000/api/user/login`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
