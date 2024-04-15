@@ -342,8 +342,8 @@ export async function listAccesorios() {
       },
     };
 
-    //  const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
-    const url = `http://localhost:3000/api/accesorio/accesorios`;
+     const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
+    // const url = `http://localhost:3000/api/accesorio/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -366,8 +366,8 @@ export async function searchAccesorio(search) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios/${search}`;
-    const url = `http://localhost:3000/api/accesorio/accesorios/${search}`;
+    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios/${search}`;
+    // const url = `http://localhost:3000/api/accesorio/accesorios/${search}`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -387,8 +387,8 @@ export async function getAccesorioID(id) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
-    const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
+    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -420,8 +420,8 @@ export async function updateAccesorio(id, nombre, precio, stock, imagen) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
-    const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
+    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -443,8 +443,8 @@ export async function accesorioVenta(id) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/service/servicio/status/${id}`;
-    const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
+    const url = `https://gray-different-panda.cyclic.app/api/service/servicio/status/${id}`;
+    // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -488,7 +488,8 @@ export async function createReportsAccesorio(user, accesorio, total) {
     //   .then((result) => result)
     //   .catch((error) => console.error(error));
 
-    const url = `http://localhost:3000/api/pedido/accesorios`;
+    // const url = `http://localhost:3000/api/pedido/accesorios`;
+    const url = `https://gray-different-panda.cyclic.app/api/pedido/accesorios`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -513,8 +514,8 @@ export async function listAccesoriosReport() {
       },
     };
 
-    //  const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
-    const url = `http://localhost:3000/api/pedido/accesorios`;
+     const     url = `https://gray-different-panda.cyclic.app/api/pedido/accesorios`;
+    // const url = `http://localhost:3000/api/pedido/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
