@@ -2,14 +2,18 @@
 
 import { useEffect, useState } from "react";
 import ListCard from "../components/ListCard";
-import { listAccesorios, searchAccesorio } from "../API/events";
-import { Link } from "react-router-dom";
-import { Toaster } from "sonner";
+import {
+  accesorioVenta,
+  createReportsAccesorio,
+  listAccesorios,
+  searchAccesorio,
+} from "../API/events";
+import { toast, Toaster } from "sonner";
 import { PacmanLoader } from "react-spinners";
-import { LuShoppingCart } from "react-icons/lu";
 import useAuth from "../hooks/useAuth";
+import { handleMessage } from "../helpers/index";
 
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const Accesorios = () => {
   //OBTENER LAS REFACCIONES DE LA DB
@@ -17,6 +21,64 @@ const Accesorios = () => {
   const [search, setSearch] = useState();
   const [reload, setReload] = useState(false);
   let [loading, setLoading] = useState(false);
+
+
+  //CONTADOR DE CARRO
+
+  const sumarProducto = async (id) => {
+    if (id) {
+      console.log("id seleccionado", id);
+    }
+
+    //GENERAR MENSAJE DE CONFIRMACION
+    const confirm = window.confirm("Realizar venta?");
+    if (confirm) {
+      //REALIZAR VENTA EN DB
+      const response = await accesorioVenta(id);
+
+      console.log(response.accesorioDB.precio);
+      if (response) {
+        toast.promise(handleMessage, {
+          style: {
+            color: "white",
+          },
+          loading: "Loading...",
+          success: () => {
+            return `${response.message}`;
+          },
+          error: "Error",
+        });
+      }
+      //RECARGAR
+
+      //REALIZAR REPORTE DE VENTA
+      const response2 = await createReportsAccesorio(tokenUser.id, id , response.accesorioDB.precio);
+
+      if (response2) {
+        setTimeout(() => {
+          setLoading(false);
+          toast.promise(handleMessage, {
+            style: {
+              color: "white",
+            },
+            loading: "Loading...",
+            success: () => {
+              return `${response2.mensaje}`;
+            },
+            error: "Error",
+          });
+          setTimeout(() => {
+            window.location.reload();
+            
+          }, 4000);
+        }, 4000);
+      }
+
+      
+    } else {
+      console.log("No se vendio");
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -37,7 +99,7 @@ const Accesorios = () => {
         setReload(false);
       }, 4000);
     })();
-  }, [search, reload, setReload]);
+  }, [search, reload, setReload, setLoading]);
 
   const { tokenUser } = useAuth();
 
@@ -98,9 +160,11 @@ const Accesorios = () => {
                 </div>
 
                 <div className="cursor-pointer flex justify-between">
-                  <LuShoppingCart className="text-4xl text-orange-600" />
-                  <h5 className="  p-1 uppercase rounded cursor-pointe transition-color bg-orange-400">
-                    1
+                  {/* <Link to="/saleCard" cardCount={carCount}>
+                    <LuShoppingCart className="text-4xl text-blue-600" />
+                  </Link> */}
+                  <h5 className="  p-1 uppercase rounded cursor-pointe transition-color">
+                    {/* {carCount.length} */}
                   </h5>
                 </div>
                 {/* <h6 className="font-semibold">1</h6> */}
@@ -122,6 +186,7 @@ const Accesorios = () => {
                     item={accesorios}
                     loading={loading}
                     setLoading={setLoading}
+                    sumarProducto={sumarProducto}
                   />
                 )}
               </div>

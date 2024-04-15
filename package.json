@@ -1,5 +1,5 @@
 {
-  "name": "movilsource-stock",
+  "name": "Ventas-Movilsource-Local",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -24,6 +24,7 @@
     "react-select": "^5.7.4",
     "react-spinners": "^0.13.8",
     "sonner": "^0.7.0",
+    "sweetalert2": "^11.10.7",
     "update": "^0.4.2",
     "xlsx": "^0.18.5"
   },

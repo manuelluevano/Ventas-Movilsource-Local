@@ -14,7 +14,8 @@ export async function loginApi(email, password) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/user/login`;
+    // const url = `https://gray-different-panda.cyclic.app/api/user/login`;
+    const url = `http://localhost:3000/api/user/login`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -63,7 +64,7 @@ export async function addService(
   created_at,
   folio,
   observaciones,
-  token,
+  token
 ) {
   console.log("token", token);
 
@@ -118,7 +119,7 @@ export async function listServices(token) {
       },
     };
 
-     const     url = `https://gray-different-panda.cyclic.app/api/service/servicios`;
+    const url = `https://gray-different-panda.cyclic.app/api/service/servicios`;
     // const url = `http://localhost:3000/api/service/servicios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -291,17 +292,11 @@ export async function editService(id, objterminado) {
 
 //LIST ACCESORIOS
 
-export async function addAccesorio(
-  nombre,
-  precio,
-  stock,
-  imagen,
-) {
-
+export async function addAccesorio(nombre, precio, stock, imagen) {
   // console.log(nombre, precio, stock, imagen);
 
-//GET TOKEN
-const token = localStorage.getItem("token");
+  //GET TOKEN
+  const token = localStorage.getItem("token");
   let finalString = token.split('"').join("");
 
   console.log("token modificado", finalString);
@@ -322,8 +317,8 @@ const token = localStorage.getItem("token");
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio`;
-    // const url = "http://localhost:3000/api/accesorio/accesorio";
+    // const url = `https://gray-different-panda.cyclic.app/api/service/servicio`;
+    const url = "http://localhost:3000/api/accesorio/accesorio";
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -347,8 +342,8 @@ export async function listAccesorios() {
       },
     };
 
-     const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
-    // const url = `http://localhost:3000/api/accesorio/accesorios`;
+    //  const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
+    const url = `http://localhost:3000/api/accesorio/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -371,8 +366,8 @@ export async function searchAccesorio(search) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios/${search}`;
-    // const url = `http://localhost:3000/api/accesorio/accesorios/${search}`;
+    // const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios/${search}`;
+    const url = `http://localhost:3000/api/accesorio/accesorios/${search}`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -383,59 +378,150 @@ export async function searchAccesorio(search) {
 }
 
 export async function getAccesorioID(id) {
-    try {
-      var requestOptions = {
-        method: "get",
-        redirect: "follow",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      };
-  
-      const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
-      // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
-  
-      const response = await fetch(url, requestOptions);
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.log("error al traer Accesorio", error);
-    }
-  }
+  try {
+    var requestOptions = {
+      method: "get",
+      redirect: "follow",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    };
 
-  export async function updateAccesorio(id, nombre, precio, stock, imagen) {
-  
-    const token = localStorage.getItem("token");
-    let finalString = token.split('"').join("");
-  
-    // console.log("token modificado", finalString);
-  
-    try {
-      var requestOptions = {
-        method: "PUT",
-        redirect: "follow",
-        body: JSON.stringify({
-         nombre,
-         precio,
-         stock,
-         imagen
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: `${finalString}`,
-        },
-      };
-  
-      const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
-      // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
-      const response = await fetch(url, requestOptions);
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.log("error login", error);
-    }
-  }
+    // const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
 
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error al traer Accesorio", error);
+  }
+}
+
+export async function updateAccesorio(id, nombre, precio, stock, imagen) {
+  const token = localStorage.getItem("token");
+  let finalString = token.split('"').join("");
+
+  // console.log("token modificado", finalString);
+
+  try {
+    var requestOptions = {
+      method: "PUT",
+      redirect: "follow",
+      body: JSON.stringify({
+        nombre,
+        precio,
+        stock,
+        imagen,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
+      },
+    };
+
+    // const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
+export async function accesorioVenta(id) {
+  //GET TOKEN
+  const token = localStorage.getItem("token");
+  let finalString = token.split('"').join("");
+  try {
+    var requestOptions = {
+      method: "post",
+      redirect: "follow",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
+      },
+    };
+
+    // const url = `https://gray-different-panda.cyclic.app/api/service/servicio/status/${id}`;
+    const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
+
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
+
+//PEDIDOS DE ACCESORIOS
+export async function createReportsAccesorio(user, accesorio, total) {
+  console.log(user, accesorio, total);
+  const token = localStorage.getItem("token");
+
+  let finalString = token.split('"').join("");
+
+  // console.log(user, pedido, total);
+
+  // // console.log("token modificado", finalString);
+
+  try {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      user,
+      accesorio,
+      total,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    // const url = `  http://localhost:3000/api/pedido/accesorios`;
+    // fetch("http://localhost:3000/api/pedido/accesorios", requestOptions)
+    //   .then((response) => response)
+    //   .then((result) => result)
+    //   .catch((error) => console.error(error));
+
+    const url = `http://localhost:3000/api/pedido/accesorios`;
+
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
+
+export async function listAccesoriosReport() {
+  const token = localStorage.getItem("token");
+  let finalString = token.split('"').join("");
+
+  try {
+    var requestOptions = {
+      method: "get",
+      redirect: "follow",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
+      },
+    };
+
+    //  const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
+    const url = `http://localhost:3000/api/pedido/accesorios`;
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
 // REFACCIONES
 // export async function listRefacciones() {
 //   //GET TOKEN
@@ -624,5 +710,3 @@ export async function getAccesorioID(id) {
 //     console.log("error login", error);
 //   }
 // }
-
-

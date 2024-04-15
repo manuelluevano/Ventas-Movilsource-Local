@@ -2,9 +2,12 @@
 
 // import { createReports } from "../API/events";
 import { Toaster, toast } from "sonner";
+import { IoAddCircle } from "react-icons/io5";
+import { useState } from "react";
+import { LuShoppingCart } from "react-icons/lu";
 
-const Card = ({ item }) => {
-  const { nombre, imagen, precio, stock } = item;
+const Card = ({ item, sumarProducto, loading }) => {
+  const { _id, nombre, imagen, precio, stock } = item;
 
   // const handleCreateReport = async (id, stock) => {
   //   //REVISAR CANTIDAD DE ELEEMENTOS VENDIDOS
@@ -42,6 +45,7 @@ const Card = ({ item }) => {
   //   }
   // };
 
+
   return (
     <>
       <Toaster
@@ -59,19 +63,15 @@ const Card = ({ item }) => {
             : " hover:bg-gray-200 hover:border hover:border-gray-400 transition-all cursor-pointer"
         }  mr-16 text-center mx-0  mb-10 max-w-xs border border-gray-200 rounded-lg shadow `}
       >
-        <div className="flex justify-center w-45 h-52">
+        <div className="flex justify-center w-72 h-52">
           {stock == 0 && (
             <h1 className="text-center text-4xl text-red-700">Agotada</h1>
           )}
-          <img
-            className=" "
-            src={`${imagen}`}
-            alt="Imagen no disponible"
-          />
+          <img className="" src={`${imagen}`} alt="Imagen no disponible" />
         </div>
         <div className="px-3 pt-1 pb-2 mb-2">
           <div href="#">
-            <h5 className="text-xl font-semibold tracking-tight text-black ">
+            <h5 className="text-lg font-semibold tracking-tight text-black ">
               {nombre}
             </h5>
           </div>
@@ -90,11 +90,12 @@ const Card = ({ item }) => {
               ""
             ) : (
               <button
-                // onClick={() => handl eCreateReport(_id, stock)}
+                onClick={() => {sumarProducto(_id)}}
                 href="#refacciones"
-                className="ml-5 text-white bg-blue-700 hover:bg-blue-800  focus:outline-none focus:ring-blue-300 rounded-lg text-xs px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="text-4xl text-blue-700 hover:text-blue-900 "
+
               >
-                Agregar
+                <IoAddCircle />
               </button>
             )}
           </div>

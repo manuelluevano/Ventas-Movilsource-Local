@@ -4,6 +4,7 @@ import useAuth from "../hooks/useAuth";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Toaster, toast } from "sonner";
 import { handleMessage } from "../helpers";
+import Swal from "sweetalert2";
 
 const FormularioLogin = () => {
   //CONTEXT
@@ -21,59 +22,69 @@ const FormularioLogin = () => {
     setPasswordShown(!passwordShown);
   };
 
-  const handleSubmit = async (e) => {
-    setBtn(false);
-    e.preventDefault();
+   const handleSubmit = async (e) => {
+     setBtn(false);
+     e.preventDefault();
 
-    if (!email || !password) {
-      mostrarAlerta({
-        msg: "Todos los campos son obligatorios",
-        error: true,
-      });
-      setBtn(true);
+     if (!email || !password) {
+       mostrarAlerta({
+         msg: "Todos los campos son obligatorios",
+         error: true,
+       });
+       setBtn(true);
 
-      return;
-    }
+       return;
+     }
 
-    //INCIAMOS SESION
-    const response = await loginUser({ email, password });
+    //  INCIAMOS SESION
+     const response = await loginUser({ email, password });
 
-    if (response) {
-      setBtn(true);
-    }
+     if (response) {
+       setBtn(true);
+       Swal.fire({
+        title: "Login Correcto!",
+        text:`${response.mensaje} ${response.userSearch.name} 🥳`,
+        icon: "success"
+      })
+     }
 
-    // console.log(response);
-    toast.promise(handleMessage, {
-      style: {
-        color: "white",
-      },
-      loading: "Loading...",
-      success: () => {
-        return `${response.mensaje} ${response.userSearch.name} 🥳`;
-      },
-      error: () => {
-        return `${response.mensaje}`;
-      },
-    });
+    //   console.log(response);
+    //  toast.promise(handleMessage, {
+    //    style: {
+    //      color: "white",
+    //    },
+    //    loading: "Loading...",
+    //    success: () => {
+    //      return `${response.mensaje} ${response.userSearch.name} 🥳`;
+    //    },
+    //    error: () => {
+    //      return `${response.mensaje}`;
+    //    },
+    //  }
+    // );
 
-    //CHARGIN
-    setTimeout(async () => {
-      if (response.status === "error") {
-        // console.log(response);
-        mostrarAlerta({
-          msg: response.mensaje,
-          error: true,
-        });
+    
 
-        return;
-      }
+    //  CHARGIN
+     setTimeout(async () => {
+       if (response.status === "error") {
+          console.log(response);
+         mostrarAlerta({
+           msg: response.mensaje,
+           error: true,
+         });
 
-      //GUARDAMOS SESION EN LOCALSTORAGE
-      localStorage.setItem("token", JSON.stringify(response.token));
-    }, 2000);
-  };
+         return;
+       }
+
+      //  GUARDAMOS SESION EN LOCALSTORAGE
+       localStorage.setItem("token", JSON.stringify(response.token));
+     }, 2000);
+   };
 
   //EXTRAER ALERTA
+  
+
   const { msg } = alerta;
 
   return (

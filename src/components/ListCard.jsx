@@ -2,19 +2,28 @@
 import { PacmanLoader } from "react-spinners";
 import Card from "./Card";
 
-const ListCard = ({ item, setLoading }) => {
+const ListCard = ({
+  item,
+  setLoading,
+  loading, 
+  sumarProducto,
+}) => {
   // console.log("Total de lista de refacciones",refacciones);
 
   return (
     <>
       {item && item.length ? (
         <>
-          {item.map((item) => {
+          {item.map((i) => {
             // console.log(item);
             return (
-              <>
-                <Card item={item} setLoading={setLoading} />
-              </>
+              <Card
+                key={i.nombre}
+                item={i}
+                setLoading={setLoading}
+                sumarProducto={sumarProducto}
+                loading={loading}
+              />
             );
           })}
         </>
