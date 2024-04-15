@@ -443,7 +443,7 @@ export async function accesorioVenta(id) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio/status/${id}`;
+    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
     // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
 
     const response = await fetch(url, requestOptions);
