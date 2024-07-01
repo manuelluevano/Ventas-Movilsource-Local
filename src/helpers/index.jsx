@@ -14,21 +14,21 @@ export async function handleDate() {
   const today = new Date();
   console.log(typeof( today));
 
-  // const yyyy = today.getFullYear();
-  // let mm = today.getMonth() + 1; // Months start at 0!
-  // let dd = today.getDate();
-  // const hora = today.getHours();
-  // const minuto = today.getMinutes();
-  // const formattedMinutes = minuto < 10 ? "0" + minuto : minuto;
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
+  const hora = today.getHours();
+  const minuto = today.getMinutes();
+  const formattedMinutes = minuto < 10 ? "0" + minuto : minuto;
   
 
-  // if (dd < 10) dd = "0" + dd;
-  // if (mm < 10) mm = "0" + mm;
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
 
-  // const formattedToday =
-  //   dd + "/" + mm + "/" + yyyy + " " + hora + ":" + formattedMinutes;
+  const formattedToday =
+    dd + "/" + mm + "/" + yyyy + " " + hora + ":" + formattedMinutes;
 
-  // console.log("Fecha actual", formattedToday);
+  console.log("Fecha actual", formattedToday);
 
   return today;
 }

@@ -97,11 +97,12 @@ const Accesorios = () => {
       //REGRESAR RELOAD A ESTADO NORMAL
       setTimeout(() => {
         setReload(false);
-      }, 4000);
+      }, 1000);
     })();
   }, [search, reload, setReload, setLoading]);
 
   const { tokenUser } = useAuth();
+  const user = tokenUser.id
 
   return (
     <>
@@ -113,7 +114,7 @@ const Accesorios = () => {
         }}
       />
 
-      {tokenUser.id ? (
+      {user ? (
         <div>
           <>
             <div>
@@ -194,7 +195,8 @@ const Accesorios = () => {
           </>
         </div>
       ) : (
-        <Navigate to="/login" />
+        // <Navigate to="/login" />
+        ""
       )}
     </>
   );

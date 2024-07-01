@@ -14,7 +14,7 @@ export async function loginApi(email, password) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/user/login`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/user/login`;
     // const url = `http://localhost:3000/api/user/login`;
 
     const response = await fetch(url, requestOptions);
@@ -96,8 +96,8 @@ export async function addService(
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio`;
-    // const url = `http://localhost:3000/api/service/servicio`;
+    // const url = `https://gray-different-panda.cyclic.app/api/service/servicio`;
+    const url = `http://localhost:3000/api/service/servicio`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -119,8 +119,8 @@ export async function listServices(token) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicios`;
-    // const url = `http://localhost:3000/api/service/servicios`;
+    // const url = `https://gray-different-panda.cyclic.app/api/service/servicios`;
+    const url = `http://localhost:3000/api/service/servicios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -143,7 +143,7 @@ export async function equipoTerminado(id) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio/status/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio/status/${id}`;
     // const url = `http://localhost:3000/api/service/servicio/complete/${id}`;
 
     const response = await fetch(url, requestOptions);
@@ -168,7 +168,7 @@ export async function equipoEntregado(id) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio/status/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio/status/${id}`;
     // const url = `http://localhost:3000/api/service/servicio/status/${id}`;
 
     const response = await fetch(url, requestOptions);
@@ -192,7 +192,7 @@ export async function searchService(search) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicios/${search}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicios/${search}`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -243,7 +243,7 @@ export async function updateService(id, objterminado) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio/${id}`;
     // const url = `http://localhost:3000/api/service/servicio/${id}`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -280,7 +280,7 @@ export async function editService(id, objterminado) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/service/servicio/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio/${id}`;
     // const url = `http://localhost:3000/api/refaccion/refaccion/${id}`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -317,7 +317,7 @@ export async function addAccesorio(nombre, precio, stock, imagen) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorio`;
     // const url = "http://localhost:3000/api/accesorio/accesorio";
 
     const response = await fetch(url, requestOptions);
@@ -342,7 +342,7 @@ export async function listAccesorios() {
       },
     };
 
-     const     url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios`;
+     const     url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorios`;
     // const url = `http://localhost:3000/api/accesorio/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -366,7 +366,7 @@ export async function searchAccesorio(search) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorios/${search}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorios/${search}`;
     // const url = `http://localhost:3000/api/accesorio/accesorios/${search}`;
 
     const response = await fetch(url, requestOptions);
@@ -387,7 +387,7 @@ export async function getAccesorioID(id) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorio/${id}`;
     // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
 
     const response = await fetch(url, requestOptions);
@@ -420,7 +420,7 @@ export async function updateAccesorio(id, nombre, precio, stock, imagen) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorio/${id}`;
     // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -443,7 +443,7 @@ export async function accesorioVenta(id) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/accesorio/accesorio/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorio/${id}`;
     // const url = `http://localhost:3000/api/accesorio/accesorio/${id}`;
 
     const response = await fetch(url, requestOptions);
@@ -489,7 +489,7 @@ export async function createReportsAccesorio(user, accesorio, total) {
     //   .catch((error) => console.error(error));
 
     // const url = `http://localhost:3000/api/pedido/accesorios`;
-    const url = `https://gray-different-panda.cyclic.app/api/pedido/accesorios`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pedido/accesorios`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -514,7 +514,7 @@ export async function listAccesoriosReport() {
       },
     };
 
-     const     url = `https://gray-different-panda.cyclic.app/api/pedido/accesorios`;
+     const     url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pedido/accesorios`;
     // const url = `http://localhost:3000/api/pedido/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();

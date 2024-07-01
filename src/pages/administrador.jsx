@@ -4,6 +4,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Children, useEffect, useState } from "react";
 import { listAccesorios, listAccesoriosReport } from "../API/events";
+import { handleDate } from "../helpers";
 
 const Administrador = () => {
   const [adminSelect, setAdminSelect] = useState();
@@ -25,9 +26,14 @@ const Administrador = () => {
     })();
   }, [adminSelect]);
 
-  console.log(adminSelect);
+  function dateFilter(date) {
+    return date >= "2024-04-02";
+  }
+
+  var sumaAccesorios = 0
+
   return (
-    <div className="container mx-auto"> 
+    <div className="container mx-auto">
       <div className="mt-3 md:flex">
         <div className="md:w-2/5 lg:w-2/5 mt-10 h-screen ">
           <h2 className="font-bold text-3xl">Administración</h2>
@@ -56,7 +62,7 @@ const Administrador = () => {
           </div>
         </div>
 
-        {!adminSelect  ? (
+        {!adminSelect ? (
           <div className="mt-10">
             <h2 className="text-2xl font-medium text-center text-cyan-600">
               Accesorios
@@ -97,7 +103,7 @@ const Administrador = () => {
                       <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td className="p-4">
                           <img
-                            className="w-10 "
+                            className="w-20 "
                             src={`${item.imagen}`}
                             alt="Imagen no disponible"
                           />
@@ -131,66 +137,79 @@ const Administrador = () => {
         ) : (
           <div>
             <div className="mt-10">
-            <h2 className="text-2xl font-medium text-center text-cyan-600">
-              Pedidos
-            </h2>
-            
+              <h2 className="text-2xl font-medium text-center text-cyan-600">
+                Muestra de Pedidos Por Mes 
+              </h2>
 
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
-              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                  <th scope="col" className="px-16 py-3">
-                      Imagen
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Articulo
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Total
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Vendedor
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Fecha de venta
-                    </th>
-                  </tr>
-                
-                </thead>
-                <tbody>
-                  {listReport?.map((item) => {
-                    // console.log("Datos", item.accesorio.imagen);
-                    return (
-                      
-                      <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <td className="p-4">
-                        <img
-                          className="w-5 "
-                          src={`${ item.accesorio.imagen}`}
-                          alt="Imagen no disponible"
-                        />
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {item.accesorio.nombre}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        ${item.total}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {item.user?.email}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {item.created_at}a
-                        {/* {item.accesorio.stock} */}
-                      </td>
+              <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th scope="col" className="px-16 py-3">
+                        Imagen
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Articulo
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Total
+                      </th>
+
+                      <th scope="col" className="px-6 py-3">
+                        Vendedor
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Fecha de venta
+                      </th>
                     </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {listReport?.map((item) => {
+                      if (item.created_at >= "2024-05-02") {
+                        console.log(item.created_at);
+                        sumaAccesorios ++
+                        console.log(sumaAccesorios);
+                        return (
+                          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td className="p-4">
+                              <img
+                                className="w-20"
+                                src={`${item.accesorio.imagen}`}
+                                alt="Imagen no disponible"
+                                />
+                            </td>
+                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                              {item.accesorio.nombre}
+                            </td>
+                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                              ${item.total}
+                            </td>
+
+                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                              {item.user?.email}
+                            </td>
+                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                              {item.created_at}
+                              {/* {item.accesorio.stock} */}
+                            </td>
+                               <h3 className="font-extrabold text-lg text-yellow-300">
+                                
+                                {sumaAccesorios}
+                                </h3> 
+                          </tr>
+                        );
+                      }
+                      //  const  filterDates = dates.filter(dateFilter)
+
+                      //   //FILTRO DE VENTA POR MES
+                      //  dateFilter(dates)
+
+                      //   console.log(filterDates)
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
           </div>
         )}
       </div>
