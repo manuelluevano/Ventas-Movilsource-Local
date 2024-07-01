@@ -40,7 +40,7 @@ export async function registerApi(name, surname, email, password) {
       },
     };
 
-    const url = `https://gray-different-panda.cyclic.app/api/user/register`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/user/register`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -96,8 +96,8 @@ export async function addService(
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/service/servicio`;
-    const url = `http://localhost:3000/api/service/servicio`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio`;
+    // const url = `http://localhost:3000/api/service/servicio`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -119,8 +119,8 @@ export async function listServices(token) {
       },
     };
 
-    // const url = `https://gray-different-panda.cyclic.app/api/service/servicios`;
-    const url = `http://localhost:3000/api/service/servicios`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicios`;
+    // const url = `http://localhost:3000/api/service/servicios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
