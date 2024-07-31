@@ -14,6 +14,7 @@ import useAuth from "../hooks/useAuth";
 import { handleMessage } from "../helpers/index";
 
 import { Link, Navigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Accesorios = () => {
   //OBTENER LAS REFACCIONES DE LA DB
@@ -22,62 +23,56 @@ const Accesorios = () => {
   const [reload, setReload] = useState(false);
   let [loading, setLoading] = useState(false);
 
-
   //CONTADOR DE CARRO
 
   const sumarProducto = async (id) => {
-    if (id) {
-      console.log("id seleccionado", id);
-    }
+    console.log("Venta", id);
+    //PREGUNTAR SI SE REALIZARA LA VENTA
 
-    //GENERAR MENSAJE DE CONFIRMACION
-    const confirm = window.confirm("Realizar venta?");
-    if (confirm) {
-      //REALIZAR VENTA EN DB
-      const response = await accesorioVenta(id);
+    (async () => {
+      await Swal.fire({
+        title: "Realizar Venta?",
+        showCancelButton: true,
+        confirmButtonText: `Vender`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Venta Realizada con exito!", "", "success");
+          const response = await accesorioVenta(id);
 
-      console.log(response.accesorioDB.precio);
-      if (response) {
-        toast.promise(handleMessage, {
-          style: {
-            color: "white",
-          },
-          loading: "Loading...",
-          success: () => {
-            return `${response.message}`;
-          },
-          error: "Error",
-        });
-      }
-      //RECARGAR
+          console.log(response.accesorioDB.precio);
+          if (response.status === "Success") {
+            toast.promise(handleMessage, {
+              style: {
+                color: "white",
+              },
+              loading: "Loading...",
+              success: () => {
+                return `${response.message}`;
+              },
+              error: "Error",
+            });
 
-      //REALIZAR REPORTE DE VENTA
-      const response2 = await createReportsAccesorio(tokenUser.id, id , response.accesorioDB.precio);
+            //CREAR REPORTE DE VENTA Y GARANTIA
+            const response2 = await createReportsAccesorio(
+              tokenUser.id,
+              id,
+              response.accesorioDB.precio
+            );
 
-      if (response2) {
-        setTimeout(() => {
-          setLoading(false);
-          toast.promise(handleMessage, {
-            style: {
-              color: "white",
-            },
-            loading: "Loading...",
-            success: () => {
-              return `${response2.mensaje}`;
-            },
-            error: "Error",
-          });
-          setTimeout(() => {
-            window.location.reload();
-            
-          }, 4000);
-        }, 4000);
-      }
+            console.log(response2);
 
-      
-    } else {
-      console.log("No se vendio");
-    }
+            setTimeout(() => {
+              Swal.fire(`${response2.mensaje}`);
+
+              setTimeout(() => {
+                //RECARGAR PAGINA
+                window.location.reload();
+              }, 2000);
+            }, 2000);
+          }
+        }
+      });
+    })();
   };
 
   useEffect(() => {
@@ -102,7 +97,7 @@ const Accesorios = () => {
   }, [search, reload, setReload, setLoading]);
 
   const { tokenUser } = useAuth();
-  const user = tokenUser.id
+  const user = tokenUser.id;
 
   return (
     <>
@@ -119,8 +114,9 @@ const Accesorios = () => {
           <>
             <div>
               <div className="flex justify-end mt-10 items-center gap-10 pr-10">
-                {/* BUSCADOR */}
-                <div className="text-lg">
+                {/* BUSCADOR Y CATEGORIAS */}
+                <div className="text-lg ">
+                  {/* <h2>Categorias</h2> */}
                   <label
                     htmlFor="default-search"
                     className="text-sm font-medium text-gray-900 sr-only dark:text-white"

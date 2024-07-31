@@ -10,43 +10,6 @@ const Card = ({ item, sumarProducto, loading }) => {
   const { _id, nombre, imagen, precio, stock } = item;
   const [showModal, setShowModal] = useState(false);
 
-  // const handleCreateReport = async (id, stock) => {
-  //   //REVISAR CANTIDAD DE ELEEMENTOS VENDIDOS
-  //   if (stock > 0) {
-  //     //GENERAMOS REPORTE
-  //     const confirm = window.confirm("Vender Refaccion?");
-
-  //     if (confirm) {
-  //       setLoading(true);
-  //       //OBTENER FECHA
-  //       const f = await handleDate();
-  //       console.log(f);
-
-  //       const response = await createReports(id, f);
-  //       console.log(response);
-
-  //       if (response) {
-  //         toast.promise(handleMessage, {
-  //           style: {
-  //             color: "white",
-  //           },
-  //           loading: "Loading...",
-  //           success: () => {
-  //             return `${response.mensaje}`;
-  //           },
-  //           error: "Error",
-  //         });
-  //       }
-  //       //RECARGAR
-  //       setTimeout(() => {
-  //         setLoading(false);
-  //         window.location.reload(true);
-  //       }, 4000);
-  //     }
-  //   }
-  // };
-
-
   return (
     <>
       <Toaster

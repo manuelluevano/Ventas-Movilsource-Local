@@ -26,9 +26,9 @@ const Administrador = () => {
     })();
   }, [adminSelect]);
 
-  function dateFilter(date) {
-    return date >= "2024-04-02";
-  }
+  // function dateFilter(date) {
+  //   return date >= "2024-04-02";
+  // }
 
   var sumaAccesorios = 0
 
@@ -165,10 +165,6 @@ const Administrador = () => {
                   </thead>
                   <tbody>
                     {listReport?.map((item) => {
-                      if (item.created_at >= "2024-05-02") {
-                        console.log(item.created_at);
-                        sumaAccesorios ++
-                        console.log(sumaAccesorios);
                         return (
                           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <td className="p-4">
@@ -190,15 +186,12 @@ const Administrador = () => {
                             </td>
                             <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                               {item.created_at}
-                              {/* {item.accesorio.stock} */}
+                              {item.accesorio.stock}
                             </td>
-                               <h3 className="font-extrabold text-lg text-yellow-300">
-                                
-                                {sumaAccesorios}
-                                </h3> 
+                               
                           </tr>
                         );
-                      }
+                      
                       //  const  filterDates = dates.filter(dateFilter)
 
                       //   //FILTRO DE VENTA POR MES

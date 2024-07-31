@@ -292,8 +292,8 @@ export async function editService(id, objterminado) {
 
 //LIST ACCESORIOS
 
-export async function addAccesorio(nombre, precio, stock, imagen) {
-  // console.log(nombre, precio, stock, imagen);
+export async function addAccesorio(nombre, precio, stock, categoria,  imagen) {
+  // console.log(nombre, precio, stock, categoria, imagen);
 
   //GET TOKEN
   const token = localStorage.getItem("token");
@@ -309,6 +309,7 @@ export async function addAccesorio(nombre, precio, stock, imagen) {
         nombre,
         precio,
         stock,
+        categoria,
         imagen,
       }),
       headers: {
@@ -398,7 +399,7 @@ export async function getAccesorioID(id) {
   }
 }
 
-export async function updateAccesorio(id, nombre, precio, stock, imagen) {
+export async function updateAccesorio(id, nombre, precio, stock, categoria, imagen) {
   const token = localStorage.getItem("token");
   let finalString = token.split('"').join("");
 

@@ -39,14 +39,25 @@ const FormularioLogin = () => {
     //  INCIAMOS SESION
      const response = await loginUser({ email, password });
 
-     if (response) {
+  console.log(response.status);
+
+     if (response.status === "Success") {
        setBtn(true);
        Swal.fire({
         title: "Login Correcto!",
         text:`${response.mensaje} ${response.userSearch?.name} 🥳`,
         icon: "success"
       })
+     }else if(response.status === "error"){
+      setBtn(true);
+      Swal.fire({
+       title: "Error!",
+       text:`${response.mensaje}`,
+       icon: "error"
+     })
      }
+
+
 
     //   console.log(response);
     //  toast.promise(handleMessage, {

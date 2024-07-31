@@ -361,6 +361,36 @@ export const calidades = [
     value: "IPS",
   }
 ];
+export const categorias = [
+  {
+    label: "CARGADORES",
+    value: "CARGADORES",
+  },
+  {
+    label: "CABLES",
+    value: "CABLES",
+  },
+  {
+    label: "RSIM",
+    value: "RSIM",
+  },
+  {
+    label: "CUBOS DE CARGA",
+    value: "CUBOS DE CARGA",
+  },
+  {
+    label: "ADAPTADORES",
+    value: "ADAPTADORES",
+  },
+  {
+    label: "MICA HIDROGUEL",
+    value: "MICA HIDROGUEL",
+  },
+  {
+    label: "AUDIFONOS",
+    value: "AUDIFONOS",
+  }
+];
 export function handleMessage() {
   return new Promise((resolve) => setTimeout(resolve, 3000));
 

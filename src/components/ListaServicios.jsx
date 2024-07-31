@@ -31,7 +31,7 @@ const ListaServicios = ({
        
 
         <p className="text-right mr-2  mt-4 mb-4">
-          <button
+          {/* <button
             type="button"
             className="py=2 p-2  text-black hover:bg-gray-600 hover:text-white  rounded-lg"
             //  onClick={() => handlePendientes()}
@@ -40,7 +40,7 @@ const ListaServicios = ({
             <span className=" ml-2 text-gray-700 text-2xl hover:text-white">
               {listaServicios?.length}
             </span>
-          </button>
+          </button> */}
         </p>
         <p className="text-right mr-2  mt-4 mb-4">
           <button
@@ -48,7 +48,7 @@ const ListaServicios = ({
             className="py=2 p-2  text-black hover:bg-green-600 hover:text-white  rounded-lg"
             onClick={() => filtrarFinalizados()}
           >
-            ENTREGADOS:
+            Entregados:
             <span className=" ml-2 text-green-700 text-2xl hover:text-white">
               {servicesFinished}
             </span>
@@ -60,7 +60,7 @@ const ListaServicios = ({
             className="py=2 p-2  text-black hover:bg-red-400 hover:text-white  rounded-lg"
             onClick={() => filtrarRestantes()}
           >
-            EN LOCAL:
+            Pendientes:
             <span className="ml-2 text-red-700 text-2xl hover:text-white">
               {servicesPendient}
             </span>

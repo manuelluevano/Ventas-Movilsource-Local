@@ -58,7 +58,7 @@ function App() {
                 <h3 className="mt-3 font-semibold">NUEVO SERVICIO</h3>
               </Link>
             </div>
-            <div className="cursor-pointer mt-40 p-4">
+             <div className="cursor-pointer mt-40 p-4">
               <MdOutlineInventory className="text-9xl hover:p-1 transition-all" />
               <h3 className="mt-3 font-semibold">PENDIENTES</h3>
             </div>
@@ -67,7 +67,7 @@ function App() {
                 <AiOutlineAppstore className="text-9xl hover:p-1 transition-all" />
                 <h3 className="mt-3 font-semibold">ADMINISTRADOR</h3>
               </Link>
-            </div>
+            </div> 
           </div>
         </div>
       ) : (

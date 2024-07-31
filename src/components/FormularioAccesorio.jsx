@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 //HELPERS
-import { handleMessage } from "../helpers/index";
+import { categorias, handleMessage } from "../helpers/index";
 import useAuth from "../hooks/useAuth";
 
 import Error from "./Error";
 import { toast } from "sonner";
 import { addAccesorio, getAccesorioID, updateAccesorio } from "../API/events";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import Select from "react-select";
 
 // eslint-disable-next-line react/prop-types
 const FormularioAccesorio = () => {
@@ -14,6 +16,7 @@ const FormularioAccesorio = () => {
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
   const [stock, setStock] = useState("");
+  const [categoria, setCategoria] = useState(""); 
   const [imagen, setImagen] = useState("");
   const [imagenPreviw, setImagenPreview] = useState(null);
   const [disable, setDisable] = useState(false);
@@ -33,6 +36,7 @@ const FormularioAccesorio = () => {
           setNombre(response.accesorio.nombre);
           setPrecio(response.accesorio.precio);
           setStock(response.accesorio.stock);
+          setCategoria(response.accesorio.categoria)
           setImagenPreview(response.accesorio.imagen);
         }
       })();
@@ -44,21 +48,19 @@ const FormularioAccesorio = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setDisable(true);
+    // setDisable(true);
 
-    console.log(nombre, stock, precio, imagenPreviw);
-
-    // VALIDATION
-    if (!nombre || !stock || !precio || !imagenPreviw) {
+    
+    //  VALIDATION
+    if (!nombre || !stock || !precio || !categoria || !imagenPreviw) {
       mostrarAlerta({
         msg: "Todos los campos son obligatorios",
         error: true,
       });
-
+      
       return;
     }
-
-    //  ADD UPDATE DB
+    
 
     let response 
     if (id) {
@@ -68,12 +70,46 @@ const FormularioAccesorio = () => {
         nombre,
         precio,
         stock,
-        imagenPreviw
+        categoria,
+        imagenPreviw??imagen
       );
       console.log(response);
+      if(response.status === 'Success'){
+
+        Swal.fire({
+          title: `${response.status}`,
+          text: `${response.mensaje} 🥳`,
+          icon: "success"
+        })
+      }else{
+        Swal.fire({
+          title: `${response.status}`,
+          text: `${response.mensaje}`,
+          icon: "error"
+        })
+      }
+      setTimeout(() => {
+        //RECARGAR PAGINA
+        window.location.reload();
+      }, 1000); 
     } else {
-       response = await addAccesorio(nombre, precio, stock, imagen);
+       response = await addAccesorio(nombre, precio, stock, categoria, imagenPreviw??imagen);
       console.log(response);
+      if(response.status === 'success'){
+
+        Swal.fire({
+          title: `${response.status}`,
+          text: `${response.mensaje} 🥳`,
+          icon: "success"
+        })
+      }else{
+        Swal.fire({
+          title: `${response.status}`,
+          text: `${response.mensaje}`,
+          icon: "error"
+        })
+      }
+
     }
 
     if (response.status === "Error") {
@@ -97,6 +133,7 @@ const FormularioAccesorio = () => {
     setNombre("");
     setPrecio("");
     setStock("");
+    setCategoria("");
     setImagen("");
     setImagenPreview(null);
 
@@ -108,7 +145,6 @@ const FormularioAccesorio = () => {
   const { msg } = alerta;
 
   //IMAGEN
-
   //CONVERT IMG TO BASE64
   async function convertBase64(file) {
     return new Promise((resolve, reject) => {
@@ -248,6 +284,7 @@ const FormularioAccesorio = () => {
                 disabled={disable}
               />
             </div>
+            
             <div className="mb-5">
               <label
                 htmlFor="precio"
@@ -286,17 +323,26 @@ const FormularioAccesorio = () => {
                 disabled={disable}
               />
             </div>
+            <div className="mb-5">
+              <label
+                htmlFor="categoria"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                Categoria
+              </label>
+              <Select
+                id="categoria"
+                className={`${
+                  msg && !servicio ? "border-red-400 border-2" : ""
+                } w-full  mt-2 placeholder-gray-400 rounded-md`}
+                options={categorias}
+                onChange={(e) => setCategoria(e.value)}
+                defaultInputValue={""}
+                placeholder="Cargadores..."
+              />
+            </div>
             {/* IMAGEN PREVIEW */}
             <div className="mb-5">
-              <div>
-                <h2
-                  className={`${
-                    msg && !imagen ? "text-red-400 text-5xl" : ""
-                  } text-center  text-2xl  mb-5  p-2 mt-2 placeholder-gray-400 rounded-md`}
-                >
-                  Agrega Imagen
-                </h2>
-              </div>
 
               <div>
                 <UploadInput />
