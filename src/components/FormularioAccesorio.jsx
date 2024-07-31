@@ -109,36 +109,35 @@ const FormularioAccesorio = () => {
       });
     }
 
-    // }
 
-    // if (response.status === "Error") {
-    //   console.log(response);
-    //   mostrarAlerta({
-    //     msg: "Error " + response.mensaje,
-    //     error: true,
-    //   });
-    // }
-    // toast.promise(handleMessage, {
-    //   style: {
-    //     color: "white",
-    //   },
-    //   loading: "Loading...",
-    //   success: () => {
-    //     return `${response.mensaje}`;
-    //   },
-    //   error: "Error",
-    // });
-    // //  reiniciar el formulario
-    // setNombre("");
-    // setPrecio("");
-    // setStock("");
-    // setCategoria("");
-    // setImagen("");
-    // setImagenPreview(null);
+    if (response.status === "Error") {
+      console.log(response);
+      mostrarAlerta({
+        msg: "Error " + response.mensaje,
+        error: true,
+      });
+    }
+    toast.promise(handleMessage, {
+      style: {
+        color: "white",
+      },
+      loading: "Loading...",
+      success: () => {
+        return `${response.mensaje}`;
+      },
+      error: "Error",
+    });
+    //  reiniciar el formulario
+    setNombre("");
+    setPrecio("");
+    setStock("");
+    setCategoria("");
+    setImagen("");
+    setImagenPreview(null);
 
-    // //  RECARGAR LA LISTA DE SERVICIOS
-    // setDisable(false);
-    // setReload(true);
+    //  RECARGAR LA LISTA DE SERVICIOS
+    setDisable(false);
+    setReload(true);
   };
   //EXTRAER ALERTA
   const { msg } = alerta;
