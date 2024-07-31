@@ -16,7 +16,7 @@ const FormularioAccesorio = () => {
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
   const [stock, setStock] = useState("");
-  const [categoria, setCategoria] = useState(""); 
+  const [categoria, setCategoria] = useState("");
   const [imagen, setImagen] = useState("");
   const [imagenPreviw, setImagenPreview] = useState(null);
   const [disable, setDisable] = useState(false);
@@ -25,23 +25,23 @@ const FormularioAccesorio = () => {
   const { id } = useParams();
   // console.log(id);
 
-  if (id) {
-    useEffect(() => {
-      (async () => {
-        const response = await getAccesorioID(id);
-        setAccesorioEdit(response);
+  // if (id) {
+  //   useEffect(() => {
+  //     (async () => {
+  //       const response = await getAccesorioID(id);
+  //       setAccesorioEdit(response);
 
-        console.log(response.accesorio);
-        if (response) {
-          setNombre(response.accesorio.nombre);
-          setPrecio(response.accesorio.precio);
-          setStock(response.accesorio.stock);
-          setCategoria(response.accesorio.categoria)
-          setImagenPreview(response.accesorio.imagen);
-        }
-      })();
-    }, []);
-  }
+  //       console.log(response.accesorio);
+  //       if (response) {
+  //         setNombre(response.accesorio.nombre);
+  //         setPrecio(response.accesorio.precio);
+  //         setStock(response.accesorio.stock);
+  //         setCategoria(response.accesorio.categoria);
+  //         setImagenPreview(response.accesorio.imagen);
+  //       }
+  //     })();
+  //   }, []);
+  // }
 
   //CONTEXT
   const { mostrarAlerta, alerta, setReload } = useAuth();
@@ -50,96 +50,95 @@ const FormularioAccesorio = () => {
     e.preventDefault();
     // setDisable(true);
 
-    
     //  VALIDATION
-    if (!nombre || !stock || !precio || !categoria || !imagenPreviw) {
+    if (!nombre ) {
       mostrarAlerta({
         msg: "Todos los campos son obligatorios",
         error: true,
       });
-      
+
       return;
     }
-    
 
-    let response 
-    if (id) {
-      console.log("ID DEL ACCESORIO", id);
-       response = await updateAccesorio(
-        id,
-        nombre,
-        precio,
-        stock,
-        categoria,
-        imagenPreviw??imagen
-      );
-      console.log(response);
-      if(response.status === 'Success'){
+    let response;
+    // // if (id) {
+    // //   console.log("ID DEL ACCESORIO", id);
+    // //    response = await updateAccesorio(
+    // //     id,
+    // //     nombre,
+    // //     precio,
+    // //     stock,
+    // //     categoria,
+    // //     imagenPreviw
+    // //   );
+    // //   console.log(response);
+    // //   if(response.status === 'Success'){
 
-        Swal.fire({
-          title: `${response.status}`,
-          text: `${response.mensaje} 🥳`,
-          icon: "success"
-        })
-      }else{
-        Swal.fire({
-          title: `${response.status}`,
-          text: `${response.mensaje}`,
-          icon: "error"
-        })
-      }
-      setTimeout(() => {
-        //RECARGAR PAGINA
-        window.location.reload();
-      }, 1000); 
+    // //     Swal.fire({
+    // //       title: `${response.status}`,
+    // //       text: `${response.mensaje} 🥳`,
+    // //       icon: "success"
+    // //     })
+    // //   }else{
+    // //     Swal.fire({
+    // //       title: `${response.status}`,
+    // //       text: `${response.mensaje}`,
+    // //       icon: "error"
+    // //     })
+    // //   }
+    // //   setTimeout(() => {
+    // //     //RECARGAR PAGINA
+    // //     window.location.reload();
+    // //   }, 1000);
+    // // } else {
+    response = await addAccesorio(nombre, precio, stock, categoria, imagen);
+
+    console.log(response);
+
+    if (response.status === "success") {
+      Swal.fire({
+        title: `${response.status}`,
+        text: `${response.mensaje} 🥳`,
+        icon: "success",
+      });
     } else {
-       response = await addAccesorio(nombre, precio, stock, categoria, imagenPreviw??imagen);
-      console.log(response);
-      if(response.status === 'success'){
-
-        Swal.fire({
-          title: `${response.status}`,
-          text: `${response.mensaje} 🥳`,
-          icon: "success"
-        })
-      }else{
-        Swal.fire({
-          title: `${response.status}`,
-          text: `${response.mensaje}`,
-          icon: "error"
-        })
-      }
-
-    }
-
-    if (response.status === "Error") {
-      console.log(response);
-      mostrarAlerta({
-        msg: "Error " + response.mensaje,
-        error: true,
+      Swal.fire({
+        title: `${response.status}`,
+        text: `${response.mensaje}`,
+        icon: "error",
       });
     }
-    toast.promise(handleMessage, {
-      style: {
-        color: "white",
-      },
-      loading: "Loading...",
-      success: () => {
-        return `${response.mensaje}`;
-      },
-      error: "Error",
-    });
-    //  reiniciar el formulario
-    setNombre("");
-    setPrecio("");
-    setStock("");
-    setCategoria("");
-    setImagen("");
-    setImagenPreview(null);
 
-    //  RECARGAR LA LISTA DE SERVICIOS
-    setDisable(false);
-    setReload(true);
+    // }
+
+    // if (response.status === "Error") {
+    //   console.log(response);
+    //   mostrarAlerta({
+    //     msg: "Error " + response.mensaje,
+    //     error: true,
+    //   });
+    // }
+    // toast.promise(handleMessage, {
+    //   style: {
+    //     color: "white",
+    //   },
+    //   loading: "Loading...",
+    //   success: () => {
+    //     return `${response.mensaje}`;
+    //   },
+    //   error: "Error",
+    // });
+    // //  reiniciar el formulario
+    // setNombre("");
+    // setPrecio("");
+    // setStock("");
+    // setCategoria("");
+    // setImagen("");
+    // setImagenPreview(null);
+
+    // //  RECARGAR LA LISTA DE SERVICIOS
+    // setDisable(false);
+    // setReload(true);
   };
   //EXTRAER ALERTA
   const { msg } = alerta;
@@ -284,7 +283,7 @@ const FormularioAccesorio = () => {
                 disabled={disable}
               />
             </div>
-            
+
             <div className="mb-5">
               <label
                 htmlFor="precio"
@@ -333,7 +332,7 @@ const FormularioAccesorio = () => {
               <Select
                 id="categoria"
                 className={`${
-                  msg && !servicio ? "border-red-400 border-2" : ""
+                  msg && !categorias ? "border-red-400 border-2" : ""
                 } w-full  mt-2 placeholder-gray-400 rounded-md`}
                 options={categorias}
                 onChange={(e) => setCategoria(e.value)}
@@ -341,13 +340,13 @@ const FormularioAccesorio = () => {
                 placeholder="Cargadores..."
               />
             </div>
-            {/* IMAGEN PREVIEW */}
+            {/* IMAGEN PREVIEW  */}
             <div className="mb-5">
-
               <div>
                 <UploadInput />
               </div>
-            </div>
+            </div> 
+            
 
             <input
               type="submit"

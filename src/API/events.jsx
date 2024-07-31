@@ -15,7 +15,7 @@ export async function loginApi(email, password) {
     };
 
     const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/user/login`;
-    // const url = `http://localhost:3000/api/user/login`;
+    // const url = `http://localhost:3000/apiuser/login`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -291,12 +291,12 @@ export async function editService(id, objterminado) {
 }
 
 //LIST ACCESORIOS
-
-export async function addAccesorio(nombre, precio, stock, categoria,  imagen) {
-  // console.log(nombre, precio, stock, categoria, imagen);
-
+export async function addAccesorio(nombre, precio, stock, categoria, imagen) {
   //GET TOKEN
   const token = localStorage.getItem("token");
+
+  console.log("token", token);
+
   let finalString = token.split('"').join("");
 
   console.log("token modificado", finalString);
@@ -305,12 +305,13 @@ export async function addAccesorio(nombre, precio, stock, categoria,  imagen) {
     var requestOptions = {
       method: "POST",
       redirect: "follow",
+      mode: "cors",
       body: JSON.stringify({
         nombre,
         precio,
         stock,
         categoria,
-        imagen,
+        imagen
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -319,7 +320,7 @@ export async function addAccesorio(nombre, precio, stock, categoria,  imagen) {
     };
 
     const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorio`;
-    // const url = "http://localhost:3000/api/accesorio/accesorio";
+    // const url = "http://localhost:3000/accesorio/accesorio";
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -330,6 +331,7 @@ export async function addAccesorio(nombre, precio, stock, categoria,  imagen) {
 }
 
 export async function listAccesorios() {
+  
   const token = localStorage.getItem("token");
   let finalString = token.split('"').join("");
 
@@ -343,8 +345,8 @@ export async function listAccesorios() {
       },
     };
 
-     const     url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorios`;
-    // const url = `http://localhost:3000/api/accesorio/accesorios`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorios`;
+    // const url = `http://localhost:3000/accesorio/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -399,7 +401,14 @@ export async function getAccesorioID(id) {
   }
 }
 
-export async function updateAccesorio(id, nombre, precio, stock, categoria, imagen) {
+export async function updateAccesorio(
+  id,
+  nombre,
+  precio,
+  stock,
+  categoria,
+  imagen
+) {
   const token = localStorage.getItem("token");
   let finalString = token.split('"').join("");
 
@@ -515,7 +524,7 @@ export async function listAccesoriosReport() {
       },
     };
 
-     const     url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pedido/accesorios`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pedido/accesorios`;
     // const url = `http://localhost:3000/api/pedido/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
