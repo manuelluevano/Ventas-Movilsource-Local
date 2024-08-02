@@ -11,6 +11,7 @@ import { toast } from "sonner";
 // eslint-disable-next-line react/prop-types
 const FormularioServicio = ({ created_at }) => {
   const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
   const [telefono, setTelefono] = useState("");
   const [servicio, setServicio] = useState("");
   const [modelo, setModelo] = useState("");
@@ -20,8 +21,8 @@ const FormularioServicio = ({ created_at }) => {
   const [precio, setPrecio] = useState("");
   const [abono, setAbono] = useState("");
   const [folio, setFolio] = useState("");
+  const [gaveta, setGaveta] = useState("");
   const [observaciones, setObservaciones] = useState("");
-
 
   //CONTEXT
   const { mostrarAlerta, alerta, cargando, addNewService, setReload } =
@@ -33,11 +34,12 @@ const FormularioServicio = ({ created_at }) => {
     //VALIDATION
     if (
       !nombre ||
+      !apellido ||
       !telefono ||
       !servicio ||
       !marca ||
       !modelo ||
-      !precio 
+      !precio
     ) {
       mostrarAlerta({
         msg: "Todos los campos son obligatorios",
@@ -50,9 +52,12 @@ const FormularioServicio = ({ created_at }) => {
     //GET TOKEN
     const token = localStorage.getItem("token");
 
+
+ 
     //ADD SERVICE DB
     const response = await addNewService({
       nombre,
+      apellido,
       telefono,
       servicio,
       modelo,
@@ -61,10 +66,11 @@ const FormularioServicio = ({ created_at }) => {
       sn,
       precio,
       abono,
-      created_at,
       folio,
+      gaveta,
       observaciones,
       token,
+      created_at,
     });
 
     if (response.status === "Error") {
@@ -90,6 +96,7 @@ const FormularioServicio = ({ created_at }) => {
 
     //reiniciar el formulario
     setNombre("");
+    setApellido("");
     setTelefono("");
     setServicio("");
     setModelo("");
@@ -140,7 +147,7 @@ const FormularioServicio = ({ created_at }) => {
                 htmlFor="nombre"
                 className="block font-bold text-gray-700 uppercase"
               >
-                Nombre Cliente
+                Nombre
               </label>
               <input
                 id="nombre"
@@ -155,6 +162,24 @@ const FormularioServicio = ({ created_at }) => {
             </div>
             <div className="mb-5">
               <label
+                htmlFor="apellido"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                apellido
+              </label>
+              <input
+                id="apellido"
+                type="text"
+                className={`${
+                  msg && !apellido ? "border-red-400" : ""
+                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                placeholder="Apellido del cliente"
+                value={apellido.toUpperCase()}
+                onChange={(e) => setApellido(e.target.value.toUpperCase())}
+              />
+            </div>
+            <div className="mb-5">
+              <label
                 htmlFor="telefono"
                 className="block font-bold text-gray-700 uppercase"
               >
@@ -163,7 +188,7 @@ const FormularioServicio = ({ created_at }) => {
               <input
                 id="telefono"
                 type="number"
-                maxLength="5"
+                maxLength={8}
                 className={`${
                   msg && !telefono ? "border-red-400" : ""
                 } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
@@ -261,6 +286,41 @@ const FormularioServicio = ({ created_at }) => {
                 maxLength={16}
                 value={sn.toUpperCase()}
                 onChange={(e) => setSN(e.target.value)}
+              />
+            </div>
+            
+            <div className="mb-5">
+              <label
+                htmlFor="imei"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                Folio
+              </label>
+              <input
+                id="imei"
+                type="number"
+                className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                placeholder="0011"
+                maxLength={5}
+                value={folio.toUpperCase()}
+                onChange={(e) => setFolio(e.target.value)}
+              />
+            </div>
+            <div className="mb-5">
+              <label
+                htmlFor="sn"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                Gaveta{" "}
+              </label>
+              <input
+                id="sn"
+                type="text"
+                className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                placeholder="A1"
+                maxLength={2}
+                value={gaveta.toUpperCase()}
+                onChange={(e) => setGaveta(e.target.value)}
               />
             </div>
 

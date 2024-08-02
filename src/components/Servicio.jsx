@@ -12,6 +12,7 @@ const Servicio = ({ item }) => {
   const {
     servicio,
     name,
+    apellido,
     modelo,
     marca,
     imei,
@@ -21,6 +22,7 @@ const Servicio = ({ item }) => {
     abono,
     created_at,
     folio,
+    gaveta,
     status,
     complete,
     observaciones,
@@ -218,7 +220,7 @@ const Servicio = ({ item }) => {
             } m-3 shadow-md px-5 py-10 rounded-xl`}
           >
             <div className="font-bold mb-3 text-gray-700 uppercase">
-              Nombre Cliente: {""}
+              Nombre: {""}
               <span className="font-normal normal-case">
                 {edit ? (
                   <input
@@ -229,6 +231,12 @@ const Servicio = ({ item }) => {
                 ) : (
                   name
                 )}
+              </span>
+            </div>
+            <div className="font-bold mb-3 text-gray-700 uppercase">
+              Apellido: {""}
+              <span className="font-normal normal-case">
+               {apellido ?? ""}
               </span>
             </div>
             <div className="flex font-bold mb-3 text-gray-700 uppercase">
@@ -377,12 +385,23 @@ const Servicio = ({ item }) => {
                 {edit ? (
                   <input
                     type="text"
-                    value={folioNew}
+                    value={folio}
                     onChange={(e) => setFolio(e.target.value)}
                   />
                 ) : (
                   folio
                 )}
+              </span>
+            </div>
+            <div className="font-bold mb-3 text-gray-700 uppercase">
+              Gaveta: {""}
+              <span className="font-normal normal-case">
+                
+                  <input
+                    type="text"
+                    value={gaveta}
+                    onChange={(e) => setGaveta(e.target.value)}
+                  />
               </span>
             </div>
             <div className="font-bold mb-3 text-gray-700 uppercase">

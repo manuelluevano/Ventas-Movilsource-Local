@@ -21,18 +21,15 @@ import Perfil from "./pages/Perfil";
 import Servicios from "./pages/Servicios";
 import Administrador from "./pages/administrador.jsx";
 import Accesorios from "./pages/Accesorios";
-import SaleCard from "./pages/SaleCard.jsx";
 import FormularioAccesorio from "./components/FormularioAccesorio.jsx";
-// import Refacciones from "./pages/Refacciones";
-// import UploadImage from "./pages/UploadImage";
-// import ReporteRefacciones from "./pages/ReporteRefacciones";
+// import RequireAuth from "./helpers/RequireAuth.js";
 
-let id 
 const router = createHashRouter([
   {
     path: "/",
-    element: <Headers />,
+    // element: <RequireAuth allowRoles={"admin"} />,
     // loader: appLoader,
+    element: <Headers/>,
     errorElement: <ErrorElement />,
     children: [
       {
@@ -54,26 +51,16 @@ const router = createHashRouter([
         path: "/servicios",
         element: <Servicios />,
         errorElement: <ErrorElement />,
-        loader: serviceLoader
+        loader: serviceLoader,
       },
       {
         path: "/administrador",
         element: <Administrador />,
         errorElement: <ErrorElement />,
       },
-      // {
-      //   path: "/refacciones",
-      //   element: <Refacciones />,
-      //   errorElement: <ErrorElement />,
-      // },
       {
         path: "/accesorios",
         element: <Accesorios />,
-        errorElement: <ErrorElement />,
-      },
-      {
-        path: "/saleCard",
-        element: <SaleCard />,
         errorElement: <ErrorElement />,
       },
       {
@@ -81,14 +68,18 @@ const router = createHashRouter([
         element: <FormularioAccesorio />,
         errorElement: <ErrorElement />,
       },
-     
+
+      // {
+      //   path: "/saleCard",
+      //   element: <SaleCard />,
+      //   errorElement: <ErrorElement />,
+      // },
       // {
       //   path: "/add-refaccion/:id?",
       //   element: <UploadImage />,
       //   errorElement: <ErrorElement />,
       //   // loader: serviceLoader
       // },
-      
     ],
   },
 ]);

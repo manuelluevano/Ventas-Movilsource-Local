@@ -30,6 +30,7 @@ import { AiOutlineAppstore } from "react-icons/ai";
 function App() {
   const { tokenUser } = useAuth();
 
+  console.log(tokenUser.role);
   // const datos = useLoaderData();
 
   return (
@@ -58,6 +59,7 @@ function App() {
                 <h3 className="mt-3 font-semibold">NUEVO SERVICIO</h3>
               </Link>
             </div>
+            
              <div className="cursor-pointer mt-40 p-4">
               <MdOutlineInventory className="text-9xl hover:p-1 transition-all" />
               <h3 className="mt-3 font-semibold">PENDIENTES</h3>

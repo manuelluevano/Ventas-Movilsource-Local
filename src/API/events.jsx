@@ -53,6 +53,7 @@ export async function registerApi(name, surname, email, password) {
 // SERVICES
 export async function addService(
   name,
+  apellido,
   telefono,
   servicio,
   modelo,
@@ -61,10 +62,11 @@ export async function addService(
   sn,
   precio,
   abono,
-  created_at,
   folio,
+  gaveta,
   observaciones,
-  token
+  token,
+  created_at,
 ) {
   console.log("token", token);
 
@@ -78,6 +80,7 @@ export async function addService(
       redirect: "follow",
       body: JSON.stringify({
         name,
+        apellido,
         telefono,
         servicio,
         marca,
@@ -86,9 +89,10 @@ export async function addService(
         sn,
         precio,
         abono,
-        created_at,
         folio,
+        gaveta,
         observaciones,
+        created_at,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",

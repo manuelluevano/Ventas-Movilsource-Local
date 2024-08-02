@@ -91,6 +91,7 @@ const AuthProvider = ({ children }) => {
       console.log("Datos Services", service);
       const response = await addService(
         service.nombre,
+        service.apellido,
         service.telefono,
         service.servicio,
         service.modelo,
@@ -99,10 +100,11 @@ const AuthProvider = ({ children }) => {
         service.sn,
         service.precio,
         service.abono,
-        service.created_at,
         service.folio,
+        service.gaveta,
         service.observaciones,
-        service.token
+        service.token,
+        service.created_at
       );
 
       if (response) {
