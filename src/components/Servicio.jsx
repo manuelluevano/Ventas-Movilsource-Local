@@ -7,6 +7,7 @@ import { updateService } from "../API/events";
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import { FaWhatsapp } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 const Servicio = ({ item }) => {
   const {
@@ -63,30 +64,19 @@ const Servicio = ({ item }) => {
 
         console.log("Respuesta del status", response);
 
-        toast.promise(handleMessage, {
-          style: {
-            color: "white",
-          },
-          loading: "Loading...",
-          success: () => {
-            return `${response.message}`;
-          },
-          error: "Error",
-        });
-
-        if (response.status === "Error") {
-          toast.promise(handleMessage, {
-            style: {
-              color: "white",
-            },
-            loading: "Loading...",
-            success: () => {
-              return `${response.message}`;
-            },
-            error: "Error",
-          });
-
-          return;
+        if (response.status === "Success") {
+          
+          Swal.fire({
+           title: "Entrega a cliente...",
+           text:`${response.message}`,
+           icon: "success"
+         })
+        }else if(response.status === "error"){
+         Swal.fire({
+          title: "Error!",
+          text:`${response.mensaje}`,
+          icon: "error"
+        })
         }
 
         //RECARGAR LA LISTA DE SERVICIOS
@@ -94,85 +84,85 @@ const Servicio = ({ item }) => {
       }
     };
 
-    const handleEdit = async () => {
-      setEdit(true);
-      setName(name);
-      setTelefono(telefono);
-      setMarca(marca);
-      setModelo(modelo);
-      setImei(imeiNew);
-      setSN(snNew);
-      setServicio(servicio);
-      setPrecio(precio);
-      setFolio(folio);
-      setObservaciones(observaciones);
-      setAbono(abono);
-    };
+    // const handleEdit = async () => {
+    //   setEdit(true);
+    //   setName(name);
+    //   setTelefono(telefono);
+    //   setMarca(marca);
+    //   setModelo(modelo);
+    //   setImei(imeiNew);
+    //   setSN(snNew);
+    //   setServicio(servicio);
+    //   setPrecio(precio);
+    //   setFolio(folio);
+    //   setObservaciones(observaciones);
+    //   setAbono(abono);
+    // };
 
-    const handleUpdate = async (item) => {
-      const { _id } = item;
-      console.log("Update", _id);
-      const confirm = window.confirm("Actualizar");
+    // const handleUpdate = async (item) => {
+    //   const { _id } = item;
+    //   console.log("Update", _id);
+    //   const confirm = window.confirm("Actualizar");
 
-      if (confirm) {
-        const objterminado = {
-          nameNew,
-          telefonoNew,
-          marcaNew,
-          modeloNew,
-          servicioNew,
-          imeiNew,
-          snNew,
-          precioNew,
-          folioNew,
-          observacionesNew,
-          abonoNew,
-        };
+    //   if (confirm) {
+    //     const objterminado = {
+    //       nameNew,
+    //       telefonoNew,
+    //       marcaNew,
+    //       modeloNew,
+    //       servicioNew,
+    //       imeiNew,
+    //       snNew,
+    //       precioNew,
+    //       folioNew,
+    //       observacionesNew,
+    //       abonoNew,
+    //     };
 
-        console.log("Objeto Terminado", objterminado);
+    //     console.log("Objeto Terminado", objterminado);
 
-        //ENVIAR LA ACTUALIZACION
-        const response = await updateService(_id, objterminado);
+    //     //ENVIAR LA ACTUALIZACION
+    //     const response = await updateService(_id, objterminado);
 
-        console.log("Respuiesta", response);
-        if (response.status === "Error") {
-          console.log(response);
-          mostrarAlerta({
-            msg: "Error " + response.mensaje,
-            error: true,
-          });
+    //     console.log("Respuiesta", response);
+    //     if (response.status === "Error") {
+    //       console.log(response);
+    //       mostrarAlerta({
+    //         msg: "Error " + response.mensaje,
+    //         error: true,
+    //       });
 
-          return;
-        }
+    //       return;
+    //     }
 
-        toast.promise(handleMessage, {
-          style: {
-            color: "white",
-          },
-          loading: "Loading...",
-          success: () => {
-            return `${response.mensaje}`;
-          },
-          error: "Error",
-        });
-      }
+    //     toast.promise(handleMessage, {
+    //       style: {
+    //         color: "white",
+    //       },
+    //       loading: "Loading...",
+    //       success: () => {
+    //         return `${response.mensaje}`;
+    //       },
+    //       error: "Error",
+    //     });
+    //   }
 
-      //REGRESAR A EDIT FALSE
-      setEdit(false);
-      //RECARGAR LA LISTA DE SERVICIOS
-      setReload(true);
-    };
+    //   //REGRESAR A EDIT FALSE
+    //   setEdit(false);
+    //   //RECARGAR LA LISTA DE SERVICIOS
+    //   setReload(true);
+    // };
 
-    const handleCancelar = async (id) => {
-      console.log(id);
-    };
+    // const handleCancelar = async (id) => {
+    //   console.log(id);
+    // };
 
     const hanldeCompleteService = async (item) => {
       console.log(item);
       const { _id } = item;
       console.log("term", _id);
 
-      const confirm = window.confirm("SE TERMINDO EL EQUIPO?");
+      const confirm = window.confirm("Se realizo la reparacion con exito?");
 
       if (confirm) {
         //   //CHANGE SERVICE STATUS
@@ -180,30 +170,21 @@ const Servicio = ({ item }) => {
 
         console.log("Respuesta del status", response);
 
-        toast.promise(handleMessage, {
-          style: {
-            color: "white",
-          },
-          loading: "Loading...",
-          success: () => {
-            return `${response.message}`;
-          },
-          error: "Error",
-        });
-
-        if (response.status === "Error") {
-          toast.promise(handleMessage, {
-            style: {
-              color: "white",
-            },
-            loading: "Loading...",
-            success: () => {
-              return `${response.message}`;
-            },
-            error: "Error",
-          });
-
-          return;
+       
+        if (response.status === "Success") {
+          // setBtn(true);
+          Swal.fire({
+          //  title: "Reparacion Terminada!",
+           text:`${response.message}  🥳`,
+           icon: "success"
+         })
+        }else if(response.status === "error"){
+        //  setBtn(true);
+         Swal.fire({
+          title: "Error!",
+          text:`${response.mensaje}`,
+          icon: "error"
+        })
         }
 
         //RECARGAR LA LISTA DE SERVICIOS
@@ -461,7 +442,7 @@ const Servicio = ({ item }) => {
                 ) : (
                   <div>
                     <h1 className="text-red-700 font-bold normal-case ml-2 ">
-                      Pendiente por Terminar
+                      No Realizada
                     </h1>
                   </div>
                 )}
@@ -479,8 +460,8 @@ const Servicio = ({ item }) => {
               </div>
             </div>
 
-            <div className="flex justify-between mt-5">
-              {edit ? (
+            <div className="flex justify-end mt-5">
+              {/* {edit ? (
                 <button
                   type="button"
                   // disabled
@@ -491,13 +472,14 @@ const Servicio = ({ item }) => {
                 </button>
               ) : (
                 <button
+                disabled
                   type="button"
                   className="py-2 px-10 border-2 border-green-600 text-black hover:bg-green-600  hover:text-white font-bold uppercase rounded-lg"
                   onClick={() => handleEdit()}
                 >
                   Editar
                 </button>
-              )}
+              )} */}
 
               {/* {!item.status && (
                 <button
@@ -524,7 +506,7 @@ const Servicio = ({ item }) => {
                   {item.status ? (
                     <div className="text-2xl ">✔️ENTREGADO A CLIENTE</div>
                   ) : (
-                    "ENTREGAR"
+                    "ENTREGAR A CLIENTE"
                   )}
                 </button>
               )}

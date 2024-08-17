@@ -147,7 +147,7 @@ export async function equipoTerminado(id) {
       },
     };
 
-    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio/status/${id}`;
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/service/servicio/complete/${id}`;
     // const url = `http://localhost:3000/api/service/servicio/complete/${id}`;
 
     const response = await fetch(url, requestOptions);
