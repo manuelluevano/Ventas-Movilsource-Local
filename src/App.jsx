@@ -61,8 +61,11 @@ function App() {
             </div>
             
              <div className="cursor-pointer mt-40 p-4">
+             <Link to="/pendientes">
+
               <MdOutlineInventory className="text-9xl hover:p-1 transition-all" />
               <h3 className="mt-3 font-semibold">PENDIENTES</h3>
+              </Link>
             </div>
             <div className="cursor-pointer mt-40 p-4">
               <Link to="/administrador">

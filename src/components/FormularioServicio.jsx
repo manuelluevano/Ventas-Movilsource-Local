@@ -318,7 +318,7 @@ const FormularioServicio = ({ created_at }) => {
                 type="text"
                 className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 placeholder="A1"
-                maxLength={2}
+                maxLength={3}
                 value={gaveta.toUpperCase()}
                 onChange={(e) => setGaveta(e.target.value)}
               />

@@ -13,7 +13,6 @@ import { PacmanLoader } from "react-spinners";
 import useAuth from "../hooks/useAuth";
 import { handleMessage } from "../helpers/index";
 
-import { Link, Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Accesorios = () => {

@@ -15,7 +15,7 @@ export async function loginApi(email, password) {
     };
 
     const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/user/login`;
-    // const url = `http://localhost:3000/apiuser/login`;
+    // const url = `http://localhost:4444/user/login`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -66,7 +66,7 @@ export async function addService(
   gaveta,
   observaciones,
   token,
-  created_at,
+  created_at
 ) {
   console.log("token", token);
 
@@ -315,7 +315,7 @@ export async function addAccesorio(nombre, precio, stock, categoria, imagen) {
         precio,
         stock,
         categoria,
-        imagen
+        imagen,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -335,7 +335,6 @@ export async function addAccesorio(nombre, precio, stock, categoria, imagen) {
 }
 
 export async function listAccesorios() {
-  
   const token = localStorage.getItem("token");
   let finalString = token.split('"').join("");
 
@@ -725,3 +724,77 @@ export async function listAccesoriosReport() {
 //     console.log("error login", error);
 //   }
 // }
+
+//PENDIENTES
+
+export async function addPendiente(pendiente, detalle, telefono, dia, status) {
+  try {
+    var requestOptions = {
+      method: "POST",
+      redirect: "follow",
+      body: JSON.stringify({
+        pendiente,
+        detalle,
+        telefono,
+        dia,
+        status
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    };
+
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pendiente/pendiente`;
+    // const url = `http://localhost:4444/pendiente/pendiente`;
+
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
+
+export async function listPendientes() {
+
+  try {
+    var requestOptions = {
+      method: "get",
+      redirect: "follow",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    };
+
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pendiente/pendientes`;
+    // const url = `http://localhost:3000/api/service/servicios`;
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
+    
+  export async function pendientTerminado(id) {
+    
+    try {
+      var requestOptions = {
+        method: "post",
+        redirect: "follow",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+    
+        },
+      };
+  
+      const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/pendiente/status/${id}`;
+      // const url = `http://localhost:3000/api/service/servicio/complete/${id}`;
+  
+      const response = await fetch(url, requestOptions);
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.log("error login", error);
+    }
+  }

@@ -21,6 +21,7 @@ import Perfil from "./pages/Perfil";
 import Servicios from "./pages/Servicios";
 import Administrador from "./pages/administrador.jsx";
 import Accesorios from "./pages/Accesorios";
+import Pendientes from "./pages/Pendientes.jsx";
 import FormularioAccesorio from "./components/FormularioAccesorio.jsx";
 // import RequireAuth from "./helpers/RequireAuth.js";
 
@@ -61,6 +62,11 @@ const router = createHashRouter([
       {
         path: "/accesorios",
         element: <Accesorios />,
+        errorElement: <ErrorElement />,
+      },
+      {
+        path: "/pendientes",
+        element: <Pendientes />,
         errorElement: <ErrorElement />,
       },
       {
