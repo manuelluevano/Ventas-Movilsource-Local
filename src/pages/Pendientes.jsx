@@ -181,7 +181,7 @@ const Pendientes = () => {
                 <div className="mt-10">
                   <label
                     htmlFor="pendiente"
-                    className="block mb-2 text-sm font-bold text-blue-900 dark:text-white"
+                    className="block mb-2 text-sm font-bold text-blue-900"
                   >
                     Pendiente:
                   </label>
@@ -199,7 +199,7 @@ const Pendientes = () => {
                   />
                   <label
                     htmlFor="detalle"
-                    className="block mb-2 text-sm font-bold text-blue-900 dark:text-white mt-5"
+                    className="block mb-2 text-sm font-bold text-blue-900  mt-5"
                   >
                     Detalle:
                   </label>
@@ -217,7 +217,7 @@ const Pendientes = () => {
                   />
                   <label
                     htmlFor="telefono"
-                    className="block mb-2 text-sm font-bold text-blue-900 dark:text-white mt-5"
+                    className="block mb-2 text-sm font-bold text-blue-900  mt-5"
                   >
                     Telefono:
                   </label>
@@ -236,7 +236,7 @@ const Pendientes = () => {
                   />
                   <label
                     htmlFor="dia"
-                    className="block mb-2 text-sm font-bold text-blue-900 dark:text-white mt-5"
+                    className="block mb-2 text-sm font-bold text-blue-900  mt-5"
                   >
                     Dia Para Entregar:
                   </label>
