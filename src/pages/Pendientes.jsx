@@ -191,7 +191,7 @@ const Pendientes = () => {
                     id="pendiente"
                     // disabled={!btn}
                     className={
-                      "bg-gray-50 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      ""
                     }
                     placeholder="Mica Hidroguel..."
                     value={pendiente.toUpperCase()}
@@ -209,7 +209,7 @@ const Pendientes = () => {
                     id="detalle"
                     // disabled={!btn}
                     className={
-                      "bg-gray-50 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      ""
                     }
                     placeholder="Detalles del pendiente"
                     value={detalle}
@@ -228,7 +228,7 @@ const Pendientes = () => {
                     // disabled={!btn}
                     maxLength={8}
                     className={
-                      "bg-gray-50 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      ""
                     }
                     placeholder="Telefono cliente"
                     value={telefono}
@@ -246,7 +246,7 @@ const Pendientes = () => {
                     id="dia"
                     // disabled={!btn}
                     className={
-                      "bg-gray-50 border border-gray-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      ""
                     }
                     placeholder="Mica Hidroguel..."
                     value={dia}
