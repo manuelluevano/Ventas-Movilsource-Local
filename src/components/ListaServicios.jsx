@@ -4,6 +4,7 @@ import Servicio from "./Servicio";
 
 const ListaServicios = ({
   listaServicios,
+  contador,
   setSearch,
   search,
   servicesPendient,
@@ -41,8 +42,21 @@ const ListaServicios = ({
               {listaServicios?.length}
             </span>
           </button> */}
+           <p className="text-right mr-2  mt-4 mb-4">
+         
+         <button
+           type="button"
+           className="py=2 p-2  text-black hover:bg-yellow-600 hover:text-white  rounded-lg"
+         >
+           ULTIMO FOLIO:
+           <span className=" ml-2 text-yellow-700 text-2xl hover:text-white">
+             {contador}
+           </span>
+         </button>
+       </p>
         </p>
         <p className="text-right mr-2  mt-4 mb-4">
+         
           <button
             type="button"
             className="py=2 p-2  text-black hover:bg-green-600 hover:text-white  rounded-lg"
@@ -111,6 +125,7 @@ const ListaServicios = ({
           </div>
         </div>
         {filtro?.map((item) => {
+          
           return (
             <div key={item.id}>
               <Servicio

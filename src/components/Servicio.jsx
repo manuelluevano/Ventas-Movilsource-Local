@@ -29,6 +29,8 @@ const Servicio = ({ item }) => {
     observaciones,
   } = item;
 
+  
+
   const {
     EquipoTerminado,
     EquipoEntregado,
@@ -191,6 +193,7 @@ const Servicio = ({ item }) => {
         setReload(true);
       }
     };
+
 
     return (
       <>
@@ -431,7 +434,6 @@ const Servicio = ({ item }) => {
               <div className="font-bold  text-gray-700 uppercase">
                 REPARACION:{" "}
               </div>
-
               <div className="result">
                 {complete === true ? (
                   <div>

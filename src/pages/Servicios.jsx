@@ -38,6 +38,8 @@ const Servicios = () => {
         //OBTENER LISTA DE SERVICIOS
         const response = await listServices(token);
         setListaServicios(response);
+        // console.log("Total servicios", response.contador);
+        
       }
       //REGRESAR RELOAD A ESTADO NORMAL
       setTimeout(() => {
@@ -59,6 +61,7 @@ const Servicios = () => {
         <div className="container mx-auto ">
           <div className="mt-12 md:flex">
             <FormularioServicio fecha={datos}  />
+
 
             <ListaServicios
               listaServicios={listaServicios.services}
