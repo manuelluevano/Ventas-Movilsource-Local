@@ -217,8 +217,8 @@ export const servicios = [
     value: "BATERIA - ORIGINAL 100%",
   },
   {
-    label: "DISPLAY - CALIDAD ORIGINAL",
-    value: "DISPLAY - CALIDAD ORIGINAL",
+    label: "DISPLAY - CALIDAD IPS",
+    value: "DISPLAY - CALIDAD IPS",
   },
   {
     label: "DISPLAY - ORIGINAL 100%",
@@ -341,8 +341,8 @@ export const calidades = [
     value: "ORIGINAL",
   },
   {
-    label: "CALIDAD ORIGINAL",
-    value: "CALIDAD ORIGINAL",
+    label: "CALIDAD IPS",
+    value: "CALIDAD IPS",
   },
   {
     label: "GENERICO",

@@ -38,7 +38,7 @@ const Servicios = () => {
         //OBTENER LISTA DE SERVICIOS
         const response = await listServices(token);
         setListaServicios(response);
-        // console.log("Total servicios", response.contador);
+        console.log("Lista servicios", response);
         
       }
       //REGRESAR RELOAD A ESTADO NORMAL
@@ -60,7 +60,7 @@ const Servicios = () => {
       {tokenUser.id ? (
         <div className="container mx-auto ">
           <div className="mt-12 md:flex">
-            <FormularioServicio fecha={datos}  />
+            <FormularioServicio fecha={datos} contadorFolio={listaServicios.contador}  />
 
 
             <ListaServicios

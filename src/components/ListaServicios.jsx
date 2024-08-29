@@ -131,6 +131,7 @@ const ListaServicios = ({
               <Servicio
                 key={item._id}
                 item={item}
+                
                 setServiceEdit={setServiceEdit}
                 serviceEdit={serviceEdit}
               />

@@ -19,7 +19,7 @@ const Pendientes = () => {
       const response = await listPendientes();
       // console.log("Respuesta refacciones", response);
       setListaPendientes(response);
-      console.log(response.listPendientes);
+      console.log("Lista de Pendientes", response);
 
       //REGRESAR RELOAD A ESTADO NORMAL
     })();
@@ -138,6 +138,7 @@ const Pendientes = () => {
     }, 2000);
 
   }
+
   return (
     <>
       {listaPendientes && (
@@ -157,8 +158,14 @@ const Pendientes = () => {
                 </h2>
                 <h2>
                   No Completados:{" "}
-                  <span className="font-extrabold text-2xl ml-2 text-orange-400">
-                    {/* {pendientes.} */}
+                  <span className="font-extrabold text-2xl ml-2 text-red-600">
+                    {listaPendientes.pendientesNoTerminados}
+                  </span>
+                </h2>
+                <h2>
+                  Realizados:{" "}
+                  <span className="font-extrabold text-2xl ml-2 text-green-600">
+                    {listaPendientes.pendientesRealizados}
                   </span>
                 </h2>
               </div>
@@ -272,22 +279,22 @@ const Pendientes = () => {
 
           <table className="mt-10 mx-auto">
             <tr>
-              <th className=" px-6 py-4">Pendiente</th>
-              <th className=" px-6 py-4">Detalle</th>
-              <th className=" px-6 py-4">Dia Para Entregar</th>
-              <th className=" px-6 py-4">telefono</th>
-              <th className=" px-6 py-4">status</th>
+              <th className=" px-6 py-4">PENDIENTE</th>
+              <th className=" px-6 py-4">DETALLE</th>
+              <th className=" px-6 py-4">DIA ENTREGA</th>
+              <th className=" px-6 py-4">TELEFONO</th>
+              <th className=" px-6 py-4">ESTADO</th>
             </tr>
 
             {listaPendientes.listPendientes?.map((i) => {
               // console.log(i.pendiente);
               return (
                 <>
-                  <tr>
-                    <td className=" px-6 py-4">{i.pendiente}</td>
-                    <td className=" px-6 py-4">{i.detalle}</td>
-                    <td className=" px-6 py-4">{i.dia}</td>
-                    <td className=" px-6 py-4">{i.telefono}</td>
+                  <tr className="border-solid border-2 ">
+                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.pendiente}</td>
+                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.detalle}</td>
+                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.dia}</td>
+                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.telefono}</td>
                     <td className=" px-6 py-4 justify-center flex">
                       <input
                        onChange={()=> handleChangeStatus(i._id)}

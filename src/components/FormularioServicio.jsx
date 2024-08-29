@@ -9,7 +9,7 @@ import Error from "./Error";
 import { toast } from "sonner";
 
 // eslint-disable-next-line react/prop-types
-const FormularioServicio = ({ created_at }) => {
+const FormularioServicio = ({ created_at, contadorFolio }) => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -20,7 +20,7 @@ const FormularioServicio = ({ created_at }) => {
   const [sn, setSN] = useState("");
   const [precio, setPrecio] = useState("");
   const [abono, setAbono] = useState("");
-  const [folio, setFolio] = useState("");
+  const folio = contadorFolio + 1
   const [gaveta, setGaveta] = useState("");
   const [observaciones, setObservaciones] = useState("");
 
@@ -292,18 +292,19 @@ const FormularioServicio = ({ created_at }) => {
             <div className="mb-5">
               <label
                 htmlFor="imei"
-                className="block font-bold text-gray-700 uppercase"
+                className=" font-bold text-gray-700 uppercase"
               >
                 Folio
               </label>
               <input
                 id="imei"
                 type="number"
-                className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                className="font-bold text-green-800 border-2 ml-2  placeholder-gray-400 rounded-md"
                 placeholder="0011"
+                disabled={true}
                 maxLength={5}
-                value={folio.toUpperCase()}
-                onChange={(e) => setFolio(e.target.value)}
+                value={folio}
+                // onChange={(e) => setFolio(contadorFolio + 1)}
               />
             </div>
             <div className="mb-5">
