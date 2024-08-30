@@ -188,7 +188,7 @@ const Pendientes = () => {
                 <div className="mt-10">
                   <label
                     htmlFor="pendiente"
-                    className="block mb-2 text-sm font-bold text-blue-900"
+                    className="block border-gray-300  border-2mb-2 text-sm font-bold text-blue-900"
                   >
                     Pendiente:
                   </label>
@@ -198,7 +198,7 @@ const Pendientes = () => {
                     id="pendiente"
                     // disabled={!btn}
                     className={
-                      ""
+                      "border-2 w-full  border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md"
                     }
                     placeholder="Mica Hidroguel..."
                     value={pendiente.toUpperCase()}
@@ -216,7 +216,7 @@ const Pendientes = () => {
                     id="detalle"
                     // disabled={!btn}
                     className={
-                      ""
+                      "border-2 w-full  border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md"
                     }
                     placeholder="Detalles del pendiente"
                     value={detalle}
@@ -235,7 +235,7 @@ const Pendientes = () => {
                     // disabled={!btn}
                     maxLength={8}
                     className={
-                      ""
+                      "border-2 w-full  border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md"
                     }
                     placeholder="Telefono cliente"
                     value={telefono}
@@ -253,7 +253,7 @@ const Pendientes = () => {
                     id="dia"
                     // disabled={!btn}
                     className={
-                      ""
+                      "border-2 w-full  border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md"
                     }
                     placeholder="Mica Hidroguel..."
                     value={dia}
@@ -291,10 +291,10 @@ const Pendientes = () => {
               return (
                 <>
                   <tr className="border-solid border-2 ">
-                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.pendiente}</td>
-                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.detalle}</td>
-                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.dia}</td>
-                    <td className="border-solid border-2 border-gray-400 px-2 py-3">{i.telefono}</td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.pendiente}</td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.detalle}</td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.dia}</td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.telefono}</td>
                     <td className=" px-6 py-4 justify-center flex">
                       <input
                        onChange={()=> handleChangeStatus(i._id)}

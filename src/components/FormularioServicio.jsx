@@ -154,7 +154,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 type="text"
                 className={`${
                   msg && !nombre ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full  border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="Nombre del cliente"
                 value={nombre.toUpperCase()}
                 onChange={(e) => setNombre(e.target.value.toUpperCase())}
@@ -172,7 +172,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 type="text"
                 className={`${
                   msg && !apellido ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full p-2 border-gray-300 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="Apellido del cliente"
                 value={apellido.toUpperCase()}
                 onChange={(e) => setApellido(e.target.value.toUpperCase())}
@@ -191,7 +191,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 maxLength={8}
                 className={`${
                   msg && !telefono ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="Numero de telefono cliente"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
@@ -208,7 +208,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 id="servicio"
                 className={`${
                   msg && !servicio ? "border-red-400 border-2" : ""
-                } w-full  mt-2 placeholder-gray-400 rounded-md`}
+                } w-full  mt-2 border-gray-300 placeholder-gray-400 rounded-md`}
                 options={servicios}
                 onChange={(e) => setServicio(e.value)}
                 defaultInputValue={""}
@@ -246,7 +246,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 type="text"
                 className={`${
                   msg && !modelo ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="Modelo"
                 value={modelo.toUpperCase()}
                 onChange={(e) => setModelo(e.target.value)}
@@ -263,7 +263,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
               <input
                 id="imei"
                 type="number"
-                className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                className="border-2 border-gray-300 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 placeholder="355565..."
                 maxLength={16}
                 value={imei.toUpperCase()}
@@ -281,7 +281,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
               <input
                 id="sn"
                 type="text"
-                className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                className="border-2 border-gray-300 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 placeholder="FZAS"
                 maxLength={16}
                 value={sn.toUpperCase()}
@@ -299,7 +299,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
               <input
                 id="imei"
                 type="number"
-                className="font-bold text-green-800 border-2 ml-2  placeholder-gray-400 rounded-md"
+                className="font-bold border-gray-300 text-green-800 border-2 ml-2  placeholder-gray-400 rounded-md"
                 placeholder="0011"
                 disabled={true}
                 maxLength={5}
@@ -317,7 +317,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
               <input
                 id="sn"
                 type="text"
-                className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                className="border-2  border-gray-300 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 placeholder="A1"
                 maxLength={3}
                 value={gaveta.toUpperCase()}
@@ -337,7 +337,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 type="number"
                 className={`${
                   msg && !precio ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="$"
                 value={precio}
                 onChange={(e) => setPrecio(e.target.value)}
@@ -355,7 +355,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 type="number"
                 className={`${
                   msg && !abono ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="$"
                 value={abono}
                 onChange={(e) => setAbono(e.target.value)}
@@ -410,7 +410,7 @@ const FormularioServicio = ({ created_at, contadorFolio }) => {
                 id="observaciones"
                 className={`${
                   msg && !observaciones ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
                 placeholder="Escribe las Observaciones del Equipo"
                 value={observaciones.toUpperCase()}
                 onChange={(e) => setObservaciones(e.target.value.toUpperCase())}

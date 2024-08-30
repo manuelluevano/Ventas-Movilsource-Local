@@ -28,10 +28,10 @@ const ListaServicios = ({
   };
   return (
     <>
-      <div className="md:w-1/2 lg:w-3/5 mt-10 h-screen md:overflow-y-scroll">
+      <div className="md:w-1/2 lg:w-3/5  h-screen md:overflow-y-scroll">
        
 
-        <p className="text-right mr-2  mt-4 mb-4">
+        <p className="">
           {/* <button
             type="button"
             className="py=2 p-2  text-black hover:bg-gray-600 hover:text-white  rounded-lg"
@@ -42,13 +42,13 @@ const ListaServicios = ({
               {listaServicios?.length}
             </span>
           </button> */}
-           <p className="text-right mr-2  mt-4 mb-4">
+           <p className="text-right ">
          
          <button
            type="button"
            className="py=2 p-2  text-black hover:bg-yellow-600 hover:text-white  rounded-lg"
          >
-           ULTIMO FOLIO:
+           TOTAL SERVICIOS:
            <span className=" ml-2 text-yellow-700 text-2xl hover:text-white">
              {contador}
            </span>
