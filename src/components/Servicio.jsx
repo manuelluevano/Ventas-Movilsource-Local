@@ -201,7 +201,7 @@ const Servicio = ({ item }) => {
           <div
             className={`${
               reload ? "bg-gray-100" : ""
-            }  shadow-md  rounded-xl border-2 w-full border-gray-300 p-5 mt-2 placeholder-gray-800  hover:bg-slate-200`}
+            }  shadow-md  rounded-xl border-2 w-full border-gray-300 p-5 mt-2 placeholder-gray-800  hover:bg-slate-100`}
           >
             <div className="font-bold mb-3 text-gray-700 uppercase">
               Nombre: {""}
