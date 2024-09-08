@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export function toTitleCase(str) {
   const titleCase = str
     .toLowerCase()
@@ -447,3 +449,19 @@ export function handleMessage() {
      
     */}
 }
+
+
+ // FORMATEAR FECHAS
+ export const  formatearFecha = fecha =>  {
+  const nuevaFecha = new Date(fecha)
+
+  const opciones ={
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }
+  return nuevaFecha.toLocaleDateString('es-ES', opciones)
+}
+
+

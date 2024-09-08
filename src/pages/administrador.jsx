@@ -2,9 +2,9 @@ import { FcMultipleSmartphones } from "react-icons/fc";
 import { FaBook } from "react-icons/fa";
 import { FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { Children, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { listAccesorios, listAccesoriosReport } from "../API/events";
-import { handleDate } from "../helpers";
+import { formatearFecha } from "../helpers";
 
 const Administrador = () => {
   const [adminSelect, setAdminSelect] = useState();
@@ -30,7 +30,13 @@ const Administrador = () => {
   //   return date >= "2024-04-02";
   // }
 
-  var sumaAccesorios = 0
+  // const hanleFormatFecha = async (date) => {
+  //   const response = await handleShortDate(date);
+
+  //   if (response) {
+  //     setNuevaFecha(response)
+  //   }
+  // };
 
   return (
     <div className="container mx-auto">
@@ -138,7 +144,7 @@ const Administrador = () => {
           <div>
             <div className="mt-10">
               <h2 className="text-2xl font-medium text-center text-cyan-600">
-                Muestra de Pedidos Por Mes 
+                Ventas Realizadas de Acesorios
               </h2>
 
               <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
@@ -161,37 +167,39 @@ const Administrador = () => {
                       <th scope="col" className="px-6 py-3">
                         Fecha de venta
                       </th>
+                      <th scope="col" className="px-6 py-3">
+                        Garantia
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {listReport?.map((item) => {
 
-                        return (
-                          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                             <td className="p-4">
-                              <img
-                                className="w-20"
-                                src={`${item.accesorio.imagen}`}
-                                alt="Imagen no disponible"
-                                />
-                            </td> 
-                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                               {item.accesorio.nombre} 
-                            </td>
-                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                               ${item.total} 
-                            </td>
+                      return (
+                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <td className="p-4">
+                            <img
+                              className="w-20"
+                              src={`${item.accesorio.imagen}`}
+                              alt="Imagen no disponible"
+                            />
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {item.accesorio.nombre}
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            ${item.total}
+                          </td>
 
-                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                               {item.user?.email} 
-                            </td>
-                            <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                               {item.created_at} 
-                               {item.accesorio.stock} 
-                            </td>
-                          </tr>
-                        );
-                      
+                          <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {item.user?.email}
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {formatearFecha(item.created_at)}
+                          </td>
+                        </tr>
+                      );
+
                       //  const  filterDates = dates.filter(dateFilter)
 
                       //   //FILTRO DE VENTA POR MES

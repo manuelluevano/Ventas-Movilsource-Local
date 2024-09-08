@@ -12,71 +12,68 @@ const ListaServicios = ({
   setServiceEdit,
   serviceEdit,
 }) => {
-
   const [filter, setFilter] = useState(false);
 
   const filtro = listaServicios?.filter((item) => {
     return item.status == filter;
   });
 
-
   const filtrarFinalizados = async () => {
-    setFilter(true)
+    setFilter(true);
   };
   const filtrarRestantes = async () => {
-    setFilter(false)
+    setFilter(false);
   };
   return (
     <>
       <div className="md:w-1/2 lg:w-3/5  h-screen md:overflow-y-scroll">
-       
-
         <p className="">
           {/* <button
             type="button"
-            className="py=2 p-2  text-black hover:bg-gray-600 hover:text-white  rounded-lg"
+            className="py=2 p-2  text-black hover:bg-gray-600   rounded-lg"
             //  onClick={() => handlePendientes()}
           >
             TOTAL DE SERVICIOS:
-            <span className=" ml-2 text-gray-700 text-2xl hover:text-white">
+            <span className=" ml-2 text-gray-700 text-2xl ">
               {listaServicios?.length}
             </span>
           </button> */}
-           <p className="text-right ">
-         
-         <button
-           type="button"
-           className="py=2 p-2  text-black hover:bg-yellow-600 hover:text-white  rounded-lg"
-         >
-           TOTAL SERVICIOS:
-           <span className=" ml-2 text-yellow-700 text-2xl hover:text-white">
-             {contador}
-           </span>
-         </button>
-       </p>
+          <p className="text-right mt-2">
+            <button
+              type="button"
+              className="py=2 p-2 font-bold  text-black border-2 hover:border-b-yellow-600  transition-all rounded-lg"
+            >
+              TOTAL SERVICIOS:
+              <span className=" ml-2 text-yellow-600 text-2xl  font-extrabold">
+                <span className="">{contador}</span>
+              </span>
+            </button>
+          </p>
         </p>
         <p className="text-right mr-2  mt-4 mb-4">
-         
           <button
             type="button"
-            className="py=2 p-2  text-black hover:bg-green-600 hover:text-white  rounded-lg"
+            className="py=2 p-2 font-bold text-black border-2 hover:border-b-green-600 rounded-lg transition-all"
             onClick={() => filtrarFinalizados()}
           >
             Entregados:
-            <span className=" ml-2 text-green-700 text-2xl hover:text-white">
-              {servicesFinished}
+            <span className=" ml-2 text-green-700 text-2xl  font-extrabold">
+              <span className="">{servicesFinished}</span>
             </span>
           </button>
         </p>
-        <p className="text-right mr-2 mt-4 mb-4">
+        <p className="text-right mr-2 mt-4 mb-4 ">
           <button
             type="button"
-            className="py=2 p-2  text-black hover:bg-red-400 hover:text-white  rounded-lg"
+            className="py=2 p-2 font-bold text-black border-2 hover:border-b-red-800 rounded-lg transition-all"
             onClick={() => filtrarRestantes()}
           >
             Pendientes:
-            <span className="ml-2 text-red-700 text-2xl hover:text-white">
+            <span className="ml-2 text-red-700 text-2xl  font-extrabold">
+              <span className="">
+                
               {servicesPendient}
+              </span>
             </span>
           </button>
         </p>
@@ -125,13 +122,11 @@ const ListaServicios = ({
           </div>
         </div>
         {filtro?.map((item) => {
-          
           return (
             <div key={item.id}>
               <Servicio
                 key={item._id}
                 item={item}
-                
                 setServiceEdit={setServiceEdit}
                 serviceEdit={serviceEdit}
               />
@@ -148,11 +143,11 @@ const ListaServicios = ({
 //       <p className="text-right mr-2  mt-4 mb-4">
 //         <button
 //           type="button"
-//           className="py=2 p-2  text-black hover:bg-gray-600 hover:text-white  rounded-lg"
+//           className="py=2 p-2  text-black hover:bg-gray-600   rounded-lg"
 //           onClick={() => handlePendientes()}
 //         >
 //           Total:
-//           <span className=" ml-2 text-gray-700 text-2xl hover:text-white">
+//           <span className=" ml-2 text-gray-700 text-2xl ">
 //             {contador}
 //           </span>
 //         </button>
@@ -160,11 +155,11 @@ const ListaServicios = ({
 //       <p className="text-right mr-2  mt-4 mb-4">
 //         <button
 //           type="button"
-//           className="py=2 p-2  text-black hover:bg-green-600 hover:text-white  rounded-lg"
+//           className="py=2 p-2  text-black hover:bg-green-600   rounded-lg"
 //           onClick={() => handlePendientes()}
 //         >
 //           Finalizados:
-//           <span className=" ml-2 text-green-700 text-2xl hover:text-white">
+//           <span className=" ml-2 text-green-700 text-2xl ">
 //             {servicesFinished}
 //           </span>
 //         </button>
@@ -172,11 +167,11 @@ const ListaServicios = ({
 //       <p className="text-right mr-2  mt-4 mb-4">
 //         <button
 //           type="button"
-//           className="py=2 p-2  text-black hover:bg-red-400 hover:text-white  rounded-lg"
+//           className="py=2 p-2  text-black hover:bg-red-400   rounded-lg"
 //           onClick={() => handlePendientes()}
 //         >
 //           Pendientes:
-//           <span className=" ml-2 text-red-700 text-2xl hover:text-white">
+//           <span className=" ml-2 text-red-700 text-2xl ">
 //             {servicesPendient}
 //           </span>
 //         </button>

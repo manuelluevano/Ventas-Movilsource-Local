@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { toast } from "sonner";
 import useAuth from "../hooks/useAuth";
-import { handleMessage, marcas, servicios } from "../helpers";
+import { formatearFecha, handleMessage, marcas, servicios } from "../helpers";
 import { useState } from "react";
 import { updateService } from "../API/events";
 import Select from "react-select";
@@ -28,8 +28,6 @@ const Servicio = ({ item }) => {
     complete,
     observaciones,
   } = item;
-
-  
 
   const {
     EquipoTerminado,
@@ -67,18 +65,17 @@ const Servicio = ({ item }) => {
         console.log("Respuesta del status", response);
 
         if (response.status === "Success") {
-          
           Swal.fire({
-           title: "Entrega a cliente...",
-           text:`${response.message}`,
-           icon: "success"
-         })
-        }else if(response.status === "error"){
-         Swal.fire({
-          title: "Error!",
-          text:`${response.mensaje}`,
-          icon: "error"
-        })
+            title: "Entrega a cliente...",
+            text: `${response.message}`,
+            icon: "success",
+          });
+        } else if (response.status === "error") {
+          Swal.fire({
+            title: "Error!",
+            text: `${response.mensaje}`,
+            icon: "error",
+          });
         }
 
         //RECARGAR LA LISTA DE SERVICIOS
@@ -172,28 +169,26 @@ const Servicio = ({ item }) => {
 
         console.log("Respuesta del status", response);
 
-       
         if (response.status === "Success") {
           // setBtn(true);
           Swal.fire({
-          //  title: "Reparacion Terminada!",
-           text:`${response.message}  🥳`,
-           icon: "success"
-         })
-        }else if(response.status === "error"){
-        //  setBtn(true);
-         Swal.fire({
-          title: "Error!",
-          text:`${response.mensaje}`,
-          icon: "error"
-        })
+            //  title: "Reparacion Terminada!",
+            text: `${response.message}  🥳`,
+            icon: "success",
+          });
+        } else if (response.status === "error") {
+          //  setBtn(true);
+          Swal.fire({
+            title: "Error!",
+            text: `${response.mensaje}`,
+            icon: "error",
+          });
         }
 
         //RECARGAR LA LISTA DE SERVICIOS
         setReload(true);
       }
     };
-
 
     return (
       <>
@@ -219,9 +214,7 @@ const Servicio = ({ item }) => {
             </div>
             <div className="font-bold mb-3 text-gray-700 uppercase">
               Apellido: {""}
-              <span className="font-normal normal-case">
-               {apellido ?? ""}
-              </span>
+              <span className="font-normal normal-case">{apellido ?? ""}</span>
             </div>
             <div className="flex font-bold mb-3 text-gray-700 uppercase">
               Telefono: {""}
@@ -235,7 +228,7 @@ const Servicio = ({ item }) => {
                 ) : (
                   <div className="flex text-gray-600 font-bold text-center items-center">
                     <Link
-                    className=" hover:bg-slate-100"
+                      className=" hover:bg-slate-100"
                       to={`https://wa.me/${telefono}?text=Buen%20día%20su%20${modelo}%20esta%20listo%20para%20su%20entrega.`}
                       target="_blank"
                     >
@@ -334,7 +327,7 @@ const Servicio = ({ item }) => {
             </div>
 
             <div className="font-bold mb-3 text-gray-700 uppercase">
-              Precio: ${""}
+              Precio Servicio: ${""}
               <span className="font-normal normal-case">
                 {edit ? (
                   <input
@@ -347,9 +340,8 @@ const Servicio = ({ item }) => {
                 )}
               </span>
             </div>
-
             <div className="font-bold mb-3 text-gray-700 uppercase">
-              abono de cliente: ${""}
+              Abono Servicio: ${""}
               <span className="font-normal normal-case">
                 {edit ? (
                   <input
@@ -380,12 +372,11 @@ const Servicio = ({ item }) => {
             <div className="font-bold mb-3 text-gray-700 uppercase">
               Gaveta: {""}
               <span className="font-normal normal-case">
-                
-                  <input
-                    type="text"
-                    value={gaveta}
-                    onChange={(e) => setGaveta(e.target.value)}
-                  />
+                <input
+                  type="text"
+                  value={gaveta}
+                  onChange={(e) => setGaveta(e.target.value)}
+                />
               </span>
             </div>
             <div className="font-bold mb-3 text-gray-700 uppercase">
@@ -411,7 +402,11 @@ const Servicio = ({ item }) => {
             </div>
             <div className="font-bold mb-3 text-gray-700 uppercase">
               Fecha: {""}
-              <span className="font-normal normal-case">{created_at}</span>
+              <span className="font-normal normal-case ml-1">
+                {formatearFecha(created_at).toUpperCase()}
+                {console.log(created_at)
+                }
+              </span>
             </div>
             <div className="font-bold mb-3 text-gray-700 uppercase">
               Tecnico:{" "}
@@ -431,35 +426,36 @@ const Servicio = ({ item }) => {
 
             {/* </div>  */}
             <div className="flex">
-              <div className="font-bold  text-gray-700 uppercase">
-                REPARACION:{" "}
-              </div>
+              <div className="font-bold  text-gray-700 uppercase">ESTADO: </div>
               <div className="result">
                 {complete === true ? (
                   <div>
-                    <h1 className="text-green-700 font-bold normal-case ml-2 ">
-                      Equipo Terminado
+                    <h1 className="text-green-700 font-extrabold normal-case ml-2 ">
+                      Reparacion Realizada <span className="ml-1">✅</span>
                     </h1>
                   </div>
                 ) : (
                   <div>
-                    <h1 className="text-red-700 font-bold normal-case ml-2 ">
-                      No Realizada
+                    <h1 className="text-red-700 font-extrabold normal-case ml-2 ">
+                      Equipo No Reparado ❌
                     </h1>
                   </div>
                 )}
               </div>
-              <div className="topping ml-5">
-                <input
-                  type="checkbox"
-                  id="topping"
-                  name="topping"
-                  value=""
-                  disabled={complete}
-                  checked={complete}
-                  onChange={() => hanldeCompleteService(item)}
-                />
-              </div>
+              {!complete && (
+                <div className="topping ml-5">
+                  <input
+                    type="checkbox"
+                    id="topping"
+                    name="topping"
+                    value=""
+                    disabled={complete}
+                    checked={complete}
+                    onChange={() => hanldeCompleteService(item)}
+                  />
+                  <span className="ml-1 font-medium">Se Ha Terminado?</span>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end mt-5">

@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { addPendiente, listPendientes, pendientTerminado } from "../API/events";
 import Swal from "sweetalert2";
 import { toast } from "sonner";
-import { handleMessage } from "../helpers";
+import { formatearFecha, handleMessage } from "../helpers";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Pendientes = () => {
   const [listaPendientes, setListaPendientes] = useState([]);
@@ -10,7 +12,7 @@ const Pendientes = () => {
   const [pendiente, setPendiente] = useState("");
   const [detalle, setDetalle] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [dia, setDia] = useState("");
+  const [dia, setDia] = useState(new Date());
   const [status] = useState(false);
 
   //OBTENE LISTA DE PENDIENTES
@@ -26,118 +28,112 @@ const Pendientes = () => {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
-    console.log(pendiente, detalle, telefono, dia, status);
+    console.log(dia);
 
-    // //  VALIDATION
-    // if (!pendiente, !detalle, !telefono, !dia ) {
-    //   mostrarAlerta({
-    //     msg: "Todos los campos son obligatorios",
-    //     error: true,
-    //   });
+    //CONVERTIR DIA SELECCIONADO EN FORMATO DATE()
+    const diaConverter = new Date(dia);
 
-    //   return;
-    // }
-    //convertir dia a string
-    dia.toLocaleLowerCase();
-    let response;
+    console.log(diaConverter);
 
-    response = await addPendiente(pendiente, detalle, telefono, dia, status);
+    //   VALIDATION
+     if ((!pendiente, !detalle, !telefono, !dia)) {
+       mostrarAlerta({
+         msg: "Todos los campos son obligatorios",
+         error: true,
+       });
 
-    // console.log(response);
+       return;
+     }
 
-    if (response.status === "success") {
-      Swal.fire({
-        title: `${response.status}`,
-        text: `${response.mensaje} 🥳`,
-        icon: "success",
-      });
-    } else {
-      Swal.fire({
-        title: `${response.status}`,
-        text: `${response.mensaje}`,
-        icon: "error",
-      });
-    }
+     const response = await addPendiente(pendiente, detalle, telefono, diaConverter, status);
 
-    if (response.status === "Error") {
-      console.log(response);
-      mostrarAlerta({
-        msg: "Error " + response.mensaje,
-        error: true,
-      });
-    }
-    toast.promise(handleMessage, {
-      style: {
-        color: "white",
-      },
-      loading: "Loading...",
-      success: () => {
-        return `${response.mensaje}`;
-      },
-      error: "Error",
-    });
-    // //  reiniciar el formulario
-    // setNombre("");
-    // setPrecio("");
-    // setStock("");
-    // setCategoria("");
-    // setImagen("");
-    // setImagenPreview(null);
+     console.log(response);
 
-    // //  RECARGAR LA LISTA DE SERVICIOS
-    // setDisable(false);
-    // setReload(true);
+     if (response.status === "success") {
+       Swal.fire({
+         title: `${response.status}`,
+         text: `${response.mensaje} 🥳`,
+         icon: "success",
+       });
+     } else {
+       Swal.fire({
+         title: `${response.status}`,
+         text: `${response.mensaje}`,
+         icon: "error",
+       });
+     }
+
+     if (response.status === "Error") {
+       console.log(response);
+       mostrarAlerta({
+         msg: "Error " + response.mensaje,
+         error: true,
+       });
+     }
+     toast.promise(handleMessage, {
+       style: {
+         color: "white",
+       },
+       loading: "Loading...",
+       success: () => {
+         return `${response.mensaje}`;
+       },
+       error: "Error",
+     });
   };
 
-  const handleChangeStatus =  async(id) =>{
+  const handleChangeStatus = async (id) => {
     console.log(id);
-    
+
     let response;
 
-    response = await pendientTerminado(id);
+    const confirm = window.confirm("Pendiente Realizado Correctamente?");
 
-    // console.log(response);
+    if (confirm) {
+      response = await pendientTerminado(id);
 
-    if (response.status === "Success") {
-      Swal.fire({
-        title: `${response.status}`,
-        text: `${response.message} 🥳`,
-        icon: "success",
+      // console.log(response);
+
+      if (response.status === "Success") {
+        Swal.fire({
+          title: `${response.status}`,
+          text: `${response.message} 🥳`,
+          icon: "success",
+        });
+      } else {
+        Swal.fire({
+          title: `${response.status}`,
+          text: `${response.message}`,
+          icon: "error",
+        });
+      }
+
+      // if (response.status === "Error") {
+      //   console.log(response);
+      //   mostrarAlerta({
+      //     msg: "Error " + response.mensaje,
+      //     error: true,
+      //   });
+      // }
+      toast.promise(handleMessage, {
+        style: {
+          color: "white",
+        },
+        loading: "Loading...",
+        success: () => {
+          return `${response.message}`;
+        },
+        error: "Error",
       });
-    } else {
-      Swal.fire({
-        title: `${response.status}`,
-        text: `${response.message}`,
-        icon: "error",
-      });
+
+      setTimeout(() => {
+        //RECARGAR PAGINA
+        window.location.reload();
+      }, 2000);
     }
-
-    // if (response.status === "Error") {
-    //   console.log(response);
-    //   mostrarAlerta({
-    //     msg: "Error " + response.mensaje,
-    //     error: true,
-    //   });
-    // }
-    toast.promise(handleMessage, {
-      style: {
-        color: "white",
-      },
-      loading: "Loading...",
-      success: () => {
-        return `${response.message}`;
-      },
-      error: "Error",
-    });
-
-    setTimeout(() => {
-      //RECARGAR PAGINA
-      window.location.reload();
-    }, 2000);
-
-  }
+  };
 
   return (
     <>
@@ -248,7 +244,7 @@ const Pendientes = () => {
                     Dia Para Entregar:
                   </label>
 
-                  <input
+                  {/* <input
                     type="date"
                     id="dia"
                     // disabled={!btn}
@@ -258,7 +254,12 @@ const Pendientes = () => {
                     placeholder="Mica Hidroguel..."
                     value={dia}
                     onChange={(e) => setDia(e.target.value)}
-                  />
+                  /> */}
+
+                  <DatePicker  
+                  selected={dia}
+                   onChange={(e) => setDia(e)} />
+
                   <div className="flex justify-end">
                     <input
                       type="submit"
@@ -291,13 +292,21 @@ const Pendientes = () => {
               return (
                 <>
                   <tr className="border-solid border-2 ">
-                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.pendiente}</td>
-                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.detalle}</td>
-                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.dia}</td>
-                    <td className="border-solid border-2 border-gray-300 px-2 py-3">{i.telefono}</td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">
+                      {i.pendiente}
+                    </td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">
+                      {i.detalle}
+                    </td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">
+                      {formatearFecha(i.dia)}
+                    </td>
+                    <td className="border-solid border-2 border-gray-300 px-2 py-3">
+                      {i.telefono}
+                    </td>
                     <td className=" px-6 py-4 justify-center flex">
                       <input
-                       onChange={()=> handleChangeStatus(i._id)}
+                        onChange={() => handleChangeStatus(i._id)}
                         checked={i.status}
                         id="green-checkbox"
                         type="checkbox"
