@@ -7,7 +7,7 @@ import { useState } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 
 const Card = ({ item, sumarProducto, loading }) => {
-  const { _id, nombre, imagen, precio, stock } = item;
+  const { _id, nombre, imagen, precio, stock, descripcion } = item;
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -90,26 +90,31 @@ const Card = ({ item, sumarProducto, loading }) => {
               {nombre}
             </h5>
           </div>
+          <div href="#">
+            <h5 className="text-lg font-semibold tracking-tight text-black ">
+              {descripcion}
+            </h5>
+          </div>
           <div className="flex justify-between mt-1">
             {/* <p className="text-sm mt-1 mb-1 text-green-600">
               TIPO: <span className="text-black"></span>{" "}
             </p> */}
             <p className="text-sm mt-1 mb-1 text-orange-600">
-              STOCK: <span className="text-black">{stock}</span>{" "}
+              {stock ? "STOCK: " : "" }<span className="text-black">{stock}</span>{" "}
             </p>
           </div>
          
           <div className="flex items-center justify-between mt-1">
             <span className="text-3xl font-bold text-black ">${precio}</span>
 
-            {stock == 0 ? (
+                
+            {stock == 0 || descripcion  ? (
               ""
             ) : (
               <button
                 onClick={() => {sumarProducto(_id)}}
                 href="#refacciones"
                 className="text-4xl text-blue-700 hover:text-blue-900 "
-
               >
                 <IoAddCircle />
               </button>

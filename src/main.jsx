@@ -23,6 +23,7 @@ import Administrador from "./pages/administrador.jsx";
 import Accesorios from "./pages/Accesorios";
 import Pendientes from "./pages/Pendientes.jsx";
 import FormularioAccesorio from "./components/FormularioAccesorio.jsx";
+import Equipos from "./pages/Equipos.jsx";
 // import RequireAuth from "./helpers/RequireAuth.js";
 
 const router = createHashRouter([
@@ -74,7 +75,11 @@ const router = createHashRouter([
         element: <FormularioAccesorio />,
         errorElement: <ErrorElement />,
       },
-
+      {
+        path: "/equipos",
+        element: <Equipos />,
+        errorElement: <ErrorElement />,
+      },
       // {
       //   path: "/saleCard",
       //   element: <SaleCard />,

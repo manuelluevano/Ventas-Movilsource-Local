@@ -798,3 +798,69 @@ export async function listPendientes() {
       console.log("error login", error);
     }
   }
+
+
+
+  //VENTA EQUIPOS
+export async function addEquipo(nombre, precio, stock, categoria, imagen) {
+  //GET TOKEN
+  const token = localStorage.getItem("token");
+
+  console.log("token", token);
+
+  let finalString = token.split('"').join("");
+
+  console.log("token modificado", finalString);
+
+  try {
+    var requestOptions = {
+      method: "POST",
+      redirect: "follow",
+      mode: "cors",
+      body: JSON.stringify({
+        nombre,
+        precio,
+        stock,
+        categoria,
+        imagen,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
+      },
+    };
+
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/accesorio/accesorio`;
+    // const url = "http://localhost:3000/accesorio/accesorio";
+
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}
+
+export async function listEquipos() {
+  const token = localStorage.getItem("token");
+  let finalString = token.split('"').join("");
+
+  try {
+    var requestOptions = {
+      method: "get",
+      redirect: "follow",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
+      },
+    };
+
+    const url = `https://api-movilsource-local-26dce06d51d7.herokuapp.com/equipos/equipos`;
+    // const url = `http://localhost:3000/accesorio/accesorios`;
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error login", error);
+  }
+}

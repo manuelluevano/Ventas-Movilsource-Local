@@ -1,10 +1,11 @@
 import { FcMultipleSmartphones } from "react-icons/fc";
 import { FaBook } from "react-icons/fa";
 import { FaPlusCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { listAccesorios, listAccesoriosReport } from "../API/events";
 import { formatearFecha } from "../helpers";
+import Countdown from "react-countdown";
 
 const Administrador = () => {
   const [adminSelect, setAdminSelect] = useState();
@@ -37,6 +38,14 @@ const Administrador = () => {
   //     setNuevaFecha(response)
   //   }
   // };
+
+  const rendered = ({minutes, seconds})=>{
+    console.log(minutes);
+    
+    return (
+      <h2>{minutes + seconds}</h2>
+    )
+     }
 
   return (
     <div className="container mx-auto">
@@ -197,6 +206,11 @@ const Administrador = () => {
                           <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                             {formatearFecha(item.created_at)}
                           </td>
+                          <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                          <Countdown date={Date.now() + 14400 * 60000 }/>
+
+                          </td>
+                          
                         </tr>
                       );
 

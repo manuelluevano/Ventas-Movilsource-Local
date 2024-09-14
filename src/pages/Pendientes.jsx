@@ -15,6 +15,8 @@ const Pendientes = () => {
   const [dia, setDia] = useState(new Date());
   const [status] = useState(false);
 
+ 
+
   //OBTENE LISTA DE PENDIENTES
   useEffect(() => {
     (async () => {
@@ -134,6 +136,8 @@ const Pendientes = () => {
       }, 2000);
     }
   };
+
+
 
   return (
     <>
@@ -271,6 +275,7 @@ const Pendientes = () => {
                       }
                     />
                   </div>
+                  
                 </div>
               ) : (
                 ""

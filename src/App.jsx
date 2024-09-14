@@ -6,6 +6,7 @@ import { PiHeadphonesDuotone } from "react-icons/pi";
 import { VscTools } from "react-icons/vsc";
 import { MdOutlineInventory } from "react-icons/md";
 import { AiOutlineAppstore } from "react-icons/ai";
+import { MdOutlinePhoneAndroid } from "react-icons/md";
 
 // import logo from "./assets/banner.webp";
 
@@ -56,7 +57,7 @@ function App() {
             <div className="cursor-pointer mt-40 p-4">
               <Link to="/servicios">
                 <VscTools className="text-9xl hover:p-1 transition-all" />
-                <h3 className="mt-3 font-semibold">NUEVO SERVICIO</h3>
+                <h3 className="mt-3 font-semibold">SERVICIOS</h3>
               </Link>
             </div>
             
@@ -71,6 +72,12 @@ function App() {
               <Link to="/administrador">
                 <AiOutlineAppstore className="text-9xl hover:p-1 transition-all" />
                 <h3 className="mt-3 font-semibold">ADMINISTRADOR</h3>
+              </Link>
+            </div> 
+            <div className="cursor-pointer mt-40 p-4">
+              <Link to="/equipos">
+                <MdOutlinePhoneAndroid className="text-9xl hover:p-1 transition-all" />
+                <h3 className="mt-3 font-semibold">VENTA DE EQUIPOS</h3>
               </Link>
             </div> 
           </div>
