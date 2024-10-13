@@ -183,18 +183,19 @@ const Administrador = () => {
                   </thead>
                   <tbody>
                     {listReport?.map((item) => {
+                      console.log("Item", item.accesorio?.nombre);
 
                       return (
                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                           <td className="p-4">
                             <img
                               className="w-20"
-                              src={`${item.accesorio.imagen}`}
+                              src={`${item.accesorio?.imagen}`}
                               alt="Imagen no disponible"
                             />
                           </td>
                           <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                            {item.accesorio.nombre}
+                            {item.accesorio?.nombre}
                           </td>
                           <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                             ${item.total}
