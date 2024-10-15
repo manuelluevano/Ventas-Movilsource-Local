@@ -231,6 +231,10 @@ export const servicios = [
     value: "REMANUFACTURA DE PANTALLA",
   },
   {
+    label: "CAMBIO LED'S TV",
+    value: "CAMBIO LED'S TV",
+  },
+  {
     label: "GARANTIA",
     value: "GARANTIA",
   },
