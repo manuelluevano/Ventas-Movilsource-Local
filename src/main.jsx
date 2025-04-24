@@ -5,6 +5,7 @@ import "./index.css";
 
 //CONTEXT
 import { AuthProvider } from "./context/AuthProvider.jsx";
+// import { CartProvider } from "./context/CartContext.jsx";
 
 //LOADERS
 // import { loader as appLoader } from "./components/Headers";
@@ -23,9 +24,8 @@ import Administrador from "./pages/administrador.jsx";
 import Accesorios from "./pages/Accesorios";
 import Pendientes from "./pages/Pendientes.jsx";
 import FormularioAccesorio from "./components/FormularioAccesorio.jsx";
-import Equipos from "./pages/Equipos.jsx";
-import { CartProvider } from "./context/CartContext.jsx";
-import CartDropdown from "./components/CartDropdown.jsx";
+// import Equipos from "./pages/Equipos.jsx";
+// import CartDropdown from "./components/CartDropdown.jsx";
 // import RequireAuth from "./helpers/RequireAuth.js";
 
 const router = createHashRouter([
@@ -104,10 +104,10 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    {/* <CartProvider> */}
     <AuthProvider>
-    <CartProvider>
       <RouterProvider router={router}></RouterProvider>
-    </CartProvider>
     </AuthProvider>
+    {/* </CartProvider> */}
   </React.StrictMode>
 );
