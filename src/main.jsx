@@ -5,6 +5,7 @@ import "./index.css";
 
 //CONTEXT
 import { AuthProvider } from "./context/AuthProvider.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 
 //LOADERS
 // import { loader as appLoader } from "./components/Headers";
@@ -19,19 +20,20 @@ import App from "./App.jsx";
 import Login from "./pages/Login.jsx";
 import Perfil from "./pages/Perfil";
 import Servicios from "./pages/Servicios";
-// import Local from "./pages/Local.jsx"
-// import Register from "./pages/Register.jsx";
-// import Refacciones from "./pages/Refacciones";
-// import Accesorios from "./pages/Accesorios";
-// import UploadImage from "./pages/UploadImage";
-// import ReporteRefacciones from "./pages/ReporteRefacciones";
-
+import Administrador from "./pages/administrador.jsx";
+import Accesorios from "./pages/Accesorios";
+import Pendientes from "./pages/Pendientes.jsx";
+import FormularioAccesorio from "./components/FormularioAccesorio.jsx";
+import Equipos from "./pages/Equipos.jsx";
+import CartDropdown from "./components/CartDropdown.jsx";
+// import RequireAuth from "./helpers/RequireAuth.js";
 
 const router = createHashRouter([
   {
     path: "/",
-    element: <Headers />,
+    // element: <RequireAuth allowRoles={"admin"} />,
     // loader: appLoader,
+    element: <Headers/>,
     errorElement: <ErrorElement />,
     children: [
       {
@@ -44,11 +46,6 @@ const router = createHashRouter([
         element: <Login />,
         errorElement: <ErrorElement />,
       },
-      // {
-      //   path: "/local",
-      //   element: <Local />,
-      //   errorElement: <ErrorElement />,
-      // },
       {
         path: "/perfil",
         element: <Perfil />,
@@ -58,31 +55,49 @@ const router = createHashRouter([
         path: "/servicios",
         element: <Servicios />,
         errorElement: <ErrorElement />,
-        loader: serviceLoader
+        loader: serviceLoader,
+      },
+      {
+        path: "/administrador",
+        element: <Administrador />,
+        errorElement: <ErrorElement />,
+      },
+      {
+        path: "/accesorios",
+        element: <Accesorios />,
+        errorElement: <ErrorElement />,
+      },
+      {
+        path: "/pendientes",
+        element: <Pendientes />,
+        errorElement: <ErrorElement />,
+      },
+      {
+        path: "/FormularioAccesorio/:id?",
+        element: <FormularioAccesorio />,
+        errorElement: <ErrorElement />,
+      },
+      {
+        path: "/equipos",
+        element: <Equipos />,
+        errorElement: <ErrorElement />,
+      },
+      {
+        path: "/cart",
+        element: <CartDropdown />,
+        errorElement: <ErrorElement />,
       },
       // {
-      //   path: "/reporteRefacciones",
-      //   element: <ReporteRefacciones />,
+      //   path: "/saleCard",
+      //   element: <SaleCard />,
       //   errorElement: <ErrorElement />,
       // },
-      // {
-      //   path: "/refacciones",
-      //   element: <Refacciones />,
-      //   errorElement: <ErrorElement />,
-      // },
-      // {
-      //   path: "/accesorios",
-      //   element: <Accesorios />,
-      //   errorElement: <ErrorElement />,
-      // },
-     
       // {
       //   path: "/add-refaccion/:id?",
       //   element: <UploadImage />,
       //   errorElement: <ErrorElement />,
       //   // loader: serviceLoader
       // },
-      
     ],
   },
 ]);
@@ -90,7 +105,9 @@ const router = createHashRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
+    <CartProvider>
       <RouterProvider router={router}></RouterProvider>
+    </CartProvider>
     </AuthProvider>
   </React.StrictMode>
 );
