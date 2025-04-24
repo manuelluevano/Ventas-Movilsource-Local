@@ -104,10 +104,10 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
     <CartProvider>
+    <AuthProvider>
       <RouterProvider router={router}></RouterProvider>
-    </CartProvider>
     </AuthProvider>
+    </CartProvider>
   </React.StrictMode>
 );
