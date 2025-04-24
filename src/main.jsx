@@ -77,16 +77,16 @@ const router = createHashRouter([
         element: <FormularioAccesorio />,
         errorElement: <ErrorElement />,
       },
-      {
-        path: "/equipos",
-        element: <Equipos />,
-        errorElement: <ErrorElement />,
-      },
-      {
-        path: "/cart",
-        element: <CartDropdown />,
-        errorElement: <ErrorElement />,
-      },
+      // {
+      //   path: "/equipos",
+      //   element: <Equipos />,
+      //   errorElement: <ErrorElement />,
+      // },
+      // {
+      //   path: "/cart",
+      //   element: <CartDropdown />,
+      //   errorElement: <ErrorElement />,
+      // },
       // {
       //   path: "/saleCard",
       //   element: <SaleCard />,
