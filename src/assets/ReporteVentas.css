@@ -1,0 +1,61 @@
+/* ReporteVentas.css */
+.reporte-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .filtros {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+  }
+  
+  .filtros label {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .filtros input {
+    padding: 8px;
+    margin-top: 5px;
+  }
+  
+  
+
+  .error {
+    color: red;
+    margin-bottom: 15px;
+  }
+  
+  .resumen {
+    background-color: #f5f5f5;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+  
+  .tabla-ventas {
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
