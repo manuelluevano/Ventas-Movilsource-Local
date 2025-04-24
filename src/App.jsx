@@ -58,7 +58,7 @@ function App() {
             <div className="cursor-pointer mt-40 p-4">
               <Link to="/servicios">
                 <VscTools className="text-9xl hover:p-1 transition-all" />
-                <h3 className="mt-3 font-semibold">SERVICIOS</h3>
+                <h3 className="mt-3 font-semibold">SERVICIOS </h3>
               </Link>
             </div>
             
