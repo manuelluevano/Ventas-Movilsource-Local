@@ -330,8 +330,8 @@ export async function addAccesorio(nombre, precio, stock, categoria, imagen) {
       },
     };
 
-    const url = `http://localhost:4000/accesorio/accesorio`;
-    // const url = "http://localhost:3000/accesorio/accesorio";
+    // const url = `http://localhost:4000/accesorio/accesorio`;
+    const url = "https://movilsource-local-cc1d0975aa43.herokuapp.com/accesorio/accesorio";
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -379,8 +379,8 @@ export async function searchAccesorio(search) {
       },
     };
 
-    const url = `http://localhost:4000/accesorio/accesorios/${search}`;
-    // const url = `http://localhost:3000/api/accesorio/accesorios/${search}`;
+    // const url = `http://localhost:4000/accesorio/accesorios/${search}`;
+    const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/accesorio/accesorios/${search}`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
