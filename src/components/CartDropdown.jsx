@@ -86,12 +86,11 @@ const CartDropdown = () => {
       // 5. Mostrar confirmación y generar reporte
       clearCart();
 
-      Swal.fire({
-        title: response.message,
-        text: 'Algo salió mal',
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+     Swal.fire({
+             title: `${response.message}`,
+             text: `${response.mensaje} 🥳`,
+             icon: "success",
+           });
       
       // // 6. Generar PDF automáticamente
       // generarReportePDF(response);
