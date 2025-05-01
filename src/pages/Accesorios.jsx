@@ -20,9 +20,12 @@ import { FaPlusCircle } from "react-icons/fa";
 const Accesorios = () => {
   //OBTENER LAS REFACCIONES DE LA DB
   const [accesorios, setAccesorios] = useState([]);
-  const [search, setSearch] = useState();
+  // const [search, setSearch] = useState();
   const [reload, setReload] = useState(false);
   let [loading, setLoading] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
 // ========================================
 //           TOTAL -> CARRITO
@@ -30,26 +33,67 @@ const Accesorios = () => {
   const { totalItems } = useCart();
  
 
-  useEffect(() => {
-    (async () => {
-      if (search) {
-        // console.log("Busqueda", search);
-        const response = await searchAccesorio(search);
-        // console.log(response.accesorios);
-        setAccesorios();
-        setAccesorios(response.accesorios);
-        return;
-      } else {
-        const response = await listAccesorios();
-        // console.log("Respuesta refacciones", response);
-        setAccesorios(response.accesorios);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (search) {
+  //       // console.log("Busqueda", search);
+  //       const response = await searchAccesorio(search);
+  //       // console.log(response.accesorios);
+  //       setAccesorios();
+  //       setAccesorios(response.accesorios);
+  //       // return;
+  //     } else {
+  //       const response = await listAccesorios();
+  //       // console.log("Respuesta refacciones", response);
+  //       setAccesorios();
+  //       setAccesorios(response.accesorios);
+  //     }
+  //     //REGRESAR RELOAD A ESTADO NORMAL
+  //     setTimeout(() => {
+  //       setReload(false);
+  //     }, 1000);
+  //   })();
+  // }, [search, reload, setReload, setLoading]);
+
+// 1. Obtener los datos de la API
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await listAccesorios();
+      console.log(response.accesorios);
+      
+      if (!response.accesorios) {
+        throw new Error('Error al obtener los productos');
       }
-      //REGRESAR RELOAD A ESTADO NORMAL
-      setTimeout(() => {
-        setReload(false);
-      }, 1000);
-    })();
-  }, [search, reload, setReload, setLoading]);
+      setAccesorios(response.accesorios);
+      setFilteredProducts(response.accesorios); // Inicialmente mostrar todos
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
+
+// 2. Filtrar productos cuando cambia el término de búsqueda
+useEffect(() => {
+  if (searchTerm === '') {
+    setFilteredProducts(accesorios);
+    
+  } else {
+    const results = accesorios.filter(product =>
+      product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(results);
+  }
+}, [searchTerm, accesorios]);
+
+if (loading) return <div>Cargando productos...</div>;
+if (error) return <div>Error: {error}</div>;
 
   const { tokenUser } = useAuth();
   const user = tokenUser.id;
@@ -132,8 +176,8 @@ const Accesorios = () => {
         "
                               placeholder="Cargador..."
                               required
-                              value={search}
-                              onChange={(e) => setSearch(e.target.value)}
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
                             />
                           </div>
                         </div>
@@ -184,8 +228,10 @@ const Accesorios = () => {
                     data-testid="loader"
                   />
                 ) : (
+                  
                   <ListCard
-                    item={accesorios}
+                    setSearchTerm={setSearchTerm}
+                    item={filteredProducts}
                     loading={loading}
                     setLoading={setLoading}
                   />
