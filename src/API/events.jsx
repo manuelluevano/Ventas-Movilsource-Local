@@ -498,8 +498,8 @@ export async function createReportsAccesorio( venta) {
       },
     };
 
-    // const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/venta/accesorio`;
-    const url = `http://localhost:4000/venta/accesorio`;
+    const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/venta/accesorio`;
+    // const url = `http://localhost:4000/venta/accesorio`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
