@@ -302,7 +302,7 @@ export async function editService(id, objterminado) {
 // ========================================
 //           ACCESORIO
 // ========================================
-export async function addAccesorio(nombre, precio, stock, categoria, imagen) {
+export async function addAccesorio(nombre, descripcion, precio, precio_final, stock, categoria, activo, imagen) {
   //GET TOKEN
   const token = localStorage.getItem("token");
 
@@ -319,9 +319,12 @@ export async function addAccesorio(nombre, precio, stock, categoria, imagen) {
       mode: "cors",
       body: JSON.stringify({
         nombre,
+        descripcion,
         precio,
+        precio_final,
         stock,
         categoria,
+        activo,
         imagen,
       }),
       headers: {
@@ -495,8 +498,8 @@ export async function createReportsAccesorio( venta) {
       },
     };
 
+    // const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/venta/accesorio`;
     const url = `http://localhost:4000/venta/accesorio`;
-    // const url = `http://localhost:3000/api/service/servicio`;
 
     const response = await fetch(url, requestOptions);
     const result = await response.json();
@@ -518,7 +521,7 @@ export async function getVentasXFecha(fechaInicio, fechaFin ) {
       },
     };
 
-    const url = `http://localhost:4000/venta/accesorios?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+    const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/venta/accesorios?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
     // const url = `http://localhost:3000/api/pedido/accesorios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();

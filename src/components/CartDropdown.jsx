@@ -10,13 +10,13 @@ const CartDropdown = () => {
   const [vendedor, setVendedor] = useState('');
   const [metodo_pago, setMetodoPago] = useState('efectivo');
   const { tokenUser } = useAuth();
-
   const { 
     cart, 
     removeFromCart, 
     updateQuantity,
     totalItems,
-    totalPrice
+    totalPrice,
+    clearCart
   } = useCart();
 
 
@@ -38,9 +38,14 @@ const CartDropdown = () => {
       
       if (sinStock.length > 0) {
          Swal.fire({
-                title: ``,
-                text: `no tiene suficiente stock en algun producto`,
-                icon: "error",
+                title: response.message,
+                text: ``,
+                icon: "success",
+              });
+              Swal.fire({
+                title: response.mensaje,
+                text: ``,
+                icon: "success",
               });
         
         return;
@@ -49,8 +54,9 @@ const CartDropdown = () => {
       const detallesOBJ = cart.map(item => ({
         id: item.id,
         nombre: item.nombre,
-        cantidad: item.cantidad,
-        precio: item.precio
+        cantidad: item.quantity,
+        precio: item.precio,
+        stock: item.stock
       }))
 
      
@@ -62,6 +68,7 @@ const CartDropdown = () => {
       const venta = {
         fecha_pedido: new Date().toISOString(),
         id_vendedor: tokenUser.id,
+        items: detallesOBJ,
         detalles,
         metodo_pago,
         comentarios: "Nada",
@@ -70,18 +77,21 @@ const CartDropdown = () => {
 
       console.log(venta);
       // 3. Enviar a la API GENERAR REPORTE
+      // 4. Actualizar stock localmente
       const response = await createReportsAccesorio(venta);
       
-      console.log(response);
+      // console.log(response);
       
-      // 4. Actualizar stock localmente
-      // actualizarStock(carrito);
       
-      // // 5. Mostrar confirmación y generar reporte
-      // setVentaRealizada(response);
-      // vaciarCarrito();
-      // setCliente('');
-      // message.success('Venta procesada correctamente');
+      // 5. Mostrar confirmación y generar reporte
+      clearCart();
+
+      Swal.fire({
+        title: response.message,
+        text: 'Algo salió mal',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
       
       // // 6. Generar PDF automáticamente
       // generarReportePDF(response);

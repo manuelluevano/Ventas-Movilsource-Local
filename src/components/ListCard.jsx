@@ -15,7 +15,7 @@ const ListCard = ({
       {item && item.length ? (
         <>
           {item.map((i) => {
-            console.log(item);
+            // console.log(item);
             return (
               <Card
                 key={i.id}

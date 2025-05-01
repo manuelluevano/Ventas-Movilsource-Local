@@ -221,6 +221,7 @@ const Administrador = () => {
                 <th>Vendedor</th>
                 <th>Producto</th>
                 <th>Metodo Pago</th>
+                <th>Comentarios</th>
                 <th>Total</th>
               </tr>
             </thead>
@@ -232,6 +233,7 @@ const Administrador = () => {
                   <td>{venta.id_vendedor}</td>
                   <td>{venta.detalles}</td>
                   <td>{venta.metodo_pago}</td>
+                  <td>{venta.comentarios}</td>
                   <td>${venta.total}</td>
                 </tr>
               ))}

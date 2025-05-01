@@ -6,18 +6,21 @@ import { useNavigate } from 'react-router-dom';
 
 import Error from "./Error";
 import { toast } from "sonner";
-import { addAccesorio, getAccesorioID, updateAccesorio } from "../API/events";
+import { addAccesorio } from "../API/events";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import Select from "react-select";
 
 // eslint-disable-next-line react/prop-types
 const FormularioAccesorio = () => {
-  const [accesorioEdit, setAccesorioEdit] = useState();
+  // const [accesorioEdit, setAccesorioEdit] = useState();
   const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
+  const [precio_final, setPrecio_final] = useState("");
   const [stock, setStock] = useState("");
   const [categoria, setCategoria] = useState("");
+  const [activo, setActivo] = useState(1);
   const [imagen, setImagen] = useState("");
   const [imagenPreviw, setImagenPreview] = useState(null);
   const [disable, setDisable] = useState(false);
@@ -45,7 +48,7 @@ const FormularioAccesorio = () => {
 
     let response;
   
-    response = await addAccesorio(nombre, precio, stock, categoria, imagen);
+    response = await addAccesorio(nombre, descripcion, precio, precio_final, stock, categoria, activo, imagen);
 
     console.log(response);
 
@@ -242,10 +245,29 @@ const FormularioAccesorio = () => {
 
             <div className="mb-5">
               <label
+                htmlFor="descripcion"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                Descripcion
+              </label>
+              <input
+                id="descripcion"
+                type="text"
+                className={`${
+                  msg && !descripcion ? "border-red-400" : ""
+                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                value={descripcion.toUpperCase()}
+                onChange={(e) => setDescripcion(e.target.value.toUpperCase())}
+                disabled={disable}
+              />
+            </div>
+
+            <div className="mb-5">
+              <label
                 htmlFor="precio"
                 className="block font-bold text-gray-700 uppercase"
               >
-                Precio
+                Precio Real
               </label>
               <input
                 id="precio"
@@ -256,6 +278,25 @@ const FormularioAccesorio = () => {
                 } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
                 value={precio}
                 onChange={(e) => setPrecio(e.target.value)}
+                disabled={disable}
+              />
+            </div>
+            <div className="mb-5">
+              <label
+                htmlFor="precio_final"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                Precio Final
+              </label>
+              <input
+                id="precio_final"
+                type="number"
+                maxLength="5"
+                className={`${
+                  msg && !precio_final ? "border-red-400" : ""
+                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                value={precio_final}
+                onChange={(e) => setPrecio_final(e.target.value)}
                 disabled={disable}
               />
             </div>

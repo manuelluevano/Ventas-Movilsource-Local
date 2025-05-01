@@ -7,14 +7,18 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 
 const Card = ({ item, loading }) => {
-  const { id, nombre, imagen, precio, stock, descripcion } = item;
+  const { id, nombre, imagen, precio, stock, descripcion, } = item;
   const [showModal, setShowModal] = useState(false);
   const [added, setAdded] = useState(false);
+
+  
 
   // ========================================
 //           AGREGAR -> CARRITO
 // ========================================
   const { addToCart, isInCart } = useCart();
+
+
 
   return (
     <>
@@ -44,8 +48,8 @@ const Card = ({ item, loading }) => {
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
+                    <span className="bg-black text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                     ×
                     </span>
                   </button>
                 </div>
@@ -56,12 +60,13 @@ const Card = ({ item, loading }) => {
                 
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                  <p>{descripcion}</p>
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     onClick={() => setShowModal(false)}
-                  >
-                    Close
+                    >
+                    Cerrar
                   </button>
                 
                 </div>
@@ -99,7 +104,7 @@ const Card = ({ item, loading }) => {
           </div>
           <div href="#">
             <h5 className="text-lg font-semibold tracking-tight text-black ">
-              {descripcion}
+
             </h5>
           </div>
           <div className="flex justify-between mt-1">
@@ -111,7 +116,7 @@ const Card = ({ item, loading }) => {
              {/* ======================================== 
                      AGREGAR -> CARRITO
                ========================================*/}
-            <button onClick={() => addToCart(item)}>
+            <button onClick={() =>  addToCart(item)() }>
               {isInCart(id) ? 
               
               <div  className={`text-green-600 uppercase mr-2 text-3xl hover:text-green-700 rounded cursor-pointe transition-colors`}>

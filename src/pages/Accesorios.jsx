@@ -3,19 +3,13 @@
 import { useEffect, useState } from "react";
 import ListCard from "../components/ListCard";
 import {
-  accesorioVenta,
-  createReportsAccesorio,
   listAccesorios,
-  searchAccesorio,
 } from "../API/events";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 import { PacmanLoader } from "react-spinners";
 import useAuth from "../hooks/useAuth";
-
-import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { FaPlusCircle } from "react-icons/fa";
 
 const Accesorios = () => {
   //OBTENER LAS REFACCIONES DE LA DB
@@ -60,7 +54,7 @@ useEffect(() => {
   const fetchProducts = async () => {
     try {
       const response = await listAccesorios();
-      console.log(response.accesorios);
+      // console.log(response.accesorios);
       
       if (!response.accesorios) {
         throw new Error('Error al obtener los productos');
@@ -128,9 +122,9 @@ if (error) return <div>Error: {error}</div>;
                             type="button"
                             className=""
                           >
-                            <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center transition duration-200">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center transition duration-200">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                               </svg>
                               Agregar Producto
                             </button>
