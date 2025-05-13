@@ -1,266 +1,154 @@
-/* eslint-disable react/prop-types */
-import { useState } from "react";
-import Servicio from "./Servicio";
+import React from 'react';
 
-const ListaServicios = ({
-  listaServicios,
-  contador,
-  setSearch,
-  search,
-  servicesPendient,
-  servicesFinished,
-  setServiceEdit,
-  serviceEdit,
-}) => {
-  const [filter, setFilter] = useState(false);
-
-  const filtro = listaServicios?.filter((item) => {
-    return item.status == filter;
-  });
-
-  const filtrarFinalizados = async () => {
-    setFilter(true);
+const ListaServicios = ({ servicios, onEdit, onDelete }) => {
+  
+  // Función para formatear fechas
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Pendiente';
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
   };
-  const filtrarRestantes = async () => {
-    setFilter(false);
+
+  // Función para determinar el color según el estado
+  const getEstadoColor = (estado) => {
+    switch (estado) {
+      case 'recibido':
+        return 'bg-blue-100 text-blue-800';
+      case 'en_proceso':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'terminado':
+        return 'bg-purple-100 text-purple-800';
+      case 'entregado':
+        return 'bg-green-100 text-green-800';
+      case 'cancelado':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
+
   return (
-    <>
-      <div className="md:w-1/2 lg:w-3/5  h-screen md:overflow-y-scroll">
-        <p className="">
-          {/* <button
-            type="button"
-            className="py=2 p-2  text-black hover:bg-gray-600   rounded-lg"
-            //  onClick={() => handlePendientes()}
-          >
-            TOTAL DE SERVICIOS:
-            <span className=" ml-2 text-gray-700 text-2xl ">
-              {listaServicios?.length}
-            </span>
-          </button> */}
-          <p className="text-right mt-2">
-            <button
-              type="button"
-              className="py=2 p-2 font-bold  text-black border-2 hover:border-b-yellow-600  transition-all rounded-lg"
-            >
-              TOTAL SERVICIOS:
-              <span className=" ml-2 text-yellow-600 text-2xl  font-extrabold">
-                <span className="">{contador}</span>
-              </span>
-            </button>
-          </p>
-        </p>
-        <p className="text-right mr-2  mt-4 mb-4">
-          <button
-            type="button"
-            className="py=2 p-2 font-bold text-black border-2 hover:border-b-green-600 rounded-lg transition-all"
-            onClick={() => filtrarFinalizados()}
-          >
-            Entregados:
-            <span className=" ml-2 text-green-700 text-2xl  font-extrabold">
-              <span className="">{servicesFinished}</span>
-            </span>
-          </button>
-        </p>
-        <p className="text-right mr-2 mt-4 mb-4 ">
-          <button
-            type="button"
-            className="py=2 p-2 font-bold text-black border-2 hover:border-b-red-800 rounded-lg transition-all"
-            onClick={() => filtrarRestantes()}
-          >
-            Pendientes:
-            <span className="ml-2 text-red-700 text-2xl  font-extrabold">
-              <span className="">
-                
-              {servicesPendient}
-              </span>
-            </span>
-          </button>
-        </p>
-        {/* BUSCADOR */}
-        <div className="text-lg mb-5">
-          <label
-            htmlFor="default-search"
-            className="text-sm font-medium  text-gray-400 sr-only dark:text-white"
-          >
-            Search
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http:www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="search"
-              id="default-search"
-              className="block w-full justify-center items-center p-4 pl-10 text-sm bg-gray-200 border-b-2 border-gray-500
- "
-              placeholder="Display iPhone..."
-              required
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {/* <button
-             type="submit"
-             className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-           >
-             Buscar
-           </button> */}
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">Lista de Servicios</h1>
+        <div className="text-sm text-gray-500">
+          Total: <span className="font-medium">{servicios.length} servicios</span>
         </div>
-        {filtro?.map((item) => {
-          return (
-            <div key={item.id}>
-              <Servicio
-                key={item._id}
-                item={item}
-                setServiceEdit={setServiceEdit}
-                serviceEdit={serviceEdit}
-              />
-            </div>
-          );
-        })}
       </div>
-    </>
+
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Folio
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Cliente
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Dispositivo
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Servicio
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Fechas
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Estado
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Montos
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {servicios.map((servicio) => (
+                <tr key={servicio.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">#{servicio.folio}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{servicio.nombre} {servicio.apellido}</div>
+                        <div className="text-sm text-gray-500">{servicio.numero_contacto}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{servicio.marca}</div>
+                    <div className="text-sm text-gray-500">{servicio.modelo}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900 capitalize">{servicio.servicio}</div>
+                    <div className="text-sm text-gray-500">{servicio.gaveta && `Gaveta: ${servicio.gaveta}`}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">Registro: {formatDate(servicio.fecha_registro)}</div>
+                    <div className="text-sm text-gray-500">Entrega: {formatDate(servicio.fecha_entrega)}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getEstadoColor(servicio.estado)}`}>
+                      {servicio.estado.replace('_', ' ')}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">Total: ${servicio.precio_servicio}</div>
+                    <div className="text-sm text-gray-500">Abono: ${servicio.abono_servicio || '0.00'}</div>
+                    <div className="text-sm font-medium">
+                      Saldo: ${servicio.saldo_pendiente || (servicio.precio_servicio - (servicio.abono_servicio || 0)).toFixed(2)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button
+                      onClick={() => onEdit(servicio)}
+                      className="text-blue-600 hover:text-blue-900 mr-4"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => onDelete(servicio.id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Mensaje cuando no hay servicios */}
+      {servicios.length === 0 && (
+        <div className="text-center py-12">
+          <svg
+            className="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No hay servicios registrados</h3>
+          <p className="mt-1 text-sm text-gray-500">Comienza agregando un nuevo servicio.</p>
+        </div>
+      )}
+    </div>
   );
 };
-
-//   return (
-//     <div className="md:w-1/2 lg:w-3/5 mt-10 h-screen md:overflow-y-scroll">
-//       <p className="text-right mr-2  mt-4 mb-4">
-//         <button
-//           type="button"
-//           className="py=2 p-2  text-black hover:bg-gray-600   rounded-lg"
-//           onClick={() => handlePendientes()}
-//         >
-//           Total:
-//           <span className=" ml-2 text-gray-700 text-2xl ">
-//             {contador}
-//           </span>
-//         </button>
-//       </p>
-//       <p className="text-right mr-2  mt-4 mb-4">
-//         <button
-//           type="button"
-//           className="py=2 p-2  text-black hover:bg-green-600   rounded-lg"
-//           onClick={() => handlePendientes()}
-//         >
-//           Finalizados:
-//           <span className=" ml-2 text-green-700 text-2xl ">
-//             {servicesFinished}
-//           </span>
-//         </button>
-//       </p>
-//       <p className="text-right mr-2  mt-4 mb-4">
-//         <button
-//           type="button"
-//           className="py=2 p-2  text-black hover:bg-red-400   rounded-lg"
-//           onClick={() => handlePendientes()}
-//         >
-//           Pendientes:
-//           <span className=" ml-2 text-red-700 text-2xl ">
-//             {servicesPendient}
-//           </span>
-//         </button>
-//       </p>
-//       {/* BUSCADOR */}
-//       <div className="text-lg mb-5">
-//         <label
-//           htmlFor="default-search"
-//           className="text-sm font-medium  text-gray-400 sr-only dark:text-white"
-//         >
-//           Search
-//         </label>
-//         <div className="relative">
-//           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-//             <svg
-//               className="w-4 h-4 text-gray-500 dark:text-gray-400"
-//               aria-hidden="true"
-//               xmlns="http://www.w3.org/2000/svg"
-//               fill="none"
-//               viewBox="0 0 20 20"
-//             >
-//               <path
-//                 stroke="currentColor"
-//                 strokeLinecap="round"
-//                 strokeLinejoin="round"
-//                 strokeWidth="2"
-//                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-//               />
-//             </svg>
-//           </div>
-//           <input
-//             type="search"
-//             id="default-search"
-//             className="block w-full justify-center items-center p-4 pl-10 text-sm bg-gray-200 border-b-2 border-gray-500
-// "
-//             placeholder="Display iPhone..."
-//             required
-//             value={search}
-//             onChange={(e) => setSearch(e.target.value)}
-//           />
-//           {/* <button
-//             type="submit"
-//             className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-//           >
-//             Buscar
-//           </button> */}
-//         </div>
-//       </div>
-
-//       {listaServicios ? (
-//         <>
-//           <h2 className="font-black text-3xl text-center">
-//             Lista de Servicios
-//           </h2>
-//           <div className="text-lg mt-5 text-center mb-10">
-//             Administra tus{" "}
-//             <span className="text-orange-600 font-bold ">Servicios</span>
-//           </div>
-//           {listaServicios &&
-//             filterLocal.map((item) => {
-//               return (
-//                 <>
-//                   <Servicio
-//                     key={item._id}
-//                     item={item}
-//                     setServiceEdit={setServiceEdit}
-//                     serviceEdit={serviceEdit}
-//                   />
-//                 </>
-//               );
-//             })}
-//         </>
-//       ) : (
-//         <>
-//           <h2 className="font-black text-3xl text-center">No hay Servicios</h2>
-//           <p className="text-lg mt-5 text-center mb-10">
-//             Agregar tus{" "}
-//             <span className="text-orange-700 font-bold ">Servicios</span>
-//             <PacmanLoader
-//               size={40}
-//               color={"#cc6b03"}
-//               aria-label="Loading Spinner"
-//               data-testid="loader"
-//             />
-//           </p>
-//         </>
-//       )}
-//     </div>
-//   );
-// };
 
 export default ListaServicios;

@@ -9,7 +9,7 @@ import { CartProvider } from "./context/CartContext.jsx";
 
 //LOADERS
 // import { loader as appLoader } from "./components/Headers";
-import { loader as serviceLoader } from "./pages/Servicios";
+// import { loader as serviceLoader } from "./pages/Servicios";
 
 //COMPONENTS
 import ErrorElement from "./components/ErrorElement.jsx";
@@ -55,7 +55,7 @@ const router = createHashRouter([
         path: "/servicios",
         element: <Servicios />,
         errorElement: <ErrorElement />,
-        loader: serviceLoader,
+        // loader: serviceLoader,
       },
       {
         path: "/administrador",

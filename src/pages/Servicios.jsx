@@ -1,52 +1,88 @@
 import { useEffect, useState } from "react";
-import { listServices, searchService } from "../API/events";
+import { listServices} from "../API/events";
 import FormularioServicio from "../components/FormularioServicio";
 import ListaServicios from "../components/ListaServicios";
 import useAuth from "../hooks/useAuth";
-import { Navigate, useLoaderData } from "react-router-dom";
-import { handleDate } from "../helpers";
+import { Navigate } from "react-router-dom";
+// import { handleDate } from "../helpers";
 import { Toaster } from "sonner";
 
 // eslint-disable-next-line react-refresh/only-export-components
-export async function loader() {
-  //OBTENER FECHA ACTUAL
-  const f = await handleDate();
-
-  
-  return f;
-}
 
 const Servicios = () => {
-  const { reload, setReload } = useAuth();
-
-  const datos = useLoaderData();
+  // const { reload, setReload } = useAuth();
 
   const { tokenUser } = useAuth();
   const [listaServicios, setListaServicios] = useState([]);
-  const [search, setSearch] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [ultimoFolio, setUltimoFolio] = useState(0);
+
+
 
   useEffect(() => {
-    (async () => {
-      if (search) {
-        console.log("search, VALOR", search);
-        const response = await searchService(search);
-        setListaServicios();
-        setListaServicios(response);
-        return;
-      } else {
-        const token = localStorage.getItem("token");
-        //OBTENER LISTA DE SERVICIOS
-        const response = await listServices(token);
-        setListaServicios(response);
-        console.log("Lista servicios", response);
+    console.log('useEffect se ejecutó'); // Verifica si el useEffect se dispara
+    
+    const fetchProducts = async () => {
+      try {
+        console.log('Antes de llamar a listServices');
+        const response = await listServices();
+        console.log('Respuesta recibida:', response.servicios);
+        setListaServicios(response.servicios);
+
+        // Calcular el último folio
+        if (response.servicios.length > 0) {
+          const folios = response.servicios.map(s => s.folio);
+          const maxFolio = Math.max(...folios);
+          setUltimoFolio(maxFolio);
+}
+        if (!response) {
+          console.error('La respuesta está vacía');
+          return;
+        }
         
+        // Descomenta estas líneas gradualmente
+        // setAccesorios(response);
+        // setFilteredProducts(response);
+      } catch (err) {
+        console.error('Error en fetchProducts:', err);
+        // setError(err.message);
+      } finally {
+        console.log('Finalizó la carga');
+        // setLoading(false);
       }
-      //REGRESAR RELOAD A ESTADO NORMAL
-      setTimeout(() => {
-        setReload(false);
-      }, 4000);
-    })();
-  }, [reload, search, setReload]);
+    };
+  
+    fetchProducts();
+  }, []);
+
+  // Manejar edición de servicio
+  const handleEdit = (servicio) => {
+    // Aquí puedes implementar la lógica para editar
+    // Por ejemplo, redirigir a un formulario de edición con los datos del servicio
+    console.log('Editar servicio:', servicio);
+    // Ejemplo con React Router:
+    // history.push(`/editar-servicio/${servicio.id}`);
+  };
+
+  // Manejar eliminación de servicio
+  const handleDelete = async (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
+      try {
+        setLoading(true);
+        await deleteService(id); // Llama a tu función API para eliminar
+        
+        // Actualizar la lista eliminando el servicio
+        setListaServicios(prev => prev.filter(servicio => servicio.id !== id));
+      } catch (err) {
+        console.error('Error al eliminar servicio:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+  
 
   return (
     <>
@@ -58,23 +94,23 @@ const Servicios = () => {
         }}
       />
       {tokenUser.id ? (
-        <div className="container mx-auto ">
-          <div className="md:flex">
-            <FormularioServicio fecha={datos} contadorFolio={listaServicios.contador}  />
-
-
-            <ListaServicios
-              listaServicios={listaServicios.services}
-              contador={listaServicios.contador}
-              servicesPendient={listaServicios.servicesPendient}
-              servicesFinished={listaServicios.servicesFinished}
-              reload={reload}
-              setReload={setReload}
-              setSearch={setSearch}
-              search={search}
-            />
+        <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Formulario - Ocupa 1/3 del espacio en pantallas grandes */}
+          <div className="lg:w-1/3 xl:w-1/4">
+            <div className="sticky top-6"> {/* Hace que el formulario sea fijo al hacer scroll */}
+              <FormularioServicio ultimoFolio={ultimoFolio} />
+            </div>
+          </div>
+      
+          {/* Lista de servicios - Ocupa 2/3 del espacio en pantallas grandes */}
+          <div className="lg:w-2/3 xl:w-3/4">
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <ListaServicios  servicios={listaServicios} onEdit={handleEdit} onDelete={handleDelete}/>
+            </div>
           </div>
         </div>
+      </div>
       ) : (
         <Navigate to="/login" />
       )}

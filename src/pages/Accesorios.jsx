@@ -54,7 +54,7 @@ useEffect(() => {
   const fetchProducts = async () => {
     try {
       const response = await listAccesorios();
-      // console.log(response.accesorios);
+      console.log(response.accesorios);
       
       if (!response.accesorios) {
         throw new Error('Error al obtener los productos');

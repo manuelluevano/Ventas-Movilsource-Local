@@ -17,7 +17,7 @@ const FormularioAccesorio = () => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
-  const [precio_final, setPrecio_final] = useState("");
+  const [precio_original, setPrecio_original] = useState("");
   const [stock, setStock] = useState("");
   const [categoria, setCategoria] = useState("");
   const [activo, setActivo] = useState(1);
@@ -48,7 +48,7 @@ const FormularioAccesorio = () => {
 
     let response;
   
-    response = await addAccesorio(nombre, descripcion, precio, precio_final, stock, categoria, activo, imagen);
+    response = await addAccesorio(nombre, descripcion, precio, precio_original, stock, categoria, activo, imagen);
 
     console.log(response);
 
@@ -90,6 +90,7 @@ const FormularioAccesorio = () => {
     setStock("");
     setCategoria("");
     setImagen("");
+    setPrecio_original("")
     setImagenPreview(null);
 
     //  RECARGAR LA LISTA DE SERVICIOS
@@ -264,10 +265,29 @@ const FormularioAccesorio = () => {
 
             <div className="mb-5">
               <label
+                htmlFor="precio_original"
+                className="block font-bold text-gray-700 uppercase"
+              >
+                precio original 
+              </label>
+              <input
+                id="precio_original"
+                type="number"
+                maxLength="5"
+                className={`${
+                  msg && !precio_original ? "border-red-400" : ""
+                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
+                value={precio_original}
+                onChange={(e) => setPrecio_original(e.target.value)}
+                disabled={disable}
+              />
+            </div>
+            <div className="mb-5">
+              <label
                 htmlFor="precio"
                 className="block font-bold text-gray-700 uppercase"
               >
-                Precio Real
+                Precio Publico
               </label>
               <input
                 id="precio"
@@ -278,25 +298,6 @@ const FormularioAccesorio = () => {
                 } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
                 value={precio}
                 onChange={(e) => setPrecio(e.target.value)}
-                disabled={disable}
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="precio_final"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Precio Final
-              </label>
-              <input
-                id="precio_final"
-                type="number"
-                maxLength="5"
-                className={`${
-                  msg && !precio_final ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
-                value={precio_final}
-                onChange={(e) => setPrecio_final(e.target.value)}
                 disabled={disable}
               />
             </div>

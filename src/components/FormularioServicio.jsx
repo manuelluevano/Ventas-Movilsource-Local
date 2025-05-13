@@ -1,431 +1,313 @@
-import { useState } from "react";
-import Select from "react-select";
+import React, { useState, useEffect } from 'react';
 
-//HELPERS
-import { handleMessage, marcas, servicios } from "../helpers/index";
-import useAuth from "../hooks/useAuth";
+const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
+  const [formData, setFormData] = useState({
+    folio: ultimoFolio || '',
+    nombre: initialData.nombre || '',
+    apellido: initialData.apellido || '',
+    numero_contacto: initialData.numero_contacto || '',
+    servicio: initialData.servicio || '',
+    modelo: initialData.modelo || '',
+    marca: initialData.marca || '',
+    imei: initialData.imei || '',
+    numero_serie: initialData.numero_serie || '',
+    precio_servicio: initialData.precio_servicio || '',
+    abono_servicio: initialData.abono_servicio || '',
+    saldo_pendiente: initialData.saldo_pendiente || '',
+    gaveta: initialData.gaveta || '',
+    observaciones: initialData.observaciones || '',
+    fecha_registro: initialData.fecha_registro || '',
+    fecha_entrega: initialData.fecha_entrega || '',
+    estado: initialData.estado || 'recibido',
+  });
 
-import Error from "./Error";
-import { toast } from "sonner";
+  // Calcula el saldo pendiente cuando cambian precio o abono
+  useEffect(() => {
+    const precio = parseFloat(formData.precio_servicio) || 0;
+    const abono = parseFloat(formData.abono_servicio) || 0;
+    const saldo = precio - abono;
+    
+    setFormData(prev => ({
+      ...prev,
+      saldo_pendiente: saldo > 0 ? saldo.toFixed(2) : '0.00'
+    }));
+  }, [formData.precio_servicio, formData.abono_servicio]);
 
-// eslint-disable-next-line react/prop-types
-const FormularioServicio = ({ created_at, contadorFolio }) => {
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [servicio, setServicio] = useState("");
-  const [modelo, setModelo] = useState("");
-  const [marca, setMarca] = useState("");
-  const [imei, setImei] = useState("");
-  const [sn, setSN] = useState("");
-  const [precio, setPrecio] = useState("");
-  const [abono, setAbono] = useState("");
-  const folio = contadorFolio + 1
-  const [gaveta, setGaveta] = useState("");
-  const [observaciones, setObservaciones] = useState("");
-
-  //CONTEXT
-  const { mostrarAlerta, alerta, cargando, addNewService, setReload } =
-    useAuth();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    //VALIDATION
-    if (
-      !nombre ||
-      !apellido ||
-      !telefono ||
-      !servicio ||
-      !marca ||
-      !modelo ||
-      !precio
-    ) {
-      mostrarAlerta({
-        msg: "Todos los campos son obligatorios",
-        error: true,
-      });
-
-      return;
-    }
-
-    //GET TOKEN
-    const token = localStorage.getItem("token");
-
-
- 
-    //ADD SERVICE DB
-    const response = await addNewService({
-      nombre,
-      apellido,
-      telefono,
-      servicio,
-      modelo,
-      marca,
-      imei,
-      sn,
-      precio,
-      abono,
-      folio,
-      gaveta,
-      observaciones,
-      token,
-      created_at,
-    });
-
-    if (response.status === "Error") {
-      console.log(response);
-      mostrarAlerta({
-        msg: "Error " + response.mensaje,
-        error: true,
-      });
-
-      return;
-    }
-
-    toast.promise(handleMessage, {
-      style: {
-        color: "white",
-      },
-      loading: "Loading...",
-      success: () => {
-        return `${response.mensaje}`;
-      },
-      error: "Error",
-    });
-
-    //reiniciar el formulario
-    setNombre("");
-    setApellido("");
-    setTelefono("");
-    setServicio("");
-    setModelo("");
-    setMarca("");
-    setImei("");
-    setSN("");
-    setPrecio("");
-    setAbono("");
-    setFolio("");
-    setObservaciones("");
-
-    //RECARGAR LA LISTA DE SERVICIOS
-    setReload(true);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  //EXTRAER ALERTA
-  const { msg } = alerta;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
-    <>
-      {cargando ? (
-        <div className="md:w-1/2 lg:w-2/5">
-          <div className="bg-white shadow-2xl rounded-lg py-10 px-5">
-            <legend className="font-black text-3xl text-center mb-10">
-              Guardando el servicio...
-            </legend>
-
-            {msg ? (
-              <Error alerta={alerta} />
-            ) : (
-              <div className="text-center text-6xl">✅</div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="md:w-1/2 lg:w-2/5 mb-10">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white shadow-2xl rounded-lg py-10 px-5"
-          >
-            <legend className="font-black text-3xl text-center mb-10">
-              Registro de Servicio
-            </legend>
-            {msg && <Error alerta={alerta} />}
-
-            <div className="mb-5">
-              <label
-                htmlFor="nombre"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Nombre
-              </label>
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Formulario de Servicio</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Sección Cliente */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Datos del Cliente</h3>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Folio</label>
               <input
-                id="nombre"
-                type="text"
-                className={`${
-                  msg && !nombre ? "border-red-400" : ""
-                } border-2 w-full  border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="Nombre del cliente"
-                value={nombre.toUpperCase()}
-                onChange={(e) => setNombre(e.target.value.toUpperCase())}
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="apellido"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                apellido
-              </label>
-              <input
-                id="apellido"
-                type="text"
-                className={`${
-                  msg && !apellido ? "border-red-400" : ""
-                } border-2 w-full p-2 border-gray-300 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="Apellido del cliente"
-                value={apellido.toUpperCase()}
-                onChange={(e) => setApellido(e.target.value.toUpperCase())}
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="telefono"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Telefono Cliente
-              </label>
-              <input
-                id="telefono"
                 type="number"
-                maxLength={8}
-                className={`${
-                  msg && !telefono ? "border-red-400" : ""
-                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="Numero de telefono cliente"
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="servicio"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Servicio
-              </label>
-              <Select
-                id="servicio"
-                className={`${
-                  msg && !servicio ? "border-red-400 border-2" : ""
-                } w-full  mt-2 border-gray-300 placeholder-gray-400 rounded-md`}
-                options={servicios}
-                onChange={(e) => setServicio(e.value)}
-                defaultInputValue={""}
-                placeholder="DISPLAY..."
-              />
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="marca"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Marca
-              </label>
-
-              <Select
-                id="marca"
-                className={`${
-                  msg && !marca ? "border-red-400 border-2" : ""
-                } w-full  mt-2 placeholder-gray-400 rounded-md`}
-                options={marcas}
-                onChange={(e) => setMarca(e.value)}
-                placeholder="Apple..."
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="modelo"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Modelo
-              </label>
-              <input
-                id="modelo"
-                type="text"
-                className={`${
-                  msg && !modelo ? "border-red-400" : ""
-                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="Modelo"
-                value={modelo.toUpperCase()}
-                onChange={(e) => setModelo(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="imei"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                IMEI (opcional)
-              </label>
-              <input
-                id="imei"
-                type="number"
-                className="border-2 border-gray-300 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
-                placeholder="355565..."
-                maxLength={16}
-                value={imei.toUpperCase()}
-                onChange={(e) => setImei(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="sn"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                SN (opcional)
-              </label>
-              <input
-                id="sn"
-                type="text"
-                className="border-2 border-gray-300 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
-                placeholder="FZAS"
-                maxLength={16}
-                value={sn.toUpperCase()}
-                onChange={(e) => setSN(e.target.value)}
+                name="folio"
+                value={ultimoFolio + 1}
+                onChange={handleChange}
+                disabled
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             
-            <div className="mb-5">
-              <label
-                htmlFor="imei"
-                className=" font-bold text-gray-700 uppercase"
-              >
-                Folio
-              </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Nombre*</label>
               <input
-                id="imei"
-                type="number"
-                className="font-bold border-gray-300 text-green-800 border-2 ml-2  placeholder-gray-400 rounded-md"
-                placeholder="0011"
-                disabled={true}
-                maxLength={5}
-                value={folio}
-                // onChange={(e) => setFolio(contadorFolio + 1)}
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="sn"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Gaveta{" "}
-              </label>
-              <input
-                id="sn"
                 type="text"
-                className="border-2  border-gray-300 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
-                placeholder="A1"
-                maxLength={3}
-                value={gaveta.toUpperCase()}
-                onChange={(e) => setGaveta(e.target.value)}
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
               />
             </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="precio"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Precio Servicio
-              </label>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Apellido*</label>
               <input
-                id="precio"
-                type="number"
-                className={`${
-                  msg && !precio ? "border-red-400" : ""
-                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="$"
-                value={precio}
-                onChange={(e) => setPrecio(e.target.value)}
-              />
-            </div>
-            <div className="mb-5">
-              <label
-                htmlFor="precio"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Abono
-              </label>
-              <input
-                id="precio"
-                type="number"
-                className={`${
-                  msg && !abono ? "border-red-400" : ""
-                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="$"
-                value={abono}
-                onChange={(e) => setAbono(e.target.value)}
-              />
-            </div>
-            {/* <div className="mb-5">
-              <label
-                htmlFor="fecha"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Fecha
-              </label>
-              <input
-                disabled
-                id="fecha"
                 type="text"
-                className="border-2 bg-gray-100 w-full p-2 mt-2 rounded-md"
-                value={created_at}
-              />
-            </div> */}
-
-            {/* <div className="mb-5">
-              <label
-                htmlFor="folio"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Folio
-              </label>
-              <input
-                maxLength={4}
-                id="folio"
-                type="number"
-                className={`${
-                  msg && !folio ? "border-red-400" : ""
-                } border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="Numero de nota"
-                value={folio}
-                onChange={(e) => {
-                  const limit = 4;
-                  setFolio(e.target.value.slice(0, limit));
-                }}
-              />
-            </div> */}
-            <div className="mb-5">
-              <label
-                htmlFor="observaciones"
-                className="block font-bold text-gray-700 uppercase"
-              >
-                Observaciones
-              </label>
-              <textarea
-                id="observaciones"
-                className={`${
-                  msg && !observaciones ? "border-red-400" : ""
-                } border-2 w-full border-gray-300 p-2 mt-2 placeholder-gray-400 rounded-md`}
-                placeholder="Escribe las Observaciones del Equipo"
-                value={observaciones.toUpperCase()}
-                onChange={(e) => setObservaciones(e.target.value.toUpperCase())}
+                name="apellido"
+                value={formData.apellido}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
               />
             </div>
-            <input
-              type="submit"
-              className="bg-green-700 w-full text-white uppercase font-bold p-3 hover:bg-green-800 cursor-pointer transition-colors"
-              value={"Agregar"}
-            />
-          </form>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Número de Contacto*</label>
+              <input
+                type="tel"
+                name="numero_contacto"
+                value={formData.numero_contacto}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+          </div>
+          
+          {/* Sección Dispositivo */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Datos del Dispositivo</h3>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Servicio*</label>
+              <select
+                name="servicio"
+                value={formData.servicio}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value="">Seleccione un servicio</option>
+                <option value="display">Display</option>
+                <option value="bateria">Batería</option>
+                <option value="software">Software</option>
+                <option value="microfono">Micrófono</option>
+                <option value="otros">Otros</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Marca*</label>
+              <input
+                type="text"
+                name="marca"
+                value={formData.marca}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Modelo*</label>
+              <input
+                type="text"
+                name="modelo"
+                value={formData.modelo}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">IMEI (Opcional)</label>
+              <input
+                type="text"
+                name="imei"
+                value={formData.imei}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Opcional"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Número de Serie (Opcional)</label>
+              <input
+                type="text"
+                name="numero_serie"
+                value={formData.numero_serie}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Opcional"
+              />
+            </div>
+          </div>
         </div>
-      )}
-    </>
+        
+        {/* Sección Servicio */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Detalles del Servicio</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Precio del Servicio ($)*</label>
+              <input
+                type="number"
+                name="precio_servicio"
+                value={formData.precio_servicio}
+                onChange={handleChange}
+                step="0.01"
+                min="0"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Abono ($)</label>
+              <input
+                type="number"
+                name="abono_servicio"
+                value={formData.abono_servicio}
+                onChange={handleChange}
+                step="0.01"
+                min="0"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Saldo Pendiente ($)</label>
+              <input
+                type="number"
+                name="saldo_pendiente"
+                value={formData.saldo_pendiente}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                readOnly
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Gaveta</label>
+              <input
+                type="text"
+                name="gaveta"
+                value={formData.gaveta}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Estado</label>
+              <select
+                name="estado"
+                value={formData.estado}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="recibido">Recibido</option>
+                <option value="en_proceso">En proceso</option>
+                <option value="terminado">Terminado</option>
+                <option value="entregado">Entregado</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Fecha de Registro*</label>
+              <input
+                type="date"
+                name="fecha_registro"
+                value={formData.fecha_registro}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Fecha de Entrega</label>
+              <input
+                type="date"
+                name="fecha_entrega"
+                value={formData.fecha_entrega || ''}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Observaciones</label>
+            <textarea
+              name="observaciones"
+              value={formData.observaciones}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Detalles adicionales sobre el servicio"
+            />
+          </div>
+        </div>
+        
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            onClick={()=>{
+              
+            }}
+          >
+            Guardar Servicio
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default FormularioServicio;
+export default ServicioForm;

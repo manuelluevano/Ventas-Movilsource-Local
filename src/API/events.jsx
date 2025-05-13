@@ -115,8 +115,15 @@ export async function addService(
     console.log("error login", error);
   }
 }
-export async function listServices(token) {
-  let finalString = token.split('"').join("");
+export async function listServices() {
+//GET TOKEN
+const token = localStorage.getItem("token");
+
+console.log("token", token);
+
+let finalString = token.split('"').join("");
+
+console.log("token modificado", finalString);
 
   try {
     var requestOptions = {
@@ -128,8 +135,8 @@ export async function listServices(token) {
       },
     };
 
-    const url = `https://api-movilsource-2ac780884ac7.herokuapp.com/service/servicios`;
-    // const url = `http://localhost:3000/api/service/servicios`;
+    // const url = `https://api-movilsource-2ac780884ac7.herokuapp.com/service/servicios`;
+    const url = `http://localhost:4000/servicio/servicios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -302,7 +309,7 @@ export async function editService(id, objterminado) {
 // ========================================
 //           ACCESORIO
 // ========================================
-export async function addAccesorio(nombre, descripcion, precio, precio_final, stock, categoria, activo, imagen) {
+export async function addAccesorio(nombre, descripcion, precio, precio_original, stock, categoria, activo, imagen) {
   //GET TOKEN
   const token = localStorage.getItem("token");
 
@@ -321,7 +328,7 @@ export async function addAccesorio(nombre, descripcion, precio, precio_final, st
         nombre,
         descripcion,
         precio,
-        precio_final,
+        precio_original,
         stock,
         categoria,
         activo,
