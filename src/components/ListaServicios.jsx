@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ListaServicios = ({ servicios, onEdit, onDelete }) => {
+const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   
   // Función para formatear fechas
   const formatDate = (dateString) => {
@@ -24,6 +24,23 @@ const ListaServicios = ({ servicios, onEdit, onDelete }) => {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Opciones de estados disponibles
+  const estadosDisponibles = [
+    { value: 'recibido', label: 'Recibido' },
+    { value: 'en_proceso', label: 'En proceso' },
+    { value: 'terminado', label: 'Terminado' },
+    { value: 'entregado', label: 'Entregado' },
+    { value: 'cancelado', label: 'Cancelado' }
+  ];
+
+  // Manejar cambio de estado
+  const handleStatusChange = (e, servicioId) => {
+    const nuevoEstado = e.target.value;
+    if (onStatusChange) {
+      onStatusChange(servicioId, nuevoEstado);
     }
   };
 
@@ -62,6 +79,9 @@ const ListaServicios = ({ servicios, onEdit, onDelete }) => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Montos
                 </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Observaciones
+                </th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Acciones
                 </th>
@@ -94,9 +114,21 @@ const ListaServicios = ({ servicios, onEdit, onDelete }) => {
                     <div className="text-sm text-gray-500">Entrega: {formatDate(servicio.fecha_entrega)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getEstadoColor(servicio.estado)}`}>
-                      {servicio.estado.replace('_', ' ')}
-                    </span>
+                    <select
+                      value={servicio.estado}
+                      onChange={(e) => handleStatusChange(e, servicio.id)}
+                      className={`px-2 py-1 text-xs leading-5 font-semibold rounded ${getEstadoColor(servicio.estado)} border border-transparent hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                    >
+                      {estadosDisponibles.map((estado) => (
+                        <option 
+                          key={estado.value} 
+                          value={estado.value}
+                          className={estado.value === servicio.estado ? 'font-bold' : ''}
+                        >
+                          {estado.label}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">Total: ${servicio.precio_servicio}</div>
@@ -104,6 +136,9 @@ const ListaServicios = ({ servicios, onEdit, onDelete }) => {
                     <div className="text-sm font-medium">
                       Saldo: ${servicio.saldo_pendiente || (servicio.precio_servicio - (servicio.abono_servicio || 0)).toFixed(2)}
                     </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900 capitalize">{servicio.observaciones}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button

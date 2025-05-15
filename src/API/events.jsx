@@ -144,6 +144,49 @@ console.log("token modificado", finalString);
     console.log("error login", error);
   }
 }
+export async function updateServiceStatus(servicioId, nuevoEstado) {
+  console.log("Datos antes de enviar", servicioId, nuevoEstado);
+  
+  //GET TOKEN
+const token = localStorage.getItem("token");
+
+  console.log("token", token);
+
+  let finalString = token.split('"').join("");
+
+  console.log("token modificado", finalString);
+
+  try {
+    var requestOptions = {
+      method: "PUT",
+      redirect: "follow",
+      body: JSON.stringify({
+        estado: nuevoEstado
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
+      },
+    };
+
+    const url = `http://localhost:4000/servicio/${servicioId}/estado`;
+    // const url = `http://localhost:3000/api/service/servicio/${servicioId}/estado`;
+
+    const response = await fetch(url, requestOptions);
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al actualizar el estado');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error al actualizar estado:", error);
+    throw error;
+  }
+}
+
 
 export async function equipoTerminado(id) {
   //GET TOKEN

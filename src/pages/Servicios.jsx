@@ -1,27 +1,20 @@
 import { useEffect, useState } from "react";
-import { listServices} from "../API/events";
+import { listServices, updateServiceStatus } from "../API/events";
 import FormularioServicio from "../components/FormularioServicio";
 import ListaServicios from "../components/ListaServicios";
 import useAuth from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
-// import { handleDate } from "../helpers";
-import { Toaster } from "sonner";
-
-// eslint-disable-next-line react-refresh/only-export-components
+import { toast, Toaster } from "sonner";
 
 const Servicios = () => {
-  // const { reload, setReload } = useAuth();
-
   const { tokenUser } = useAuth();
   const [listaServicios, setListaServicios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ultimoFolio, setUltimoFolio] = useState(0);
 
-
-
   useEffect(() => {
-    console.log('useEffect se ejecutó'); // Verifica si el useEffect se dispara
+    console.log('useEffect se ejecutó');
     
     const fetchProducts = async () => {
       try {
@@ -35,21 +28,13 @@ const Servicios = () => {
           const folios = response.servicios.map(s => s.folio);
           const maxFolio = Math.max(...folios);
           setUltimoFolio(maxFolio);
-}
-        if (!response) {
-          console.error('La respuesta está vacía');
-          return;
         }
-        
-        // Descomenta estas líneas gradualmente
-        // setAccesorios(response);
-        // setFilteredProducts(response);
       } catch (err) {
         console.error('Error en fetchProducts:', err);
-        // setError(err.message);
+        setError(err.message);
       } finally {
         console.log('Finalizó la carga');
-        // setLoading(false);
+        setLoading(false);
       }
     };
   
@@ -58,11 +43,7 @@ const Servicios = () => {
 
   // Manejar edición de servicio
   const handleEdit = (servicio) => {
-    // Aquí puedes implementar la lógica para editar
-    // Por ejemplo, redirigir a un formulario de edición con los datos del servicio
     console.log('Editar servicio:', servicio);
-    // Ejemplo con React Router:
-    // history.push(`/editar-servicio/${servicio.id}`);
   };
 
   // Manejar eliminación de servicio
@@ -70,9 +51,7 @@ const Servicios = () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
       try {
         setLoading(true);
-        await deleteService(id); // Llama a tu función API para eliminar
-        
-        // Actualizar la lista eliminando el servicio
+        await deleteService(id);
         setListaServicios(prev => prev.filter(servicio => servicio.id !== id));
       } catch (err) {
         console.error('Error al eliminar servicio:', err);
@@ -82,7 +61,36 @@ const Servicios = () => {
       }
     }
   };
-  
+
+ const handleStatusChange = async (servicioId, nuevoEstado) => {
+  try {
+    // Mostrar indicador de carga
+    setLoading(true);
+    
+    
+    // Actualizar en el backend
+    const response = await updateServiceStatus(servicioId, nuevoEstado);
+    
+    console.log(response);
+    
+    // Actualizar en el estado local solo si el backend responde correctamente
+    setListaServicios(prevServicios => 
+      prevServicios.map(servicio => 
+        servicio.id === servicioId ? { ...servicio, estado: nuevoEstado } : servicio
+      )
+    );
+    
+    // Mostrar notificación de éxito
+    toast.success('Estado actualizado correctamente');
+    
+  } catch (error) {
+    console.error("Error al actualizar el estado:", error);
+    setError(error.message);
+    toast.error(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
@@ -95,22 +103,27 @@ const Servicios = () => {
       />
       {tokenUser.id ? (
         <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Formulario - Ocupa 1/3 del espacio en pantallas grandes */}
-          <div className="lg:w-1/3 xl:w-1/4">
-            <div className="sticky top-6"> {/* Hace que el formulario sea fijo al hacer scroll */}
-              <FormularioServicio ultimoFolio={ultimoFolio} />
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Formulario - Ocupa 1/3 del espacio en pantallas grandes */}
+            <div className="lg:w-1/3 xl:w-1/4">
+              <div className="sticky top-6">
+                <FormularioServicio ultimoFolio={ultimoFolio} />
+              </div>
             </div>
-          </div>
-      
-          {/* Lista de servicios - Ocupa 2/3 del espacio en pantallas grandes */}
-          <div className="lg:w-2/3 xl:w-3/4">
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <ListaServicios  servicios={listaServicios} onEdit={handleEdit} onDelete={handleDelete}/>
+        
+            {/* Lista de servicios - Ocupa 2/3 del espacio en pantallas grandes */}
+            <div className="lg:w-2/3 xl:w-3/4">
+              <div className="bg-white rounded-lg shadow-md p-4">
+                <ListaServicios  
+                  servicios={listaServicios}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onStatusChange={handleStatusChange}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       ) : (
         <Navigate to="/login" />
       )}
