@@ -135,8 +135,9 @@ console.log("token modificado", finalString);
       },
     };
 
-    // const url = `https://api-movilsource-2ac780884ac7.herokuapp.com/service/servicios`;
-    const url = `http://localhost:4000/servicio/servicios`;
+    const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/servicio/servicios`;
+    
+    // const url = `http://localhost:4000/servicio/servicios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
@@ -169,7 +170,7 @@ const token = localStorage.getItem("token");
       },
     };
 
-    const url = `http://localhost:4000/servicio/${servicioId}/estado`;
+    const url = `https://api-movilsource-2ac780884ac7.herokuapp.com/servicio/${servicioId}/estado`;
     // const url = `http://localhost:3000/api/service/servicio/${servicioId}/estado`;
 
     const response = await fetch(url, requestOptions);
