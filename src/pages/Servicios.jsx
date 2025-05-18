@@ -92,6 +92,36 @@ const Servicios = () => {
   }
 };
 
+const handleSubmitServicio = async (formData) => {
+    try {
+      const token = localStorage.getItem('token') || '';
+      
+      const result = await addService(
+        formData.nombre,
+        formData.apellido,
+        formData.numero_contacto,
+        formData.servicio,
+        formData.modelo,
+        formData.marca,
+        formData.imei,
+        formData.numero_serie,
+        formData.precio_servicio,
+        formData.abono_servicio,
+        formData.folio,
+        formData.gaveta,
+        formData.observaciones,
+        token,
+        formData.fecha_registro
+      );
+      
+      console.log('Servicio creado:', result);
+      // Aquí puedes redirigir o mostrar un mensaje de éxito
+    } catch (error) {
+      console.error('Error al crear servicio:', error);
+      // Aquí puedes mostrar un mensaje de error al usuario
+    }
+  };
+
   return (
     <>
       <Toaster
@@ -107,7 +137,7 @@ const Servicios = () => {
             {/* Formulario - Ocupa 1/3 del espacio en pantallas grandes */}
             <div className="lg:w-1/3 xl:w-1/4">
               <div className="sticky top-6">
-                <FormularioServicio ultimoFolio={ultimoFolio} />
+                <FormularioServicio  onSubmit={handleSubmitServicio} ultimoFolio={ultimoFolio} />
               </div>
             </div>
         
