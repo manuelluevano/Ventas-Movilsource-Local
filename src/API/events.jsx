@@ -69,29 +69,25 @@ console.log("token modificado", finalString);
 console.log(formData);
 
   try {
-    const requestOptions = {
+    var requestOptions = {
       method: "POST",
+      redirect: "follow",
+      mode: "cors",
+      bbody: JSON.stringify(formData), // Envía directamente formData
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `${finalString}`
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `${finalString}`,
       },
-      body: JSON.stringify(formData) // Envía directamente formData
     };
 
-    // const url = `http://localhost:4000/service/servicio`;
+    // const url = `http://localhost:4000/accesorio/accesorio`;
     const url = `https://api-movilsource-2ac780884ac7.herokuapp.com/service/servicio`;
 
     const response = await fetch(url, requestOptions);
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error al guardar el servicio");
-    }
-    
-    return await response.json();
+    const result = await response.json();
+    return result;
   } catch (error) {
-    console.error("Error en addService:", error);
-    throw error;
+    console.log("error login", error);
   }
 }
 
