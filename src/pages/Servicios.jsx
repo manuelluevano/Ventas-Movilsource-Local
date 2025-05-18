@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listServices, updateServiceStatus } from "../API/events";
+import { addService, listServices, updateServiceStatus } from "../API/events";
 import FormularioServicio from "../components/FormularioServicio";
 import ListaServicios from "../components/ListaServicios";
 import useAuth from "../hooks/useAuth";
