@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import { addService, listServices, updateServiceStatus } from "../API/events";
 import FormularioServicio from "../components/FormularioServicio";
 import ListaServicios from "../components/ListaServicios";
-import useAuth from "../hooks/useAuth";
-import { Navigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
 
 const Servicios = () => {
-  const { tokenUser } = useAuth();
   const [listaServicios, setListaServicios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,7 +36,7 @@ const Servicios = () => {
     };
   
     fetchProducts();
-  }, []);
+  }, [ListaServicios]);
 
   // Manejar edición de servicio
   const handleEdit = (servicio) => {
@@ -93,28 +90,14 @@ const Servicios = () => {
 };
 
 const handleSubmitServicio = async (formData) => {
+  // console.log("ultimo folio", formData);
+  
     try {
-      const token = localStorage.getItem('token') || '';
+      const result = await addService(formData);
       
-      const result = await addService(
-        formData.nombre,
-        formData.apellido,
-        formData.numero_contacto,
-        formData.servicio,
-        formData.modelo,
-        formData.marca,
-        formData.imei,
-        formData.numero_serie,
-        formData.precio_servicio,
-        formData.abono_servicio,
-        formData.folio,
-        formData.gaveta,
-        formData.observaciones,
-        token,
-        formData.fecha_registro
-      );
+      // console.log('Servicio creado:', result);
+      console.log("exito", result);
       
-      console.log('Servicio creado:', result);
       // Aquí puedes redirigir o mostrar un mensaje de éxito
     } catch (error) {
       console.error('Error al crear servicio:', error);
@@ -131,7 +114,6 @@ const handleSubmitServicio = async (formData) => {
           descriptionClassName: "my-toast-description",
         }}
       />
-      {tokenUser.id ? (
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Formulario - Ocupa 1/3 del espacio en pantallas grandes */}
@@ -154,9 +136,8 @@ const handleSubmitServicio = async (formData) => {
             </div>
           </div>
         </div>
-      ) : (
-        <Navigate to="/login" />
-      )}
+        {/* <Navigate to="/login" /> */}
+      
     </>
   );
 };

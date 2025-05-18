@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
+    const siguienteFolio = ultimoFolio !== null ? ultimoFolio + 1 : 1;
+
   const [formData, setFormData] = useState({
-    folio: ultimoFolio || '',
+    folio: siguienteFolio || 0,
     nombre: initialData.nombre || '',
     apellido: initialData.apellido || '',
     numero_contacto: initialData.numero_contacto || '',
@@ -41,9 +43,29 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
     }));
   };
 
+    // Efecto para actualizar el folio cuando cambia ultimoFolio
+  useEffect(() => {
+    if (ultimoFolio !== null) {
+      setFormData(prev => ({
+        ...prev,
+        folio: ultimoFolio + 1
+      }));
+    }
+  }, [ultimoFolio]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    // Preparar datos para enviar
+    // Preparar datos para enviar
+    const dataToSend = {
+      ...formData,
+      precio_servicio: parseFloat(formData.precio_servicio) || 0,
+      abono_servicio: parseFloat(formData.abono_servicio) || 0,
+      saldo_pendiente: parseFloat(formData.saldo_pendiente) || 0,
+      folio: siguienteFolio, // Asegurar que se envíe el folio correcto
+      fecha_entrega: formData.fecha_entrega || null
+    };
+    onSubmit(dataToSend);
   };
 
   return (

@@ -56,65 +56,45 @@ export async function registerApi(name, surname, email, password) {
 // ========================================
 //           SERVICIOS
 // ========================================
-export async function addService(
-  name,
-  apellido,
-  telefono,
-  servicio,
-  modelo,
-  marca,
-  imei,
-  sn,
-  precio,
-  abono,
-  folio,
-  gaveta,
-  observaciones,
-  token,
-  created_at
-) {
-  console.log("token", token);
+export async function addService(formData) {
+  //GET TOKEN
+const token = localStorage.getItem("token");
 
-  let finalString = token.split('"').join("");
+console.log("token", token);
 
-  console.log("token modificado", finalString);
+let finalString = token.split('"').join("");
+
+console.log("token modificado", finalString);
+
+console.log(formData);
 
   try {
-    var requestOptions = {
+    const requestOptions = {
       method: "POST",
-      redirect: "follow",
-      body: JSON.stringify({
-        name,
-        apellido,
-        telefono,
-        servicio,
-        marca,
-        modelo,
-        imei,
-        sn,
-        precio,
-        abono,
-        folio,
-        gaveta,
-        observaciones,
-        created_at,
-      }),
       headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: `${finalString}`,
+        "Content-Type": "application/json",
+        "Authorization": `${finalString}`
       },
+      body: JSON.stringify(formData) // Envía directamente formData
     };
 
+    // const url = `http://localhost:4000/service/servicio`;
     const url = `https://api-movilsource-2ac780884ac7.herokuapp.com/service/servicio`;
-    // const url = `http://localhost:3000/api/service/servicio`;
 
     const response = await fetch(url, requestOptions);
-    const result = await response.json();
-    return result;
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al guardar el servicio");
+    }
+    
+    return await response.json();
   } catch (error) {
-    console.log("error login", error);
+    console.error("Error en addService:", error);
+    throw error;
   }
 }
+
 export async function listServices() {
 //GET TOKEN
 const token = localStorage.getItem("token");
@@ -135,9 +115,9 @@ console.log("token modificado", finalString);
       },
     };
 
-    const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/servicio/servicios`;
+    const url = `https://movilsource-local-cc1d0975aa43.herokuapp.com/service/servicios`;
     
-    // const url = `http://localhost:4000/servicio/servicios`;
+    // const url = `http://localhost:4000/service/servicios`;
     const response = await fetch(url, requestOptions);
     const result = await response.json();
     return result;
