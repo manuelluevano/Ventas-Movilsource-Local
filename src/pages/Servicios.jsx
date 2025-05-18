@@ -97,11 +97,22 @@ const handleSubmitServicio = async (formData) => {
       
       // console.log('Servicio creado:', result);
       console.log("exito", result);
+
+      // Mostrar mensaje de éxito al usuario
+    toast.success('Servicio creado correctamente');
+    
+    // Recargar la página después de 1 segundo (para que el usuario vea el mensaje)
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+
       
       // Aquí puedes redirigir o mostrar un mensaje de éxito
     } catch (error) {
       console.error('Error al crear servicio:', error);
       // Aquí puedes mostrar un mensaje de error al usuario
+          toast.error(`Error al crear servicio: ${error.message}`);
+
     }
   };
 
