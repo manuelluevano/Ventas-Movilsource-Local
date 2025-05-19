@@ -14,7 +14,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
     switch (estado) {
       case 'recibido':
         return 'bg-blue-100 text-blue-800';
-      case 'en_proceso':
+      case 'proceso':
         return 'bg-yellow-100 text-yellow-800';
       case 'terminado':
         return 'bg-purple-100 text-purple-800';
@@ -30,7 +30,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   // Opciones de estados disponibles
   const estadosDisponibles = [
     { value: 'recibido', label: 'Recibido' },
-    { value: 'en_proceso', label: 'En proceso' },
+    { value: 'proceso', label: 'En proceso' },
     { value: 'terminado', label: 'Terminado' },
     { value: 'entregado', label: 'Entregado' },
     { value: 'cancelado', label: 'Cancelado' }
