@@ -58,7 +58,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Folio
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -133,7 +133,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">Total: ${servicio.precio_servicio}</div>
                     <div className="text-sm text-gray-500">Abono: ${servicio.abono_servicio || '0.00'}</div>
-                    <div className="text-sm font-medium">
+                    <div className="text-sm font-medium text-red-400">
                       Saldo: ${servicio.saldo_pendiente || (servicio.precio_servicio - (servicio.abono_servicio || 0)).toFixed(2)}
                     </div>
                   </td>

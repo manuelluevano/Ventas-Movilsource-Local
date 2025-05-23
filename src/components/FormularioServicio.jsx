@@ -145,21 +145,38 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
                 <option value="bateria">Batería</option>
                 <option value="software">Software</option>
                 <option value="microfono">Micrófono</option>
+                <option value="microfono">Liberacion de compania</option>
+                <option value="microfono">Diagnostico</option>
                 <option value="otros">Otros</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700">Marca*</label>
-              <input
-                type="text"
-                name="marca"
-                value={formData.marca}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
+  <label className="block text-sm font-medium text-gray-700">Marca*</label>
+  <input
+    type="text"
+    name="marca"
+    value={formData.marca}
+    onChange={handleChange}
+    list="marcasCelulares"
+    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+    required
+  />
+  <datalist id="marcasCelulares">
+    <option value="Apple">Apple (iPhone)</option>
+    <option value="Samsung">Samsung</option>
+    <option value="Xiaomi">Xiaomi</option>
+    <option value="OPPO">OPPO</option>
+    <option value="vivo">vivo</option>
+    <option value="realme">realme</option>
+    <option value="Motorola">Motorola</option>
+    <option value="Huawei">Huawei</option>
+    <option value="OnePlus">OnePlus</option>
+    <option value="Google">Google Pixel</option>
+    <option value="TECNO">TECNO</option>
+    <option value="Infinix">Infinix</option>
+  </datalist>
+</div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700">Modelo*</label>
