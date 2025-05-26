@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Dialog } from '@headlessui/react';
 
 const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
-  
+  const [filtroEstado, setFiltroEstado] = useState('todos');
+  const [busqueda, setBusqueda] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [newStatus, setNewStatus] = useState('');
+
   // Función para formatear fechas
   const formatDate = (dateString) => {
     if (!dateString) return 'Pendiente';
@@ -36,23 +42,139 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
     { value: 'cancelado', label: 'Cancelado' }
   ];
 
-  // Manejar cambio de estado
-  const handleStatusChange = (e, servicioId) => {
-    const nuevoEstado = e.target.value;
-    if (onStatusChange) {
-      onStatusChange(servicioId, nuevoEstado);
-    }
+  // Manejar inicio de cambio de estado (abre el diálogo)
+  const handleStatusChangeInit = (e, servicio) => {
+    setSelectedService(servicio);
+    setNewStatus(e.target.value);
+    setIsDialogOpen(true);
   };
+
+  // Confirmar cambio de estado
+  const confirmStatusChange = () => {
+    if (onStatusChange && selectedService) {
+      onStatusChange(selectedService.id, newStatus);
+    }
+    setIsDialogOpen(false);
+  };
+
+  // Cancelar cambio de estado
+  const cancelStatusChange = () => {
+    setIsDialogOpen(false);
+  };
+
+  // Filtrar servicios según el estado seleccionado y la búsqueda
+  const serviciosFiltrados = servicios.filter(servicio => {
+    const cumpleEstado = filtroEstado === 'todos' || servicio.estado === filtroEstado;
+    const cumpleBusqueda = busqueda === '' || 
+      `${servicio.nombre} ${servicio.apellido}`.toLowerCase().includes(busqueda.toLowerCase()) || 
+      servicio.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
+      servicio.modelo.toLowerCase().includes(busqueda.toLowerCase());
+    return cumpleEstado && cumpleBusqueda;
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Diálogo de confirmación - Versión corregida */}
+      <Dialog 
+        open={isDialogOpen} 
+        onClose={cancelStatusChange}
+        className="relative z-50"
+      >
+        {/* Fondo oscuro */}
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        
+        {/* Contenedor del diálogo */}
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-md rounded bg-white p-6">
+            <Dialog.Title className="text-lg font-bold text-gray-900">
+              Confirmar cambio de estado
+            </Dialog.Title>
+            
+            {selectedService && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-700">
+                  ¿Estás seguro que deseas cambiar el estado del servicio <strong>#{selectedService.folio}</strong> de{' '}
+                  <span className={`px-2 py-1 rounded ${getEstadoColor(selectedService.estado)}`}>
+                    {estadosDisponibles.find(e => e.value === selectedService.estado)?.label}
+                  </span>{' '}
+                  a{' '}
+                  <span className={`px-2 py-1 rounded ${getEstadoColor(newStatus)}`}>
+                    {estadosDisponibles.find(e => e.value === newStatus)?.label}
+                  </span>?
+                </p>
+                <p className="mt-2 text-sm text-gray-500">
+                  Cliente: {selectedService.nombre} {selectedService.apellido}
+                </p>
+              </div>
+            )}
+            
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={cancelStatusChange}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmStatusChange}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              >
+                Confirmar
+              </button>
+            </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+
+      {/* Resto del componente (igual que antes) */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Lista de Servicios</h1>
         <div className="text-sm text-gray-500">
-          Total: <span className="font-medium">{servicios.length} servicios</span>
+          Mostrando: <span className="font-medium">{serviciosFiltrados.length} de {servicios.length} servicios</span>
         </div>
       </div>
 
+      {/* Barra de búsqueda y filtros */}
+      <div className="mb-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-grow">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar por nombre o servicio..."
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setFiltroEstado('todos')}
+              className={`px-4 py-2 rounded-md text-sm font-medium ${filtroEstado === 'todos' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            >
+              Todos
+            </button>
+            {estadosDisponibles.map((estado) => (
+              <button
+                key={estado.value}
+                onClick={() => setFiltroEstado(estado.value)}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${filtroEstado === estado.value ? getEstadoColor(estado.value) + ' border-2 border-gray-400' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+              >
+                {estado.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Tabla de servicios */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -64,7 +186,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Cliente
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Dispositivo
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -88,9 +210,9 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {servicios.map((servicio) => (
+              {serviciosFiltrados.map((servicio) => (
                 <tr key={servicio.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">#{servicio.folio}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -101,7 +223,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{servicio.marca}</div>
                     <div className="text-sm text-gray-500">{servicio.modelo}</div>
                   </td>
@@ -116,7 +238,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
                       value={servicio.estado}
-                      onChange={(e) => handleStatusChange(e, servicio.id)}
+                      onChange={(e) => handleStatusChangeInit(e, servicio)}
                       className={`px-2 py-1 text-xs leading-5 font-semibold rounded ${getEstadoColor(servicio.estado)} border border-transparent hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500`}
                     >
                       {estadosDisponibles.map((estado) => (
@@ -161,8 +283,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
         </div>
       </div>
 
-      {/* Mensaje cuando no hay servicios */}
-      {servicios.length === 0 && (
+      {serviciosFiltrados.length === 0 && (
         <div className="text-center py-12">
           <svg
             className="mx-auto h-12 w-12 text-gray-400"
@@ -178,8 +299,18 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
               d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No hay servicios registrados</h3>
-          <p className="mt-1 text-sm text-gray-500">Comienza agregando un nuevo servicio.</p>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            {filtroEstado === 'todos' && busqueda === ''
+              ? 'No hay servicios registrados' 
+              : busqueda !== ''
+                ? `No se encontraron resultados para "${busqueda}"`
+                : `No hay servicios en estado "${estadosDisponibles.find(e => e.value === filtroEstado)?.label || filtroEstado}"`}
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            {filtroEstado === 'todos' && busqueda === ''
+              ? 'Comienza agregando un nuevo servicio.' 
+              : 'Intenta con otro filtro o término de búsqueda.'}
+          </p>
         </div>
       )}
     </div>
