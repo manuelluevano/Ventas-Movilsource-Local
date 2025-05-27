@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "4549a59",
-  "message": "Al momento de cambiar el estado del servicio, se abre automaticamente el mensaje para notificar al cleinte, se puede omitir y/o envair manualmente en el boton de 'notificar', tambien se detecta si el numero no tiene whastapp",
-  "date": "2025-05-26 20:23:02 -0600",
+  "hash": "2713ff9",
+  "message": "Corrige problemas al crear registros de clientes. Ahora se notifica al técnico el error específico y se conservan los datos del formulario para evitar reingresarlos.",
+  "date": "2025-05-26 20:59:20 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-05-27T02:23:24.135Z",
+  "buildDate": "2025-05-27T03:05:57.127Z",
   "environment": "development"
 }

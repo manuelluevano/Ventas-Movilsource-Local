@@ -7,6 +7,7 @@ import { VscTools } from "react-icons/vsc";
 import { MdOutlineInventory } from "react-icons/md";
 import { AiOutlineAppstore } from "react-icons/ai";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
+import Exhibidor from "./components/Exhibidor";
 
 
 // import logo from "./assets/banner.webp";
@@ -82,6 +83,7 @@ function App() {
                 <h3 className="mt-3 font-semibold">VENTA DE EQUIPOS</h3>
               </Link>
             </div>  */}
+            <Exhibidor/>
           </div>
         </div>
       ) : (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+
 const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
     const siguienteFolio = ultimoFolio !== null ? ultimoFolio + 1 : 1;
 const [errors, setErrors] = useState({});
@@ -401,6 +402,7 @@ const [errors, setErrors] = useState({});
             />
           </div>
         </div>
+
         
         <div className="flex justify-end space-x-3">
           <button

@@ -9,7 +9,8 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
-    "generate:commit-info": "node scripts/generate-commit-info.js"
+    "generate:commit-info": "node scripts/generate-commit-info.js",
+    "release": "npm run build && npm run deploy && npm run generate:commit-info"
   },
   "dependencies": {
     "@faker-js/faker": "^8.1.0",
