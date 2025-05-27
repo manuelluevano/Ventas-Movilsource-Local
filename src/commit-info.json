@@ -1,0 +1,6 @@
+
+{
+  "message": "Agregamos filtros para los distintos estados de los servicios, un buscador por nombre, apellido, marca y/o modelo y un mensaje de confirmacion al cambiar el estado de un servicio",
+  "date": "2023-11-15",
+  "version": "1.0.0"
+}

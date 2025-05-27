@@ -1,4 +1,5 @@
 import { useState } from "react";
+import commitInfo from "../commit-info.json"
 
 // Ejemplo con botón para mostrar/ocultar
 export const VersionInfo = () => {
@@ -10,7 +11,7 @@ export const VersionInfo = () => {
         onClick={() => setVisible(!visible)}
         className="fixed bottom-4 right-4 bg-blue-600 text-white p-2 rounded-full shadow-lg"
       >
-        ¿
+        Updates...
       </button>
       
       {visible && (
