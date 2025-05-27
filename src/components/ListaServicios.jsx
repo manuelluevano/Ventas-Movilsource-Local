@@ -1,39 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
+import { VersionInfo } from './VersionInfo';
 
-
-import commitInfo from './commit-info.json';
-
-const VersionInfo = () => {
-  const [showVersion, setShowVersion] = useState(false);
-
-  const commitInfo = {
-    message: "Agregamos filtros para los distintos estados de los servicios, un buscador por nombre, apellido, marca y/o modelo y un mensaje de confirmacion al cambiar el estado de un servicio",
-    date: new Date().toLocaleDateString(),
-    version: "1.1.0" // Puedes incrementar esto con cada cambio importante
-  };
-
-  return (
-    <div className="fixed bottom-4 right-4 z-50">
-      {showVersion && (
-        <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200 max-w-xs">
-          <h3 className="font-bold text-gray-800">Últimos cambios (v{commitInfo.version})</h3>
-          <p className="text-sm text-gray-600 mt-1">{commitInfo.message}</p>
-          <p className="text-xs text-gray-500 mt-2">Actualizado: {commitInfo.date}</p>
-        </div>
-      )}
-      <button 
-        onClick={() => setShowVersion(!showVersion)}
-        className="bg-blue-600 text-white rounded-full p-2 shadow-lg hover:bg-blue-700 transition"
-        title="Ver cambios recientes"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
-        </svg>
-      </button>
-    </div>
-  );
-}
 
 const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [filtroEstado, setFiltroEstado] = useState('todos');
@@ -108,6 +76,10 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* ACTUALIZACIONES COMMIT */}
+
+      <VersionInfo />
+
       {/* Diálogo de confirmación - Versión corregida */}
       <Dialog 
         open={isDialogOpen} 
