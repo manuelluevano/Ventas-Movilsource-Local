@@ -25,23 +25,35 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
 
   // Calcula el saldo pendiente cuando cambian precio o abono
   useEffect(() => {
-    const precio = parseFloat(formData.precio_servicio) || 0;
-    const abono = parseFloat(formData.abono_servicio) || 0;
-    const saldo = precio - abono;
-    
-    setFormData(prev => ({
-      ...prev,
-      saldo_pendiente: saldo > 0 ? saldo.toFixed(2) : '0.00'
-    }));
-  }, [formData.precio_servicio, formData.abono_servicio]);
+  if (formData.servicio === 'garantia') return;
+  
+  const precio = parseFloat(formData.precio_servicio) || 0;
+  const abono = parseFloat(formData.abono_servicio) || 0;
+  const saldo = precio - abono;
+  
+  setFormData(prev => ({
+    ...prev,
+    saldo_pendiente: saldo > 0 ? saldo.toFixed(2) : '0.00'
+  }));
+}, [formData.precio_servicio, formData.abono_servicio, formData.servicio]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
+  
+  // Formatear nombre y apellido con primera letra mayúscula
+  if (name === 'nombre' || name === 'apellido') {
+    const formattedValue = value.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase());
+    setFormData(prev => ({
+      ...prev,
+      [name]: formattedValue
+    }));
+  } else {
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }
+};
 
     // Efecto para actualizar el folio cuando cambia ultimoFolio
   useEffect(() => {
@@ -53,20 +65,31 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
     }
   }, [ultimoFolio]);
 
+ 
+
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // Preparar datos para enviar
-    // Preparar datos para enviar
-    const dataToSend = {
-      ...formData,
-      precio_servicio: parseFloat(formData.precio_servicio) || 0,
-      abono_servicio: parseFloat(formData.abono_servicio) || 0,
-      saldo_pendiente: parseFloat(formData.saldo_pendiente) || 0,
-      folio: siguienteFolio, // Asegurar que se envíe el folio correcto
-      fecha_entrega: formData.fecha_entrega || null
-    };
-    onSubmit(dataToSend);
+  e.preventDefault();
+  
+  const dataToSend = {
+    ...formData,
+    folio: siguienteFolio,
+    fecha_entrega: formData.fecha_entrega || null
   };
+
+  // Si es garantía, eliminamos los campos financieros
+  if (formData.servicio === 'garantia') {
+    delete dataToSend.precio_servicio;
+    delete dataToSend.abono_servicio;
+    delete dataToSend.saldo_pendiente;
+  } else {
+    // Si no es garantía, convertimos los valores numéricos
+    dataToSend.precio_servicio = parseFloat(formData.precio_servicio) || 0;
+    dataToSend.abono_servicio = parseFloat(formData.abono_servicio) || 0;
+    dataToSend.saldo_pendiente = parseFloat(formData.saldo_pendiente) || 0;
+  }
+
+  onSubmit(dataToSend);
+};
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -145,8 +168,9 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
                 <option value="bateria">Batería</option>
                 <option value="software">Software</option>
                 <option value="microfono">Micrófono</option>
-                <option value="microfono">Liberacion de compania</option>
-                <option value="microfono">Diagnostico</option>
+                <option value="liberacion">Liberacion de compania</option>
+                <option value="diagnostico">Diagnostico</option>
+                <option value="garantia">Garantia</option>
                 <option value="otros">Otros</option>
               </select>
             </div>
@@ -220,45 +244,47 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Detalles del Servicio</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Precio del Servicio ($)*</label>
-              <input
-                type="number"
-                name="precio_servicio"
-                value={formData.precio_servicio}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Abono ($)</label>
-              <input
-                type="number"
-                name="abono_servicio"
-                value={formData.abono_servicio}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Saldo Pendiente ($)</label>
-              <input
-                type="number"
-                name="saldo_pendiente"
-                value={formData.saldo_pendiente}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                readOnly
-              />
-            </div>
-          </div>
+     {formData.servicio !== 'garantia' && (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label className="block text-sm font-medium text-gray-700">Precio del Servicio ($)*</label>
+      <input
+        type="number"
+        name="precio_servicio"
+        value={formData.precio_servicio}
+        onChange={handleChange}
+        step="0.01"
+        min="0"
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        required={formData.servicio !== 'garantia'}
+      />
+    </div>
+    
+    <div>
+      <label className="block text-sm font-medium text-gray-700">Abono ($)</label>
+      <input
+        type="number"
+        name="abono_servicio"
+        value={formData.abono_servicio}
+        onChange={handleChange}
+        step="0.01"
+        min="0"
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+    
+    <div>
+      <label className="block text-sm font-medium text-gray-700">Saldo Pendiente ($)</label>
+      <input
+        type="number"
+        name="saldo_pendiente"
+        value={formData.saldo_pendiente}
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        readOnly
+      />
+    </div>
+  </div>
+)}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

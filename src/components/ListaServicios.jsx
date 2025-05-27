@@ -10,6 +10,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [newStatus, setNewStatus] = useState('');
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const [serviceToNotify, setServiceToNotify] = useState(null);
+const [skipNotification, setSkipNotification] = useState(false);
 
   // Función para formatear fechas
   const formatDate = (dateString) => {
@@ -53,12 +54,25 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   };
 
   // Confirmar cambio de estado
-  const confirmStatusChange = () => {
-    if (onStatusChange && selectedService) {
-      onStatusChange(selectedService.id, newStatus);
+const confirmStatusChange = () => {
+  if (onStatusChange && selectedService) {
+    // Actualizar el estado localmente primero
+    const updatedService = { ...selectedService, estado: newStatus };
+    
+    // Llamar a la función para actualizar en el backend
+    onStatusChange(selectedService.id, newStatus);
+    
+    if (!skipNotification) {
+      // Configurar el servicio actualizado para notificar
+      setServiceToNotify(updatedService);
+      
+      // Abrir el diálogo de notificación
+      setNotificationDialogOpen(true);
     }
-    setIsDialogOpen(false);
-  };
+  }
+  setIsDialogOpen(false);
+  setSkipNotification(false); // Resetear para la próxima vez
+};
 
   // Cancelar cambio de estado
   const cancelStatusChange = () => {
@@ -73,8 +87,19 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
 
   // Función para enviar la notificación por WhatsApp con mensajes personalizados
 const sendWhatsAppNotification = () => {
-  if (!serviceToNotify) return;
-  
+  if (!serviceToNotify || !serviceToNotify.numero_contacto) {
+    alert('No hay información de contacto para notificar');
+    setNotificationDialogOpen(false);
+    return;
+  }
+
+  // Validar número de teléfono (ejemplo básico)
+  const phoneNumber = serviceToNotify.numero_contacto.replace(/\D/g, '');
+  if (phoneNumber.length < 10) {
+    alert('El número de teléfono no parece válido');
+    return;
+  }
+
   const estadoActual = estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label;
   
   // Mensajes personalizados según el estado
@@ -99,7 +124,7 @@ const sendWhatsAppNotification = () => {
       mensajeEstado = `Su equipo se encuentra actualmente en estado: ${estadoActual}.`;
   }
 
-  // Construir el mensaje con emojis Unicode directamente
+  // Construir el mensaje
   const message = [
     `Hola ${serviceToNotify.nombre},`,
     '',
@@ -119,13 +144,13 @@ const sendWhatsAppNotification = () => {
   ].join('\n');
 
   // Codificar componentes de la URL
-  const numeroCodificado = encodeURIComponent(serviceToNotify.numero_contacto);
+  const numeroCodificado = encodeURIComponent(phoneNumber);
   const mensajeCodificado = encodeURIComponent(message);
   
   // Crear la URL de WhatsApp
   const whatsappUrl = `https://web.whatsapp.com/send?phone=${numeroCodificado}&text=${mensajeCodificado}&app_absent=1`;
   
-  // Abrir en una nueva pestaña (mejor compatibilidad)
+  // Abrir en una nueva pestaña
   window.open(whatsappUrl, '_blank');
   
   setNotificationDialogOpen(false);
@@ -154,23 +179,36 @@ const sendWhatsAppNotification = () => {
               Confirmar cambio de estado
             </Dialog.Title>
             
-            {selectedService && (
-              <div className="mt-4">
-                <p className="text-sm text-gray-700">
-                  ¿Estás seguro que deseas cambiar el estado del servicio <strong>#{selectedService.folio}</strong> de{' '}
-                  <span className={`px-2 py-1 rounded ${getEstadoColor(selectedService.estado)}`}>
-                    {estadosDisponibles.find(e => e.value === selectedService.estado)?.label}
-                  </span>{' '}
-                  a{' '}
-                  <span className={`px-2 py-1 rounded ${getEstadoColor(newStatus)}`}>
-                    {estadosDisponibles.find(e => e.value === newStatus)?.label}
-                  </span>?
-                </p>
-                <p className="mt-2 text-sm text-gray-500">
-                  Cliente: {selectedService.nombre} {selectedService.apellido}
-                </p>
-              </div>
-            )}
+              {selectedService && (
+    <div className="mt-4">
+      <p className="text-sm text-gray-700">
+        ¿Estás seguro que deseas cambiar el estado del servicio <strong>#{selectedService.folio}</strong> de{' '}
+        <span className={`px-2 py-1 rounded ${getEstadoColor(selectedService.estado)}`}>
+          {estadosDisponibles.find(e => e.value === selectedService.estado)?.label}
+        </span>{' '}
+        a{' '}
+        <span className={`px-2 py-1 rounded ${getEstadoColor(newStatus)}`}>
+          {estadosDisponibles.find(e => e.value === newStatus)?.label}
+        </span>?
+      </p>
+      <p className="mt-2 text-sm text-gray-500">
+        Cliente: {selectedService.nombre} {selectedService.apellido}
+      </p>
+      
+      <div className="mt-4 flex items-center">
+        <input
+          type="checkbox"
+          id="skipNotification"
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          checked={skipNotification}
+          onChange={(e) => setSkipNotification(e.target.checked)}
+        />
+        <label htmlFor="skipNotification" className="ml-2 block text-sm text-gray-700">
+          No notificar al cliente
+        </label>
+      </div>
+    </div>
+  )}
             
             <div className="mt-6 flex justify-end space-x-3">
               <button
