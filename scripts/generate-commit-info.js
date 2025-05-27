@@ -1,12 +1,14 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const { execSync } = require('child_process');
-const path = require('path');
+import { writeFileSync } from 'fs';
+import { execSync } from 'child_process';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-// Configuración
-const OUTPUT_FILE = path.join(__dirname, '../src/commit-info.json');
+// Configuración de rutas para ES Modules
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const OUTPUT_FILE = join(__dirname, '../commit-info.json');
 
-function getGitInfo() {
+async function getGitInfo() {
   try {
     return {
       hash: execSync('git rev-parse --short HEAD 2>/dev/null').toString().trim() || 'unknown',
@@ -27,9 +29,9 @@ function getGitInfo() {
   }
 }
 
-function getVersion() {
+async function getVersion() {
   try {
-    const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
+    const packageJson = JSON.parse(await readFile('./package.json', 'utf-8'));
     return packageJson.version || '0.0.0';
   } catch {
     try {
@@ -40,9 +42,15 @@ function getVersion() {
   }
 }
 
-function generateCommitInfo() {
-  const gitInfo = getGitInfo();
-  const version = getVersion();
+// Polyfill para readFile en ES Modules
+async function readFile(path, encoding) {
+  const { readFile } = await import('fs/promises');
+  return readFile(path, encoding);
+}
+
+async function generateCommitInfo() {
+  const gitInfo = await getGitInfo();
+  const version = await getVersion();
 
   const commitInfo = {
     version,
@@ -52,7 +60,7 @@ function generateCommitInfo() {
   };
 
   try {
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(commitInfo, null, 2));
+    writeFileSync(OUTPUT_FILE, JSON.stringify(commitInfo, null, 2));
     console.log(`✅ ${OUTPUT_FILE} actualizado correctamente`);
   } catch (error) {
     console.error(`❌ Error escribiendo ${OUTPUT_FILE}:`, error.message);

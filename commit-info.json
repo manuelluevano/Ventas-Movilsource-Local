@@ -1,6 +1,10 @@
-
 {
-  "message": "Agregamos filtros para los distintos estados de los servicios, un buscador por nombre, apellido, marca y/o modelo y un mensaje de confirmacion al cambiar el estado de un servicio",
-  "date": "2023-11-15",
-  "version": "1.0.0"
+  "version": "0.0.0",
+  "hash": "1f92c02",
+  "message": "updoate",
+  "date": "2025-05-26 18:36:33 -0600",
+  "author": "Manuel  Luevano",
+  "branch": "main",
+  "buildDate": "2025-05-27T00:39:44.874Z",
+  "environment": "development"
 }
