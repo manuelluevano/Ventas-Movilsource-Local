@@ -1,44 +1,53 @@
-import { useState, useEffect } from "react";
-import commitInfo from "../commit-info.json";
+import { useState, useEffect } from 'react';
+import commitInfo from '../../commit-info.json';
 
 export const VersionInfo = () => {
   const [visible, setVisible] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    try {
-      setLastUpdate(new Date(commitInfo.buildDate).toLocaleString());
-    } catch (error) {
-      console.error("Error al cargar commit info:", error);
-    }
+    setIsClient(true);
   }, []);
 
-  if (!commitInfo) return null;
+  if (!isClient) return null;
+
+  const formatDate = (dateString) => {
+    try {
+      return new Date(dateString).toLocaleString();
+    } catch {
+      return dateString;
+    }
+  };
 
   return (
-    <>
-      <button
+    <div className="version-info-container">
+      <button 
         onClick={() => setVisible(!visible)}
-        className="fixed bottom-4 right-4 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
-        aria-label="Mostrar información de versión"
+        className="version-info-button"
+        aria-label="Toggle version info"
       >
-        {visible ? '×' : 'i'}
+        {visible ? '×' : 'v'}
       </button>
       
       {visible && (
-        <div className="fixed bottom-16 right-4 bg-white p-4 rounded-lg shadow-md border border-gray-200 max-w-xs z-50">
-          <strong className="block text-lg mb-2">Cambios recientes</strong>
-          <p className="text-sm mb-3">{commitInfo.message}</p>
-          
-          <div className="text-xs text-gray-500 space-y-1">
-            <div>Versión: {commitInfo.version}</div>
-            <div>Commit: {commitInfo.hash}</div>
-            <div>Fecha: {new Date(commitInfo.date).toLocaleDateString()}</div>
-            <div>Autor: {commitInfo.author}</div>
-            {lastUpdate && <div>Actualizado: {lastUpdate}</div>}
+        <div className="version-info-popup">
+          <h3>Información de Versión</h3>
+          <div className="version-details">
+            <p><strong>Versión:</strong> {commitInfo.version}</p>
+            <p><strong>Commit:</strong> {commitInfo.hash}</p>
+            <p><strong>Rama:</strong> {commitInfo.branch}</p>
+            <p><strong>Mensaje:</strong> {commitInfo.message}</p>
+            <p><strong>Autor:</strong> {commitInfo.author}</p>
+            <p><strong>Fecha Commit:</strong> {formatDate(commitInfo.date)}</p>
+            <p><strong>Última Build:</strong> {formatDate(commitInfo.buildDate)}</p>
+            <p><strong>Entorno:</strong> {commitInfo.environment}</p>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
+
+
+
+export default VersionInfo;
