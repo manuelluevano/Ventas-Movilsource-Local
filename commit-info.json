@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "b700484",
-  "message": "Agregamos el boton de notificar, para avisar de los cambios en su equipo",
-  "date": "2025-05-26 19:36:04 -0600",
+  "hash": "4549a59",
+  "message": "Al momento de cambiar el estado del servicio, se abre automaticamente el mensaje para notificar al cleinte, se puede omitir y/o envair manualmente en el boton de 'notificar', tambien se detecta si el numero no tiene whastapp",
+  "date": "2025-05-26 20:23:02 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-05-27T01:36:16.533Z",
+  "buildDate": "2025-05-27T02:23:24.135Z",
   "environment": "development"
 }

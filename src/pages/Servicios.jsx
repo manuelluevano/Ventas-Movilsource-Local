@@ -90,31 +90,62 @@ const Servicios = () => {
 };
 
 const handleSubmitServicio = async (formData) => {
-  // console.log("ultimo folio", formData);
-  
     try {
-      const result = await addService(formData);
-      
-      // console.log('Servicio creado:', result);
-      console.log("exito", result);
+        const result = await addService(formData);
 
-      // Mostrar mensaje de éxito al usuario
-    toast.success('Servicio creado correctamente');
-    
-    // Recargar la página después de 1 segundo (para que el usuario vea el mensaje)
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+        // Verificar el estado de la respuesta
+        if (result.status === 'error') {
+            // Construir mensaje de error (incluye campo si existe)
+            const errorMessage = result.field 
+                ? `${result.message} (Campo: ${result.field})`
+                : result.message;
+            
+            // Mostrar error - asegúrate que toast.error esté importado/configurado correctamente
+            toast.error(errorMessage, {
+                style: {
+                    background: '#ffebee',
+                    color: '#d32f2f',
+                    border: '1px solid #ef9a9a'
+                }
+            });
+            
+            // Resaltar el campo con error en el formulario
+            if (result.field) {
+                // Ejemplo para Formik:
+                // formik.setFieldError(result.field, result.message);
+                console.error(`Campo con error: ${result.field}`);
+            }
+            return;
+        }
 
-      
-      // Aquí puedes redirigir o mostrar un mensaje de éxito
+        // Éxito
+        console.log('Servicio creado:', result.service);
+        toast.success(result.message || 'Servicio creado correctamente', {
+            style: {
+                background: '#e8f5e9',
+                color: '#2e7d32',
+                border: '1px solid #a5d6a7'
+            }
+        });
+
+        // Recargar después de 2 segundos (solo en éxito)
+        setTimeout(() => window.location.reload(), 2000);
+
     } catch (error) {
-      console.error('Error al crear servicio:', error);
-      // Aquí puedes mostrar un mensaje de error al usuario
-          toast.error(`Error al crear servicio: ${error.message}`);
-
+        console.error('Error en la petición:', error);
+        const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error desconocido al crear servicio';
+        
+        toast.error(errorMessage, {
+            style: {
+                background: '#ffebee',
+                color: '#d32f2f',
+                border: '1px solid #ef9a9a'
+            }
+        });
     }
-  };
+};
 
   return (
     <>

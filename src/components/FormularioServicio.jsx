@@ -2,6 +2,26 @@ import React, { useState, useEffect } from 'react';
 
 const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
     const siguienteFolio = ultimoFolio !== null ? ultimoFolio + 1 : 1;
+const [errors, setErrors] = useState({});
+
+     // Función para obtener la fecha actual en formato YYYY-MM-DD
+    const getCurrentDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    useEffect(() => {
+    // Solo establecer la fecha actual si no hay datos iniciales (nuevo servicio)
+    if (!initialData.fecha_registro) {
+        setFormData(prev => ({
+            ...prev,
+            fecha_registro: getCurrentDate()
+        }));
+    }
+}, [initialData.fecha_registro]);
 
   const [formData, setFormData] = useState({
     folio: siguienteFolio || 0,
@@ -18,7 +38,7 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
     saldo_pendiente: initialData.saldo_pendiente || '',
     gaveta: initialData.gaveta || '',
     observaciones: initialData.observaciones || '',
-    fecha_registro: initialData.fecha_registro || '',
+    fecha_registro: initialData.fecha_registro || getCurrentDate(),
     fecha_entrega: initialData.fecha_entrega || '',
     estado: initialData.estado || 'recibido',
   });
@@ -37,11 +57,27 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
   }));
 }, [formData.precio_servicio, formData.abono_servicio, formData.servicio]);
 
-  const handleChange = (e) => {
+ const handleChange = (e) => {
   const { name, value } = e.target;
   
+  // Validación específica para número de contacto
+  if (name === 'numero_contacto') {
+    // Permite solo números y limita a 10 dígitos
+    const numericValue = value.replace(/\D/g, '').slice(0, 10);
+    setFormData(prev => ({
+      ...prev,
+      [name]: numericValue
+    }));
+    
+    // Validación de longitud
+    if (numericValue.length !== 10 && numericValue.length > 0) {
+      setErrors(prev => ({ ...prev, numero_contacto: 'El número debe tener 10 dígitos' }));
+    } else {
+      setErrors(prev => ({ ...prev, numero_contacto: null }));
+    }
+  } 
   // Formatear nombre y apellido con primera letra mayúscula
-  if (name === 'nombre' || name === 'apellido') {
+  else if (name === 'nombre' || name === 'apellido') {
     const formattedValue = value.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase());
     setFormData(prev => ({
       ...prev,
@@ -70,6 +106,12 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
   const handleSubmit = (e) => {
   e.preventDefault();
   
+  // Validar número de contacto antes de enviar
+  if (formData.numero_contacto.length !== 10) {
+    setErrors(prev => ({ ...prev, numero_contacto: 'El número debe tener 10 dígitos' }));
+    return;
+  }
+
   const dataToSend = {
     ...formData,
     folio: siguienteFolio,
@@ -137,17 +179,23 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Número de Contacto*</label>
-              <input
-                type="tel"
-                name="numero_contacto"
-                value={formData.numero_contacto}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
+           <div>
+            <label className="block text-sm font-medium text-gray-700">Número de Contacto*</label>
+            <input
+              type="tel"
+              name="numero_contacto"
+              value={formData.numero_contacto}
+              onChange={handleChange}
+              className={`mt-1 block w-full border ${errors.numero_contacto ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+              required
+              maxLength={10}
+              pattern="[0-9]{10}"
+              placeholder="10 dígitos"
+            />
+            {errors.numero_contacto && (
+              <p className="mt-1 text-sm text-red-600">{errors.numero_contacto}</p>
+            )}
+          </div>
           </div>
           
           {/* Sección Dispositivo */}
@@ -325,6 +373,7 @@ const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 required
+                readOnly
               />
             </div>
             
