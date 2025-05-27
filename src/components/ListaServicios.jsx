@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
-import { VersionInfo } from './VersionInfo';
-
+import VersionInfo from "./VersionInfo";
 
 const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [filtroEstado, setFiltroEstado] = useState('todos');
@@ -9,6 +8,8 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [newStatus, setNewStatus] = useState('');
+  const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
+  const [serviceToNotify, setServiceToNotify] = useState(null);
 
   // Función para formatear fechas
   const formatDate = (dateString) => {
@@ -64,6 +65,72 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
     setIsDialogOpen(false);
   };
 
+  // Función para abrir el diálogo de notificación
+  const openNotificationDialog = (servicio) => {
+    setServiceToNotify(servicio);
+    setNotificationDialogOpen(true);
+  };
+
+  // Función para enviar la notificación por WhatsApp con mensajes personalizados
+const sendWhatsAppNotification = () => {
+  if (!serviceToNotify) return;
+  
+  const estadoActual = estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label;
+  
+  // Mensajes personalizados según el estado
+  let mensajeEstado = '';
+  switch(serviceToNotify.estado) {
+    case 'recibido':
+      mensajeEstado = 'Hemos recibido su equipo y está en espera para ser revisado.';
+      break;
+    case 'proceso':
+      mensajeEstado = 'Su equipo se encuentra en proceso de reparación. Nuestros técnicos están trabajando en él.';
+      break;
+    case 'terminado':
+      mensajeEstado = '¡Su equipo está terminado y listo para ser retirado! Puede pasar por él a nuestro local.';
+      break;
+    case 'entregado':
+      mensajeEstado = 'Su equipo ha sido marcado como entregado. ¡Gracias por confiar en nosotros!';
+      break;
+    case 'cancelado':
+      mensajeEstado = 'Lamentamos informarle que el servicio ha sido cancelado. Puede contactarnos para más información.';
+      break;
+    default:
+      mensajeEstado = `Su equipo se encuentra actualmente en estado: ${estadoActual}.`;
+  }
+
+  // Construir el mensaje con emojis Unicode directamente
+  const message = [
+    `Hola ${serviceToNotify.nombre},`,
+    '',
+    '*Información de su servicio:*',
+    `📱 Dispositivo: ${serviceToNotify.marca} ${serviceToNotify.modelo}`,
+    `📝 Folio: #${serviceToNotify.folio}`,
+    `🔄 Estado: ${estadoActual}`,
+    '',
+    '*Detalles:*',
+    `${mensajeEstado}`,
+    '',
+    '*Fechas importantes:*',
+    `📅 Registro: ${formatDate(serviceToNotify.fecha_registro)}`,
+    `📅 Entrega estimada: ${formatDate(serviceToNotify.fecha_entrega) || 'Por confirmar'}`,
+    '',
+    `ℹ️ Para cualquier consulta, no dude en responder este mensaje.`
+  ].join('\n');
+
+  // Codificar componentes de la URL
+  const numeroCodificado = encodeURIComponent(serviceToNotify.numero_contacto);
+  const mensajeCodificado = encodeURIComponent(message);
+  
+  // Crear la URL de WhatsApp
+  const whatsappUrl = `https://web.whatsapp.com/send?phone=${numeroCodificado}&text=${mensajeCodificado}&app_absent=1`;
+  
+  // Abrir en una nueva pestaña (mejor compatibilidad)
+  window.open(whatsappUrl, '_blank');
+  
+  setNotificationDialogOpen(false);
+};
+
   // Filtrar servicios según el estado seleccionado y la búsqueda
   const serviciosFiltrados = servicios.filter(servicio => {
     const cumpleEstado = filtroEstado === 'todos' || servicio.estado === filtroEstado;
@@ -76,20 +143,11 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* ACTUALIZACIONES COMMIT */}
-
       <VersionInfo />
 
-      {/* Diálogo de confirmación - Versión corregida */}
-      <Dialog 
-        open={isDialogOpen} 
-        onClose={cancelStatusChange}
-        className="relative z-50"
-      >
-        {/* Fondo oscuro */}
+      {/* Diálogo de confirmación de cambio de estado */}
+      <Dialog open={isDialogOpen} onClose={cancelStatusChange} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-        
-        {/* Contenedor del diálogo */}
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md rounded bg-white p-6">
             <Dialog.Title className="text-lg font-bold text-gray-900">
@@ -132,7 +190,92 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
         </div>
       </Dialog>
 
-      {/* Resto del componente (igual que antes) */}
+      {/* Diálogo para notificación al cliente */}
+      <Dialog open={notificationDialogOpen} onClose={() => setNotificationDialogOpen(false)} className="relative z-50">
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-md rounded bg-white p-6">
+            <Dialog.Title className="text-lg font-bold text-gray-900">
+              Notificar al cliente
+            </Dialog.Title>
+            
+            {serviceToNotify && (
+              <div className="mt-4 space-y-3">
+                <p className="text-sm text-gray-700">
+                  Se enviará un mensaje por WhatsApp a <strong>{serviceToNotify.nombre} {serviceToNotify.apellido}</strong>
+                </p>
+                
+                <div className="p-3 bg-gray-50 rounded">
+                  <p className="text-sm font-medium">Número:</p>
+                  <p className="text-sm">{serviceToNotify.numero_contacto}</p>
+                  
+                  <p className="text-sm font-medium mt-2">Dispositivo:</p>
+                  <p className="text-sm">{serviceToNotify.marca} {serviceToNotify.modelo}</p>
+                  
+                  <p className="text-sm font-medium mt-2">Estado actual:</p>
+                  <p className="text-sm">
+                    <span className={`px-2 py-1 rounded ${getEstadoColor(serviceToNotify.estado)}`}>
+                      {estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label}
+                    </span>
+                  </p>
+                  
+                  <p className="text-sm font-medium mt-2">Mensaje que se enviará:</p>
+                  <div className="text-sm text-gray-600 bg-white p-2 rounded border border-gray-200">
+                    <p className="font-semibold">Hola {serviceToNotify.nombre},</p>
+                    <p className="mt-1"></p>
+                    
+                    <p className="mt-2 font-semibold">Información de su servicio:</p>
+                    <p>📱 Dispositivo: {serviceToNotify.marca} {serviceToNotify.modelo}</p>
+                    <p>📝 Folio: #{serviceToNotify.folio}</p>
+                    <p>🔄 Estado: {estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label}</p>
+                    
+                    <p className="mt-2 font-semibold">Detalles:</p>
+                    <p>
+                      {serviceToNotify.estado === 'proceso' 
+                        ? 'Su equipo se encuentra en proceso de reparación. Nuestros técnicos están trabajando en él.'
+                        : serviceToNotify.estado === 'terminado'
+                        ? '¡Su equipo está terminado y listo para ser retirado! Puede pasar por él a nuestro local.'
+                        : serviceToNotify.estado === 'entregado'
+                        ? 'Su equipo ha sido marcado como entregado. ¡Gracias por confiar en nosotros!'
+                        : serviceToNotify.estado === 'recibido'
+                        ? 'Hemos recibido su equipo y está en espera para ser revisado.'
+                        : serviceToNotify.estado === 'cancelado'
+                        ? 'Lamentamos informarle que el servicio ha sido cancelado. Puede contactarnos para más información.'
+                        : `Su equipo se encuentra actualmente en estado: ${estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label}.`
+                      }
+                    </p>
+                    
+                    <p className="mt-2 font-semibold">Fechas importantes:</p>
+                    <p>📅 Registro: {formatDate(serviceToNotify.fecha_registro)}</p>
+                    <p>📅 Entrega estimada: {formatDate(serviceToNotify.fecha_entrega) || 'Por confirmar'}</p>
+                    
+                    <p className="mt-2">ℹ️ Para cualquier consulta, no dude en responder este mensaje.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={() => setNotificationDialogOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={sendWhatsAppNotification}
+                className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-6.29-12.968c-5.258 0-9.525 4.267-9.525 9.525 0 1.697.448 3.28 1.23 4.655L2 22l5.233-1.354a9.53 9.53 0 0 0 4.949 1.379c5.258 0 9.525-4.267 9.525-9.525S16.508 2.039 11.25 2.039z"/>
+                </svg>
+                Enviar por WhatsApp
+              </button>
+            </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Lista de Servicios</h1>
         <div className="text-sm text-gray-500">
@@ -271,9 +414,15 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => onEdit(servicio)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      className="text-blue-600 hover:text-blue-900 mr-3"
                     >
                       Editar
+                    </button>
+                    <button
+                      onClick={() => openNotificationDialog(servicio)}
+                      className="text-green-600 hover:text-green-900 mr-3"
+                    >
+                      Notificar
                     </button>
                     <button
                       onClick={() => onDelete(servicio.id)}
