@@ -6,29 +6,6 @@ import { PiHeadphonesDuotone } from "react-icons/pi";
 import { VscTools } from "react-icons/vsc";
 import { MdOutlineInventory } from "react-icons/md";
 import { AiOutlineAppstore } from "react-icons/ai";
-import { MdOutlinePhoneAndroid } from "react-icons/md";
-import Exhibidor from "./components/Exhibidor";
-
-
-// import logo from "./assets/banner.webp";
-
-// import { useLoaderData } from "react-router-dom";
-
-// export async function loader(){
-
-//   // MULTIPLES CONSULTAS SIMULTANEAS
-
-// const [precio1, precio2] = await Promise.all([
-//   precioDolar(),
-//   precioDolar()
-// ])
-
-// const data = {
-//   precio1, precio2
-// }
-
-//   return data
-// }
 
 function App() {
   const { tokenUser } = useAuth();
@@ -83,13 +60,12 @@ function App() {
                 <h3 className="mt-3 font-semibold">VENTA DE EQUIPOS</h3>
               </Link>
             </div>  */}
-            <Exhibidor/>
           </div>
         </div>
       ) : (
         <Navigate to="/login" />
       )}
-
+  
     </>
   );
 }

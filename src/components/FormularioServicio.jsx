@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import Exhibidor from './Exhibidor';
 
 
 const ServicioForm = ({ultimoFolio, initialData = {}, onSubmit }) => {
     const siguienteFolio = ultimoFolio !== null ? ultimoFolio + 1 : 1;
-const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
+    //GAVETAS
+  const [mostrarDisponibles, setMostrarDisponibles] = useState(false); // Nuevo estado
+  const [enFormulario, setEnFormulario] = useState(true); // Nuevo estado
 
      // Función para obtener la fecha actual en formato YYYY-MM-DD
     const getCurrentDate = () => {
@@ -13,6 +17,13 @@ const [errors, setErrors] = useState({});
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
+
+    const handleSelectGaveta = (gavetaId) => {
+    setFormData(prev => ({
+      ...prev,
+      gaveta: gavetaId
+    }));
+  };
 
     useEffect(() => {
     // Solo establecer la fecha actual si no hay datos iniciales (nuevo servicio)
@@ -41,7 +52,7 @@ const [errors, setErrors] = useState({});
     observaciones: initialData.observaciones || '',
     fecha_registro: initialData.fecha_registro || getCurrentDate(),
     fecha_entrega: initialData.fecha_entrega || '',
-    estado: initialData.estado || 'recibido',
+    estado: 'recibido',
   });
 
   // Calcula el saldo pendiente cuando cambian precio o abono
@@ -60,7 +71,8 @@ const [errors, setErrors] = useState({});
 
  const handleChange = (e) => {
   const { name, value } = e.target;
-  
+
+
   // Validación específica para número de contacto
   if (name === 'numero_contacto') {
     // Permite solo números y limita a 10 dígitos
@@ -84,6 +96,7 @@ const [errors, setErrors] = useState({});
       ...prev,
       [name]: formattedValue
     }));
+    
   } else {
     setFormData(prev => ({
       ...prev,
@@ -91,6 +104,7 @@ const [errors, setErrors] = useState({});
     }));
   }
 };
+
 
     // Efecto para actualizar el folio cuando cambia ultimoFolio
   useEffect(() => {
@@ -135,6 +149,7 @@ const [errors, setErrors] = useState({});
 };
 
   return (
+
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Formulario de Servicio</h2>
       
@@ -334,35 +349,57 @@ const [errors, setErrors] = useState({});
     </div>
   </div>
 )}
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Gaveta</label>
-              <input
-                type="text"
-                name="gaveta"
-                value={formData.gaveta}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Estado</label>
-              <select
-                name="estado"
-                value={formData.estado}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="recibido">Recibido</option>
-                <option value="en_proceso">En proceso</option>
-                <option value="terminado">Terminado</option>
-                <option value="entregado">Entregado</option>
-                <option value="cancelado">Cancelado</option>
-              </select>
-            </div>
-          </div>
+
+  <div className="grid">
+    <Exhibidor 
+      enFormulario={enFormulario} 
+      setMostrarDisponibles={setMostrarDisponibles} 
+      mostrarDisponibles={mostrarDisponibles}
+      onSelectGaveta={handleSelectGaveta}
+      />
+                  
+  <div>
+    <label className="block text-sm font-medium text-gray-700">Ubicacion del equipo*</label>
+    <div className="mt-1 flex rounded-md shadow-sm">
+      <input
+        type="text"
+        name="gaveta"
+        value={formData.gaveta}
+        onChange={handleChange}
+        className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        readOnly
+        placeholder="Selecciona una gaveta"
+      />
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setMostrarDisponibles(!mostrarDisponibles);
+        }}
+        className={`inline-flex items-center px-4 py-2 border border-l-0 rounded-r-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+          formData.gaveta 
+            ? "border-green-500 bg-green-50 text-green-700 hover:bg-green-100"
+            : "border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100"
+        }`}
+      >
+        {formData.gaveta ? (
+          <>
+            <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            Cambiar
+          </>
+        ) : (
+          <>
+            <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            Seleccionar
+          </>
+        )}
+      </button>
+    </div>
+  </div>
+</div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -412,12 +449,14 @@ const [errors, setErrors] = useState({});
             Cancelar
           </button>
           <button
+            disabled={!formData.gaveta}
             type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            onClick={()=>{
-              
-            }}
-          >
+             className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                !formData.gaveta 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-blue-600 hover:bg-blue-700'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+            >
             Guardar Servicio
           </button>
         </div>

@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "2713ff9",
-  "message": "Corrige problemas al crear registros de clientes. Ahora se notifica al técnico el error específico y se conservan los datos del formulario para evitar reingresarlos.",
-  "date": "2025-05-26 20:59:20 -0600",
+  "hash": "54cdff0",
+  "message": "Demo gavetas administracion",
+  "date": "2025-05-27 00:12:04 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-05-27T03:05:57.127Z",
+  "buildDate": "2025-05-27T06:12:33.793Z",
   "environment": "development"
 }
