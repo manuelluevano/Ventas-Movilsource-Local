@@ -1,5 +1,4 @@
 import { Link, Navigate } from "react-router-dom";
-
 import useAuth from "./hooks/useAuth";
 import { Toaster } from "sonner";
 import { PiHeadphonesDuotone } from "react-icons/pi";
@@ -10,63 +9,73 @@ import { AiOutlineAppstore } from "react-icons/ai";
 function App() {
   const { tokenUser } = useAuth();
 
-  console.log(tokenUser.role);
-  // const datos = useLoaderData();
+  // Opciones de menú con iconos y colores
+  const menuItems = [
+    {
+      path: "/accesorios",
+      icon: <PiHeadphonesDuotone className="text-7xl" />,
+      title: "ACCESORIOS",
+      color: "bg-blue-100 hover:bg-blue-200 text-blue-800"
+    },
+    {
+      path: "/servicios",
+      icon: <VscTools className="text-7xl" />,
+      title: "SERVICIOS",
+      color: "bg-green-100 hover:bg-green-200 text-green-800"
+    },
+    {
+      path: "/pendientes",
+      icon: <MdOutlineInventory className="text-7xl" />,
+      title: "PENDIENTES",
+      color: "bg-amber-100 hover:bg-amber-200 text-amber-800"
+    },
+    {
+      path: "/administrador",
+      icon: <AiOutlineAppstore className="text-7xl" />,
+      title: "ADMINISTRADOR",
+      color: "bg-purple-100 hover:bg-purple-200 text-purple-800"
+    }
+  ];
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <Toaster
+        position="top-center"
         toastOptions={{
-          style: { background: "green", color: "white" },
+          style: { background: "#4CAF50", color: "white" },
           className: "my-toast",
           descriptionClassName: "my-toast-description",
         }}
       />
 
       {tokenUser.id ? (
-        /* ICONOS DE ACCESO */
-        <div className="container mx-auto flex ">
-          <div className="mt-10 flex-wrap justify-between flex w-1/2 mx-auto text-center">
-            <div className="cursor-pointer mt-40 p-4">
-              <Link to="/accesorios">
-                <PiHeadphonesDuotone className="text-9xl hover:p-1 transition-all" />
-                <h3 className="mt-3 font-semibold">ACCESORIOS</h3>
-              </Link>
-            </div>
-            <div className="cursor-pointer mt-40 p-4">
-              <Link to="/servicios">
-                <VscTools className="text-9xl hover:p-1 transition-all" />
-                <h3 className="mt-3 font-semibold">SERVICIOS </h3>
-              </Link>
-            </div>
-            
-             <div className="cursor-pointer mt-40 p-4">
-             <Link to="/pendientes">
+        <div className="container mx-auto px-4 py-8">
+          <header className="mb-12 text-center">
+            <h1 className="text-3xl font-bold text-gray-800">Panel de Control</h1>
+            <p className="text-gray-600 mt-2">Bienvenido, selecciona una opción</p>
+          </header>
 
-              <MdOutlineInventory className="text-9xl hover:p-1 transition-all" />
-              <h3 className="mt-3 font-semibold">PENDIENTES</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {menuItems.map((item, index) => (
+              <Link 
+                to={item.path} 
+                key={index}
+                className={`${item.color} rounded-xl p-8 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center h-full transform hover:-translate-y-1`}
+              >
+                <div className="mb-4">{item.icon}</div>
+                <h3 className="text-lg font-semibold">{item.title}</h3>
               </Link>
-            </div>
-            <div className="cursor-pointer mt-40 p-4">
-              <Link to="/administrador">
-                <AiOutlineAppstore className="text-9xl hover:p-1 transition-all" />
-                <h3 className="mt-3 font-semibold">ADMINISTRADOR</h3>
-              </Link>
-            </div> 
-             {/*
-            <div className="cursor-pointer mt-40 p-4">
-              <Link to="/equipos">
-                <MdOutlinePhoneAndroid className="text-9xl hover:p-1 transition-all" />
-                <h3 className="mt-3 font-semibold">VENTA DE EQUIPOS</h3>
-              </Link>
-            </div>  */}
+            ))}
           </div>
+
+          <footer className="mt-16 text-center text-gray-500 text-sm">
+            <p>Sistema de Gestión © {new Date().getFullYear()}</p>
+          </footer>
         </div>
       ) : (
         <Navigate to="/login" />
       )}
-  
-    </>
+    </div>
   );
 }
 
