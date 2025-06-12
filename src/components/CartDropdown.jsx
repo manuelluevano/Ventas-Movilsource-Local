@@ -4,8 +4,9 @@ import { FiShoppingCart, FiPlus, FiMinus, FiX, FiArrowRight } from "react-icons/
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { createReportsAccesorio } from "../API/events";
-import { motion, AnimatePresence } from "framer-motion";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { useNavigate } from "react-router-dom";
+import "./CartDropdown.css"; // Archivo CSS para las animaciones
 
 const CartDropdown = () => {
     const navigate = useNavigate();
@@ -129,7 +130,7 @@ const CartDropdown = () => {
               </button>
             )}
             <button 
-              onClick={() => navigate("/accesorios")}  // Redirige a /cart
+              onClick={() => navigate("/accesorios")}
               className="text-white hover:text-indigo-200 transition-colors"
             >
               <FiX size={20} />
@@ -154,77 +155,77 @@ const CartDropdown = () => {
           <div className="divide-y divide-gray-100">
             {/* Cart Items */}
             <ul className="max-h-[50vh] overflow-y-auto">
-              <AnimatePresence>
+              <TransitionGroup component={null}>
                 {cart.map(item => (
-                  <motion.li 
+                  <CSSTransition
                     key={item.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="p-3 hover:bg-gray-50 transition-colors"
+                    timeout={300}
+                    classNames="cart-item"
                   >
-                    <div className="flex gap-3">
-                      <div className="flex-shrink-0">
-                        <img 
-                          src={item.imagen} 
-                          alt={item.nombre} 
-                          className="w-14 h-14 object-cover rounded-lg border border-gray-200"
-                          onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/100?text=Imagen+no+disponible';
-                          }}
-                        />
-                      </div>
-                      
-                      <div className="flex-grow min-w-0">
-                        <div className="flex justify-between items-start">
-                          <div className="min-w-0">
-                            <h3 className="font-medium text-gray-800 truncate">
-                              {item.nombre}
-                            </h3>
-                            <span className="text-sm text-gray-500">
-                              ${item.precio} c/u
-                            </span>
-                          </div>
-                          <button 
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-gray-400 hover:text-red-500 transition-colors ml-2"
-                          >
-                            <FiX size={18} />
-                          </button>
+                    <li className="p-3 hover:bg-gray-50 transition-colors">
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0">
+                          <img 
+                            src={item.imagen} 
+                            alt={item.nombre} 
+                            className="w-14 h-14 object-cover rounded-lg border border-gray-200"
+                            onError={(e) => {
+                              e.target.src = 'https://via.placeholder.com/100?text=Imagen+no+disponible';
+                            }}
+                          />
                         </div>
                         
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="font-semibold text-indigo-600">
-                            ${(item.precio * item.quantity).toFixed(2)}
-                          </span>
-                          
-                          <div className="flex items-center border border-gray-200 rounded-md">
-                            <button
-                              onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                              className="px-2 py-1 text-gray-600 hover:bg-gray-100"
-                              disabled={item.quantity <= 1}
+                        <div className="flex-grow min-w-0">
+                          <div className="flex justify-between items-start">
+                            <div className="min-w-0">
+                              <h3 className="font-medium text-gray-800 truncate">
+                                {item.nombre}
+                              </h3>
+                              <span className="text-sm text-gray-500">
+                                ${item.precio} c/u
+                              </span>
+                            </div>
+                            <button 
+                              onClick={() => removeFromCart(item.id)}
+                              className="text-gray-400 hover:text-red-500 transition-colors ml-2"
                             >
-                              <FiMinus size={14} />
+                              <FiX size={18} />
                             </button>
-                            
-                            <span className="px-2 text-sm font-medium">
-                              {item.quantity}
+                          </div>
+                          
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="font-semibold text-indigo-600">
+                              ${(item.precio * item.quantity).toFixed(2)}
                             </span>
                             
-                            <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="px-2 py-1 text-gray-600 hover:bg-gray-100"
-                              disabled={item.quantity >= item.stock}
-                            >
-                              <FiPlus size={14} />
-                            </button>
+                            <div className="flex items-center border border-gray-200 rounded-md">
+                              <button
+                                onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                                className="px-2 py-1 text-gray-600 hover:bg-gray-100"
+                                disabled={item.quantity <= 1}
+                              >
+                                <FiMinus size={14} />
+                              </button>
+                              
+                              <span className="px-2 text-sm font-medium">
+                                {item.quantity}
+                              </span>
+                              
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="px-2 py-1 text-gray-600 hover:bg-gray-100"
+                                disabled={item.quantity >= item.stock}
+                              >
+                                <FiPlus size={14} />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.li>
+                    </li>
+                  </CSSTransition>
                 ))}
-              </AnimatePresence>
+              </TransitionGroup>
             </ul>
 
             {/* Summary */}
@@ -252,8 +253,7 @@ const CartDropdown = () => {
                 </div>
               </div>
 
-              <motion.button 
-                whileTap={{ scale: 0.98 }}
+              <button 
                 onClick={procesarVenta}
                 disabled={isProcessing || cart.length === 0}
                 className={`w-full py-2 rounded-md flex items-center justify-center gap-2 font-medium ${
@@ -275,7 +275,7 @@ const CartDropdown = () => {
                     Completar venta <FiArrowRight className="ml-1" />
                   </>
                 )}
-              </motion.button>
+              </button>
             </div>
           </div>
         )}

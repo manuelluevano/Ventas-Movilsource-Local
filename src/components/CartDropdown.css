@@ -1,0 +1,22 @@
+/* Animaciones para los items del carrito */
+.cart-item-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.cart-item-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.cart-item-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.cart-item-exit-active {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 300ms, transform 300ms;
+}
