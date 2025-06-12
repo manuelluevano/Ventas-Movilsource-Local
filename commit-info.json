@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "54cdff0",
-  "message": "Demo gavetas administracion",
-  "date": "2025-05-27 00:12:04 -0600",
+  "hash": "5ba5c4a",
+  "message": "Se inconpora filtros para productos, se mejora diseno en general v3",
+  "date": "2025-06-11 23:47:58 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-05-27T06:12:33.793Z",
+  "buildDate": "2025-06-12T05:49:31.097Z",
   "environment": "development"
 }
