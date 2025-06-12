@@ -19,6 +19,7 @@
     "@tanstack/react-table": "^8.10.3",
     "axios": "^1.2.0",
     "chart.js": "^4.4.9",
+    "framer-motion": "^12.17.0",
     "fs": "^0.0.1-security",
     "jwt-decode": "^3.1.2",
     "moment": "^2.30.1",
