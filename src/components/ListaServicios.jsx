@@ -10,7 +10,9 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [newStatus, setNewStatus] = useState('');
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const [serviceToNotify, setServiceToNotify] = useState(null);
-const [skipNotification, setSkipNotification] = useState(false);
+  const [skipNotification, setSkipNotification] = useState(false);
+  const [filtroAno, setFiltroAno] = useState('');
+  const [filtroMes, setFiltroMes] = useState('');
 
   // Función para formatear fechas
   const formatDate = (dateString) => {
@@ -46,6 +48,30 @@ const [skipNotification, setSkipNotification] = useState(false);
     { value: 'cancelado', label: 'Cancelado' }
   ];
 
+  // Obtener lista de años únicos basados en los servicios
+  const getAnosDisponibles = () => {
+    const anos = servicios.map(servicio => 
+      servicio.fecha_registro ? new Date(servicio.fecha_registro).getFullYear() : new Date().getFullYear()
+    );
+    return [...new Set(anos)].sort((a, b) => b - a);
+  };
+
+  // Lista de meses disponibles
+  const mesesDisponibles = [
+    { value: '01', label: 'Enero' },
+    { value: '02', label: 'Febrero' },
+    { value: '03', label: 'Marzo' },
+    { value: '04', label: 'Abril' },
+    { value: '05', label: 'Mayo' },
+    { value: '06', label: 'Junio' },
+    { value: '07', label: 'Julio' },
+    { value: '08', label: 'Agosto' },
+    { value: '09', label: 'Septiembre' },
+    { value: '10', label: 'Octubre' },
+    { value: '11', label: 'Noviembre' },
+    { value: '12', label: 'Diciembre' }
+  ];
+
   // Manejar inicio de cambio de estado (abre el diálogo)
   const handleStatusChangeInit = (e, servicio) => {
     setSelectedService(servicio);
@@ -54,25 +80,25 @@ const [skipNotification, setSkipNotification] = useState(false);
   };
 
   // Confirmar cambio de estado
-const confirmStatusChange = () => {
-  if (onStatusChange && selectedService) {
-    // Actualizar el estado localmente primero
-    const updatedService = { ...selectedService, estado: newStatus };
-    
-    // Llamar a la función para actualizar en el backend
-    onStatusChange(selectedService.id, newStatus);
-    
-    if (!skipNotification) {
-      // Configurar el servicio actualizado para notificar
-      setServiceToNotify(updatedService);
+  const confirmStatusChange = () => {
+    if (onStatusChange && selectedService) {
+      // Actualizar el estado localmente primero
+      const updatedService = { ...selectedService, estado: newStatus };
       
-      // Abrir el diálogo de notificación
-      setNotificationDialogOpen(true);
+      // Llamar a la función para actualizar en el backend
+      onStatusChange(selectedService.id, newStatus);
+      
+      if (!skipNotification) {
+        // Configurar el servicio actualizado para notificar
+        setServiceToNotify(updatedService);
+        
+        // Abrir el diálogo de notificación
+        setNotificationDialogOpen(true);
+      }
     }
-  }
-  setIsDialogOpen(false);
-  setSkipNotification(false); // Resetear para la próxima vez
-};
+    setIsDialogOpen(false);
+    setSkipNotification(false); // Resetear para la próxima vez
+  };
 
   // Cancelar cambio de estado
   const cancelStatusChange = () => {
@@ -86,84 +112,91 @@ const confirmStatusChange = () => {
   };
 
   // Función para enviar la notificación por WhatsApp con mensajes personalizados
-const sendWhatsAppNotification = () => {
-  if (!serviceToNotify || !serviceToNotify.numero_contacto) {
-    alert('No hay información de contacto para notificar');
+  const sendWhatsAppNotification = () => {
+    if (!serviceToNotify || !serviceToNotify.numero_contacto) {
+      alert('No hay información de contacto para notificar');
+      setNotificationDialogOpen(false);
+      return;
+    }
+
+    // Validar número de teléfono (ejemplo básico)
+    const phoneNumber = serviceToNotify.numero_contacto.replace(/\D/g, '');
+    if (phoneNumber.length < 10) {
+      alert('El número de teléfono no parece válido');
+      return;
+    }
+
+    const estadoActual = estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label;
+    
+    // Mensajes personalizados según el estado
+    let mensajeEstado = '';
+    switch(serviceToNotify.estado) {
+      case 'recibido':
+        mensajeEstado = 'Hemos recibido su equipo y está en espera para ser revisado.';
+        break;
+      case 'proceso':
+        mensajeEstado = 'Su equipo se encuentra en proceso de reparación. Nuestros técnicos están trabajando en él.';
+        break;
+      case 'terminado':
+        mensajeEstado = '¡Su equipo está terminado y listo para ser retirado! Puede pasar por él a nuestro local.';
+        break;
+      case 'entregado':
+        mensajeEstado = 'Su equipo ha sido marcado como entregado. ¡Gracias por confiar en nosotros!';
+        break;
+      case 'cancelado':
+        mensajeEstado = 'Lamentamos informarle que el servicio ha sido cancelado. Puede contactarnos para más información.';
+        break;
+      default:
+        mensajeEstado = `Su equipo se encuentra actualmente en estado: ${estadoActual}.`;
+    }
+
+    // Construir el mensaje
+    const message = [
+      `Hola ${serviceToNotify.nombre},`,
+      '',
+      '*Información de su servicio:*',
+      `📱 Dispositivo: ${serviceToNotify.marca} ${serviceToNotify.modelo}`,
+      `📝 Folio: #${serviceToNotify.folio}`,
+      `🔄 Estado: ${estadoActual}`,
+      '',
+      '*Detalles:*',
+      `${mensajeEstado}`,
+      '',
+      '*Fechas importantes:*',
+      `📅 Registro: ${formatDate(serviceToNotify.fecha_registro)}`,
+      `📅 Entrega estimada: ${formatDate(serviceToNotify.fecha_entrega) || 'Por confirmar'}`,
+      '',
+      `ℹ️ Para cualquier consulta, no dude en responder este mensaje.`
+    ].join('\n');
+
+    // Codificar componentes de la URL
+    const numeroCodificado = encodeURIComponent(phoneNumber);
+    const mensajeCodificado = encodeURIComponent(message);
+    
+    // Crear la URL de WhatsApp
+    const whatsappUrl = `https://web.whatsapp.com/send?phone=${numeroCodificado}&text=${mensajeCodificado}&app_absent=1`;
+    
+    // Abrir en una nueva pestaña
+    window.open(whatsappUrl, '_blank');
+    
     setNotificationDialogOpen(false);
-    return;
-  }
+  };
 
-  // Validar número de teléfono (ejemplo básico)
-  const phoneNumber = serviceToNotify.numero_contacto.replace(/\D/g, '');
-  if (phoneNumber.length < 10) {
-    alert('El número de teléfono no parece válido');
-    return;
-  }
-
-  const estadoActual = estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label;
-  
-  // Mensajes personalizados según el estado
-  let mensajeEstado = '';
-  switch(serviceToNotify.estado) {
-    case 'recibido':
-      mensajeEstado = 'Hemos recibido su equipo y está en espera para ser revisado.';
-      break;
-    case 'proceso':
-      mensajeEstado = 'Su equipo se encuentra en proceso de reparación. Nuestros técnicos están trabajando en él.';
-      break;
-    case 'terminado':
-      mensajeEstado = '¡Su equipo está terminado y listo para ser retirado! Puede pasar por él a nuestro local.';
-      break;
-    case 'entregado':
-      mensajeEstado = 'Su equipo ha sido marcado como entregado. ¡Gracias por confiar en nosotros!';
-      break;
-    case 'cancelado':
-      mensajeEstado = 'Lamentamos informarle que el servicio ha sido cancelado. Puede contactarnos para más información.';
-      break;
-    default:
-      mensajeEstado = `Su equipo se encuentra actualmente en estado: ${estadoActual}.`;
-  }
-
-  // Construir el mensaje
-  const message = [
-    `Hola ${serviceToNotify.nombre},`,
-    '',
-    '*Información de su servicio:*',
-    `📱 Dispositivo: ${serviceToNotify.marca} ${serviceToNotify.modelo}`,
-    `📝 Folio: #${serviceToNotify.folio}`,
-    `🔄 Estado: ${estadoActual}`,
-    '',
-    '*Detalles:*',
-    `${mensajeEstado}`,
-    '',
-    '*Fechas importantes:*',
-    `📅 Registro: ${formatDate(serviceToNotify.fecha_registro)}`,
-    `📅 Entrega estimada: ${formatDate(serviceToNotify.fecha_entrega) || 'Por confirmar'}`,
-    '',
-    `ℹ️ Para cualquier consulta, no dude en responder este mensaje.`
-  ].join('\n');
-
-  // Codificar componentes de la URL
-  const numeroCodificado = encodeURIComponent(phoneNumber);
-  const mensajeCodificado = encodeURIComponent(message);
-  
-  // Crear la URL de WhatsApp
-  const whatsappUrl = `https://web.whatsapp.com/send?phone=${numeroCodificado}&text=${mensajeCodificado}&app_absent=1`;
-  
-  // Abrir en una nueva pestaña
-  window.open(whatsappUrl, '_blank');
-  
-  setNotificationDialogOpen(false);
-};
-
-  // Filtrar servicios según el estado seleccionado y la búsqueda
+  // Filtrar servicios según los criterios seleccionados
   const serviciosFiltrados = servicios.filter(servicio => {
+    const fechaRegistro = new Date(servicio.fecha_registro);
+    const anoRegistro = fechaRegistro.getFullYear().toString();
+    const mesRegistro = (fechaRegistro.getMonth() + 1).toString().padStart(2, '0');
+    
     const cumpleEstado = filtroEstado === 'todos' || servicio.estado === filtroEstado;
     const cumpleBusqueda = busqueda === '' || 
       `${servicio.nombre} ${servicio.apellido}`.toLowerCase().includes(busqueda.toLowerCase()) || 
       servicio.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
       servicio.modelo.toLowerCase().includes(busqueda.toLowerCase());
-    return cumpleEstado && cumpleBusqueda;
+    const cumpleAno = filtroAno === '' || anoRegistro === filtroAno;
+    const cumpleMes = filtroMes === '' || mesRegistro === filtroMes;
+    
+    return cumpleEstado && cumpleBusqueda && cumpleAno && cumpleMes;
   });
 
   return (
@@ -359,6 +392,62 @@ const sendWhatsAppNotification = () => {
             ))}
           </div>
         </div>
+
+        {/* Filtros por año y mes */}
+        <div className="flex flex-wrap gap-4 mt-4">
+          {/* Filtro por año */}
+          <div className="flex items-center">
+            <label htmlFor="filtro-ano" className="mr-2 text-sm font-medium text-gray-700">
+              Año:
+            </label>
+            <select
+              id="filtro-ano"
+              value={filtroAno}
+              onChange={(e) => {
+                setFiltroAno(e.target.value);
+                setFiltroMes(''); // Resetear mes cuando cambia el año
+              }}
+              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="">Todos</option>
+              {getAnosDisponibles().map(ano => (
+                <option key={ano} value={ano}>{ano}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Filtro por mes */}
+          <div className="flex items-center">
+            <label htmlFor="filtro-mes" className="mr-2 text-sm font-medium text-gray-700">
+              Mes:
+            </label>
+            <select
+              id="filtro-mes"
+              value={filtroMes}
+              onChange={(e) => setFiltroMes(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              disabled={!filtroAno} // Deshabilitar si no hay año seleccionado
+            >
+              <option value="">Todos</option>
+              {mesesDisponibles.map(mes => (
+                <option key={mes.value} value={mes.value}>{mes.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Botón para limpiar filtros */}
+          <button
+            onClick={() => {
+              setFiltroAno('');
+              setFiltroMes('');
+              setFiltroEstado('todos');
+              setBusqueda('');
+            }}
+            className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            Limpiar filtros
+          </button>
+        </div>
       </div>
 
       {/* Tabla de servicios */}
@@ -493,14 +582,16 @@ const sendWhatsAppNotification = () => {
             />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            {filtroEstado === 'todos' && busqueda === ''
+            {filtroEstado === 'todos' && busqueda === '' && filtroAno === '' && filtroMes === ''
               ? 'No hay servicios registrados' 
               : busqueda !== ''
                 ? `No se encontraron resultados para "${busqueda}"`
-                : `No hay servicios en estado "${estadosDisponibles.find(e => e.value === filtroEstado)?.label || filtroEstado}"`}
+                : filtroAno || filtroMes
+                  ? `No hay servicios en ${filtroMes ? mesesDisponibles.find(m => m.value === filtroMes)?.label + ' ' : ''}${filtroAno || ''}${filtroEstado !== 'todos' ? ` con estado "${estadosDisponibles.find(e => e.value === filtroEstado)?.label || filtroEstado}"` : ''}`
+                  : `No hay servicios en estado "${estadosDisponibles.find(e => e.value === filtroEstado)?.label || filtroEstado}"`}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {filtroEstado === 'todos' && busqueda === ''
+            {filtroEstado === 'todos' && busqueda === '' && filtroAno === '' && filtroMes === ''
               ? 'Comienza agregando un nuevo servicio.' 
               : 'Intenta con otro filtro o término de búsqueda.'}
           </p>
