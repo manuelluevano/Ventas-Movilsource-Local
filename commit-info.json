@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "5ba5c4a",
-  "message": "Se inconpora filtros para productos, se mejora diseno en general v3",
-  "date": "2025-06-11 23:47:58 -0600",
+  "hash": "ec81fcf",
+  "message": "agregamos dashboard, agregamos filtro por fecha en lista de servicios",
+  "date": "2025-06-15 00:08:22 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-06-12T05:49:31.097Z",
+  "buildDate": "2025-06-20T02:16:16.630Z",
   "environment": "development"
 }

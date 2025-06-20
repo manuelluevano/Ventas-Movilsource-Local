@@ -9,15 +9,15 @@ const Servicios = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ultimoFolio, setUltimoFolio] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [editingService, setEditingService] = useState(null);
 
+  // Cargar servicios al montar el componente
   useEffect(() => {
-    console.log('useEffect se ejecutó');
-    
-    const fetchProducts = async () => {
+    const fetchServices = async () => {
       try {
-        console.log('Antes de llamar a listServices');
+        setLoading(true);
         const response = await listServices();
-        console.log('Respuesta recibida:', response.servicios);
         setListaServicios(response.servicios);
 
         // Calcular el último folio
@@ -27,20 +27,27 @@ const Servicios = () => {
           setUltimoFolio(maxFolio);
         }
       } catch (err) {
-        console.error('Error en fetchProducts:', err);
+        console.error('Error al cargar servicios:', err);
         setError(err.message);
+        toast.error('Error al cargar los servicios');
       } finally {
-        console.log('Finalizó la carga');
         setLoading(false);
       }
     };
   
-    fetchProducts();
-  }, [ListaServicios]);
+    fetchServices();
+  }, []);
 
   // Manejar edición de servicio
   const handleEdit = (servicio) => {
-    console.log('Editar servicio:', servicio);
+    setEditingService(servicio);
+    setShowForm(true);
+  };
+
+  // Manejar nuevo servicio
+  const handleNewService = () => {
+    setEditingService({}); // Objeto vacío en lugar de null
+    setShowForm(true);
   };
 
   // Manejar eliminación de servicio
@@ -50,137 +57,135 @@ const Servicios = () => {
         setLoading(true);
         await deleteService(id);
         setListaServicios(prev => prev.filter(servicio => servicio.id !== id));
+        toast.success('Servicio eliminado correctamente');
       } catch (err) {
         console.error('Error al eliminar servicio:', err);
-        setError(err.message);
+        toast.error('Error al eliminar el servicio');
       } finally {
         setLoading(false);
       }
     }
   };
 
- const handleStatusChange = async (servicioId, nuevoEstado) => {
-  try {
-    // Mostrar indicador de carga
-    setLoading(true);
-    
-    
-    // Actualizar en el backend
-    const response = await updateServiceStatus(servicioId, nuevoEstado);
-    
-    console.log(response);
-    
-    // Actualizar en el estado local solo si el backend responde correctamente
-    setListaServicios(prevServicios => 
-      prevServicios.map(servicio => 
-        servicio.id === servicioId ? { ...servicio, estado: nuevoEstado } : servicio
-      )
-    );
-    
-    // Mostrar notificación de éxito
-    toast.success('Estado actualizado correctamente');
-    
-  } catch (error) {
-    console.error("Error al actualizar el estado:", error);
-    setError(error.message);
-    toast.error(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-const handleSubmitServicio = async (formData) => {
+  // Manejar cambio de estado
+  const handleStatusChange = async (servicioId, nuevoEstado) => {
     try {
-        const result = await addService(formData);
+      setLoading(true);
+      await updateServiceStatus(servicioId, nuevoEstado);
+      
+      setListaServicios(prevServicios => 
+        prevServicios.map(servicio => 
+          servicio.id === servicioId ? { ...servicio, estado: nuevoEstado } : servicio
+        )
+      );
+      
+      toast.success('Estado actualizado correctamente');
+    } catch (error) {
+      console.error("Error al actualizar el estado:", error);
+      toast.error('Error al actualizar el estado');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Verificar el estado de la respuesta
-        if (result.status === 'error') {
-            // Construir mensaje de error (incluye campo si existe)
-            const errorMessage = result.field 
-                ? `${result.message} (Campo: ${result.field})`
-                : result.message;
-            
-            // Mostrar error - asegúrate que toast.error esté importado/configurado correctamente
-            toast.error(errorMessage, {
-                style: {
-                    background: '#ffebee',
-                    color: '#d32f2f',
-                    border: '1px solid #ef9a9a'
-                }
-            });
-            
-            // Resaltar el campo con error en el formulario
-            if (result.field) {
-                // Ejemplo para Formik:
-                // formik.setFieldError(result.field, result.message);
-                console.error(`Campo con error: ${result.field}`);
-            }
-            return;
-        }
+  // Manejar envío del formulario
+  const handleSubmitServicio = async (formData) => {
+    try {
+      const result = await addService(formData);
 
-        // Éxito
-        console.log('Servicio creado:', result.service);
-        toast.success(result.message || 'Servicio creado correctamente', {
-            style: {
-                background: '#e8f5e9',
-                color: '#2e7d32',
-                border: '1px solid #a5d6a7'
-            }
+      if (result.status === 'error') {
+        const errorMessage = result.field 
+          ? `${result.message} (Campo: ${result.field})`
+          : result.message;
+        
+        toast.error(errorMessage);
+        return;
+      }
+
+      toast.success(result.message || 'Servicio creado correctamente');
+      setShowForm(false);
+      
+      // Recargar la lista de servicios después de un breve retraso
+      setTimeout(() => {
+        listServices().then(response => {
+          setListaServicios(response.servicios);
+          if (response.servicios.length > 0) {
+            const folios = response.servicios.map(s => s.folio);
+            setUltimoFolio(Math.max(...folios));
+          }
         });
-
-        // Recargar después de 2 segundos (solo en éxito)
-        setTimeout(() => window.location.reload(), 2000);
+      }, 1000);
 
     } catch (error) {
-        console.error('Error en la petición:', error);
-        const errorMessage = error.response?.data?.message || 
-                          error.message || 
-                          'Error desconocido al crear servicio';
-        
-        toast.error(errorMessage, {
-            style: {
-                background: '#ffebee',
-                color: '#d32f2f',
-                border: '1px solid #ef9a9a'
-            }
-        });
+      console.error('Error al crear servicio:', error);
+      const errorMessage = error.response?.data?.message || 
+                        error.message || 
+                        'Error desconocido al crear servicio';
+      toast.error(errorMessage);
     }
-};
+  };
 
   return (
-    <>
-      <Toaster
-        toastOptions={{
-          style: { background: "green", color: "white" },
-          className: "my-toast",
-          descriptionClassName: "my-toast-description",
-        }}
-      />
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Formulario - Ocupa 1/3 del espacio en pantallas grandes */}
-            <div className="lg:w-1/3 xl:w-1/4">
-              <div className="sticky top-6">
-                <FormularioServicio  onSubmit={handleSubmitServicio} ultimoFolio={ultimoFolio} />
+    <div className="min-h-screen bg-gray-50">
+      <Toaster position="top-right" richColors />
+      
+      <div className="container mx-auto px-0 py-6">
+        {/* Header y botón de nuevo servicio */}
+        <div className="flex justify-between items-center mb-6">
+          {!showForm && (
+            <button
+              onClick={handleNewService}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              Nuevo Servicio
+            </button>
+          )}
+        </div>
+
+        {/* Contenido principal */}
+        <div className="flex flex-col gap-6">
+          {/* Mostrar formulario solo cuando showForm es true */}
+          {showForm && (
+            <div className="bg-white rounded-lg shadow-md p-6 transition-all duration-300">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">
+                  {editingService?.id ? 'Editar Servicio' : 'Nuevo Servicio'}
+                </h2>
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
+              <FormularioServicio 
+                onSubmit={handleSubmitServicio} 
+                ultimoFolio={ultimoFolio}
+                initialData={editingService || {}} // Asegurar que siempre sea un objeto
+                onCancel={() => setShowForm(false)}
+              />
             </div>
-        
-            {/* Lista de servicios - Ocupa 2/3 del espacio en pantallas grandes */}
-            <div className="lg:w-2/3 xl:w-3/4">
-              <div className="bg-white rounded-lg shadow-md p-4">
-                <ListaServicios  
-                  servicios={listaServicios}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onStatusChange={handleStatusChange}
-                />
-              </div>
-            </div>
+          )}
+
+          {/* Lista de servicios - Siempre visible */}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <ListaServicios  
+              servicios={listaServicios}
+              loading={loading}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onStatusChange={handleStatusChange}
+              onNewService={handleNewService}
+            />
           </div>
         </div>
-        {/* <Navigate to="/login" /> */}
-      
-    </>
+      </div>
+    </div>
   );
 };
 
