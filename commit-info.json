@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "ec81fcf",
-  "message": "agregamos dashboard, agregamos filtro por fecha en lista de servicios",
-  "date": "2025-06-15 00:08:22 -0600",
+  "hash": "ef23653",
+  "message": "Se mejora el diseno en tabla de servicios, se oculta formulario y se genera un boton para abrir en caso de agregar nuevo, diseno nuevo para 'notificar a cliente'",
+  "date": "2025-06-19 20:17:13 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-06-20T02:16:16.630Z",
+  "buildDate": "2025-06-20T02:17:38.132Z",
   "environment": "development"
 }

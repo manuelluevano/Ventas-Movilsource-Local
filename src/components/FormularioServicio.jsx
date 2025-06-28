@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Exhibidor from './Exhibidor';
 
-
 const getCurrentDate = () => {
-        const today = new Date();
-        return today.toISOString().split('T')[0];
-    };
-    
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+};
+
 const ServicioForm = ({ ultimoFolio, initialData = {}, onSubmit, onCancel }) => {
     const siguienteFolio = ultimoFolio !== null ? ultimoFolio + 1 : 1;
     const [errors, setErrors] = useState({});
@@ -31,9 +30,21 @@ const ServicioForm = ({ ultimoFolio, initialData = {}, onSubmit, onCancel }) => 
         fecha_registro: initialData.fecha_registro || getCurrentDate(),
         fecha_entrega: initialData.fecha_entrega || '',
         estado: 'recibido',
+        tiene_funda: initialData.tiene_funda || 'no',
+        tiene_chip: initialData.tiene_chip || 'no',
+        compania_chip: initialData.compania_chip || ''
     });
 
-    
+    const companiasMexicanas = [
+        'Telcel',
+        'Movistar',
+        'AT&T México',
+        'Unefón',
+        'Virgin Mobile',
+        'Bait',
+        'Oui',
+        'Weex'
+    ];
 
     const handleSelectGaveta = (gavetaId) => {
         setFormData(prev => ({ ...prev, gaveta: gavetaId }));
@@ -67,6 +78,13 @@ const ServicioForm = ({ ultimoFolio, initialData = {}, onSubmit, onCancel }) => 
         } else if (name === 'nombre' || name === 'apellido') {
             const formattedValue = value.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase());
             setFormData(prev => ({ ...prev, [name]: formattedValue }));
+        } else if (name === 'tiene_chip' && value === 'no') {
+            // Si se selecciona "No" para chip, limpiar la compañía
+            setFormData(prev => ({ 
+                ...prev, 
+                tiene_chip: value,
+                compania_chip: '' 
+            }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -289,6 +307,93 @@ const ServicioForm = ({ ultimoFolio, initialData = {}, onSubmit, onCancel }) => 
                                         />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Sección Accesorios */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-700 border-b border-gray-200 pb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
+                            </svg>
+                            Accesorios del Dispositivo
+                        </h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Campo para funda */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">¿Incluye funda?</label>
+                                <div className="flex space-x-4">
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="tiene_funda"
+                                            value="si"
+                                            checked={formData.tiene_funda === 'si'}
+                                            onChange={handleChange}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700">Sí</span>
+                                    </label>
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="tiene_funda"
+                                            value="no"
+                                            checked={formData.tiene_funda === 'no'}
+                                            onChange={handleChange}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            {/* Campo para chip */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">¿Incluye chip?</label>
+                                <div className="flex space-x-4 mb-2">
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="tiene_chip"
+                                            value="si"
+                                            checked={formData.tiene_chip === 'si'}
+                                            onChange={handleChange}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700">Sí</span>
+                                    </label>
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="tiene_chip"
+                                            value="no"
+                                            checked={formData.tiene_chip === 'no'}
+                                            onChange={handleChange}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700">No</span>
+                                    </label>
+                                </div>
+                                
+                                {formData.tiene_chip === 'si' && (
+                                    <div className="mt-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Compañía del chip</label>
+                                        <select
+                                            name="compania_chip"
+                                            value={formData.compania_chip}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                        >
+                                            <option value="">Seleccione una compañía</option>
+                                            {companiasMexicanas.map(compania => (
+                                                <option key={compania} value={compania}>{compania}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

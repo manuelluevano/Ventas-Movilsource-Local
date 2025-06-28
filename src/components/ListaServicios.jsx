@@ -3,6 +3,8 @@ import { Dialog } from '@headlessui/react';
 import VersionInfo from "./VersionInfo";
 
 const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
+  console.log(servicios);
+
   const [filtroEstado, setFiltroEstado] = useState('todos');
   const [busqueda, setBusqueda] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -13,6 +15,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [skipNotification, setSkipNotification] = useState(false);
   const [filtroAno, setFiltroAno] = useState('');
   const [filtroMes, setFiltroMes] = useState('');
+  const [expandedObservations, setExpandedObservations] = useState({});
 
   // Función para formatear fechas
   const formatDate = (dateString) => {
@@ -37,6 +40,33 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  // Función para generar el texto de accesorios
+  const getAccesoriosText = (servicio) => {
+    const accesorios = [];
+    
+    if (servicio.tiene_funda) {
+      accesorios.push('✅ Incluye funda');
+    } else {
+      accesorios.push('❌ Sin funda');
+    }
+    
+    if (servicio.tiene_chip) {
+      accesorios.push(`📱 Chip: ${servicio.compania_chip || 'Compañía no especificada'}`);
+    } else {
+      accesorios.push('❌ Sin chip');
+    }
+    
+    return accesorios.join(' | ');
+  };
+
+  // Función para alternar la expansión de observaciones
+  const toggleObservationExpansion = (id) => {
+    setExpandedObservations(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   // Opciones de estados disponibles
@@ -296,6 +326,12 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                           </span>
                         </div>
                       </div>
+                      <div className="flex items-start">
+                        <span className="text-gray-500 mr-2">🔍</span>
+                        <p className="text-sm">
+                          <span className="font-medium">Accesorios:</span> {getAccesoriosText(serviceToNotify)}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -347,7 +383,8 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                         <span className="font-semibold">Información de su servicio:</span><br/>
                         📱 Dispositivo: {serviceToNotify.marca} {serviceToNotify.modelo}<br/>
                         📝 Folio: #{serviceToNotify.folio}<br/>
-                        🔄 Estado: {estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label}
+                        🔄 Estado: {estadosDisponibles.find(e => e.value === serviceToNotify.estado)?.label}<br/>
+                        {getAccesoriosText(serviceToNotify)}
                       </p>
                       
                       <p>
@@ -610,8 +647,31 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                     </div>
                   </td>
                   <td className="px-5 py-4 max-w-[180px]">
-                    <div className="text-sm text-gray-900 line-clamp-2" title={servicio.observaciones}>
-                      {servicio.observaciones}
+                    <div className="text-sm text-gray-900">
+                      {servicio.observaciones && (
+                        <>
+                          <div className={`${expandedObservations[servicio.id] ? '' : 'line-clamp-2'}`}>
+                            {servicio.observaciones}
+                          </div>
+                          {servicio.observaciones.length > 100 && (
+                            <button
+                              onClick={() => toggleObservationExpansion(servicio.id)}
+                              className="text-blue-600 hover:text-blue-800 text-xs mt-1 focus:outline-none"
+                            >
+                              {expandedObservations[servicio.id] ? 'Mostrar menos' : 'Mostrar más...'}
+                            </button>
+                          )}
+                        </>
+                      )}
+                      <div className="mt-1">
+                        <span className={`text-xs ${servicio.tiene_funda ? 'text-green-600' : 'text-gray-500'}`}>
+                          {servicio.tiene_funda ? '✅ Incluye funda' : '❌ Sin funda'}
+                        </span>
+                        <br />
+                        <span className={`text-xs ${servicio.tiene_chip ? 'text-green-600' : 'text-gray-500'}`}>
+                          {servicio.tiene_chip ? `📱 Chip: ${servicio.compania_chip || 'Compañía no especificada'}` : '❌ Sin chip'}
+                        </span>
+                      </div>
                     </div>
                   </td>
                   <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
