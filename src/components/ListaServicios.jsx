@@ -15,7 +15,9 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
   const [skipNotification, setSkipNotification] = useState(false);
   const [filtroAno, setFiltroAno] = useState('');
   const [filtroMes, setFiltroMes] = useState('');
+  // Estado para controlar qué observaciones están expandidas
   const [expandedObservations, setExpandedObservations] = useState({});
+
 
   // Función para formatear fechas
   const formatDate = (dateString) => {
@@ -172,30 +174,36 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
         mensajeEstado = `Su equipo se encuentra actualmente en estado: ${estadoActual}.`;
     }
 
-    const message = [
-      `Hola ${serviceToNotify.nombre} ${serviceToNotify.apellido},`,
-      '',
-      '*Información de su servicio:*',
-      `📱 Dispositivo: ${serviceToNotify.marca} ${serviceToNotify.modelo}`,
-      `📝 Folio: #${serviceToNotify.folio}`,
-      `🔄 Estado: ${estadoActual}`,
-      '',
-      '*Detalles:*',
-      `${mensajeEstado}`,
-      ...(serviceToNotify.estado === 'terminado' ? [
-        '',
-        '*Información de pago:*',
-        `💰 Total servicio: $ ${serviceToNotify.precio_servicio}`,
-        `💵 Abono realizado: $ ${serviceToNotify.abono_servicio}`,
-        `📊 Saldo pendiente: $ ${serviceToNotify.precio_servicio - serviceToNotify.abono_servicio}`,
-      ] : []),
-      '',
-      '*Fechas importantes:*',
-      `📅 Registro: ${formatDate(serviceToNotify.fecha_registro)}`,
-      `📅 Entrega estimada: ${formatDate(serviceToNotify.fecha_entrega) || 'Por confirmar'}`,
-      '',
-      `ℹ️ Para cualquier consulta, no dude en responder este mensaje.`
-    ].join('\n');
+   const message = [
+  `Hola ${serviceToNotify.nombre} ${serviceToNotify.apellido},`,
+  '',
+  '*📋 Información de su servicio*',
+  `📱 *Dispositivo:* ${serviceToNotify.marca} ${serviceToNotify.modelo}`,
+  `📝 *Folio:* #${serviceToNotify.folio}`,
+  `🔄 *Estado:* ${estadoActual}`,
+  '',
+  '*💰 Detalles de pago*',
+  `💲 *Precio del servicio:* $${serviceToNotify.precio_servicio || 'Por confirmar'}`,
+  `💵 *Abono realizado:* $${serviceToNotify.abono_servicio || '0'}`,
+  `📊 *Saldo pendiente:* $${(serviceToNotify.precio_servicio - (serviceToNotify.abono_servicio || 0)).toFixed(2)}`,
+  '',
+  '*📦 Accesorios recibidos*',
+  serviceToNotify.tiene_funda ? '✅ *Incluye funda*' : '❌ *Sin funda*',
+  serviceToNotify.tiene_chip 
+    ? `📱 *Chip:* ${serviceToNotify.compania_chip || 'Compañía no especificada'}` 
+    : '❌ *Sin chip*',
+  '',
+  '*📅 Fechas importantes*',
+  `🗓 *Registro:* ${formatDate(serviceToNotify.fecha_registro)}`,
+  `📆 *Entrega estimada:* ${formatDate(serviceToNotify.fecha_entrega) || 'Por confirmar'}`,
+  '',
+  '*ℹ️ Detalles del estado*',
+  `${mensajeEstado}`,
+  '',
+  'Para cualquier consulta, no dude en responder este mensaje.',
+  '',
+  '¡Gracias por confiar en nosotros!'
+].join('\n');
 
     const numeroCodificado = encodeURIComponent(phoneNumber);
     const mensajeCodificado = encodeURIComponent(message);
@@ -556,9 +564,10 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
       </div>
 
       
-      {/* Tabla de servicios */}
+      {/* Tabla de servicios - Versión responsive */}
       <div className="bg-white shadow-lg rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Versión para pantallas grandes (md en adelante) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -653,7 +662,7 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
                           <div className={`${expandedObservations[servicio.id] ? '' : 'line-clamp-2'}`}>
                             {servicio.observaciones}
                           </div>
-                          {servicio.observaciones.length > 100 && (
+                          {servicio.observaciones.length > 40 && (
                             <button
                               onClick={() => toggleObservationExpansion(servicio.id)}
                               className="text-blue-600 hover:text-blue-800 text-xs mt-1 focus:outline-none"
@@ -708,7 +717,141 @@ const ListaServicios = ({ servicios, onEdit, onDelete, onStatusChange }) => {
             </tbody>
           </table>
         </div>
+
+        {/* Versión para móviles (hasta md) */}
+        <div className="md:hidden space-y-4 p-4">
+          {serviciosFiltrados.map((servicio) => (
+            <div key={servicio.id} className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+              {/* Primera fila - Info básica */}
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-gray-900">#{servicio.folio}</h3>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(servicio.fecha_registro)}
+                  </p>
+                </div>
+                <select
+                  value={servicio.estado}
+                  onChange={(e) => handleStatusChangeInit(e, servicio)}
+                  className={`px-2 py-1 text-xs leading-4 font-semibold rounded-full ${getEstadoColor(servicio.estado)} border border-transparent hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all`}
+                >
+                  {estadosDisponibles.map((estado) => (
+                    <option key={estado.value} value={estado.value}>
+                      {estado.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Cliente y dispositivo */}
+              <div className="mt-3">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="text-blue-600 text-xs font-medium">
+                      {servicio.nombre.charAt(0)}{servicio.apellido?.charAt(0) || ''}
+                    </span>
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-sm font-medium text-gray-900">
+                      {servicio.nombre} {servicio.apellido}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {servicio.numero_contacto}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-2 text-sm">
+                  <span className="font-medium">{servicio.marca}</span>
+                  <span className="text-gray-500 ml-2">{servicio.modelo}</span>
+                </div>
+              </div>
+
+              {/* Servicio y montos */}
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-xs text-gray-500">Servicio</p>
+                  <p className="text-sm font-medium capitalize">
+                    {servicio.servicio}
+                    {servicio.gaveta && ` (Gaveta: ${servicio.gaveta})`}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Montos</p>
+                  <p className="text-sm">
+                    <span className="font-medium">Total: </span>${servicio.precio_servicio}
+                  </p>
+                  <p className="text-xs">
+                    <span className="text-gray-500">Abono: </span>${servicio.abono_servicio || '0'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Observaciones con acordeón */}
+              <div className="mt-3">
+                <div className="flex justify-between items-center">
+                  <p className="text-xs font-medium text-gray-500">Observaciones</p>
+                  {servicio.observaciones && servicio.observaciones.length > 50 && (
+                    <button
+                      onClick={() => toggleObservationExpansion(servicio.id)}
+                      className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      {expandedObservations[servicio.id] ? 'Mostrar menos' : 'Mostrar más'}
+                    </button>
+                  )}
+                </div>
+                {servicio.observaciones && (
+                  <p className={`text-sm mt-1 ${!expandedObservations[servicio.id] ? 'line-clamp-3' : ''}`}>
+                    {servicio.observaciones}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className={`text-xs px-2 py-1 rounded-full ${servicio.tiene_funda ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    {servicio.tiene_funda ? 'Incluye funda' : 'Sin funda'}
+                  </span>
+                  {servicio.tiene_chip && (
+                    <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                      Chip: {servicio.compania_chip || 'No especificada'}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Acciones */}
+              <div className="mt-4 flex justify-end space-x-3">
+                <button
+                  onClick={() => onEdit(servicio)}
+                  className="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50"
+                  title="Editar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => openNotificationDialog(servicio)}
+                  className="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50"
+                  title="Notificar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => onDelete(servicio.id)}
+                  className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50"
+                  title="Eliminar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+
 
       {serviciosFiltrados.length === 0 && (
         <div className="text-center py-16 bg-white rounded-xl shadow-sm mt-4">

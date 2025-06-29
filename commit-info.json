@@ -1,10 +1,10 @@
 {
   "version": "0.0.0",
-  "hash": "ef23653",
-  "message": "Se mejora el diseno en tabla de servicios, se oculta formulario y se genera un boton para abrir en caso de agregar nuevo, diseno nuevo para 'notificar a cliente'",
-  "date": "2025-06-19 20:17:13 -0600",
+  "hash": "9938a17",
+  "message": "Se agrega opcoin de indicar si el equipo se deja con chip, la compania y si lo deja con funda",
+  "date": "2025-06-28 01:22:27 -0600",
   "author": "Manuel  Luevano",
   "branch": "main",
-  "buildDate": "2025-06-20T02:17:38.132Z",
+  "buildDate": "2025-06-28T07:23:04.034Z",
   "environment": "development"
 }

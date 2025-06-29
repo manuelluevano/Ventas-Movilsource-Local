@@ -30,8 +30,8 @@ const ServicioForm = ({ ultimoFolio, initialData = {}, onSubmit, onCancel }) => 
         fecha_registro: initialData.fecha_registro || getCurrentDate(),
         fecha_entrega: initialData.fecha_entrega || '',
         estado: 'recibido',
-        tiene_funda: initialData.tiene_funda || 'no',
-        tiene_chip: initialData.tiene_chip || 'no',
+        tiene_funda: initialData.tiene_funda || '',
+        tiene_chip: initialData.tiene_chip || '',
         compania_chip: initialData.compania_chip || ''
     });
 

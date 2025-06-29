@@ -90,6 +90,9 @@ const Servicios = () => {
 
   // Manejar envío del formulario
   const handleSubmitServicio = async (formData) => {
+
+    // console.log(formData);
+    
     try {
       const result = await addService(formData);
 
